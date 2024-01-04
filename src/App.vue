@@ -1,4 +1,5 @@
 <template>
+    <IndexView />
   <div>
     <RouterView></RouterView>
   </div>
@@ -6,7 +7,9 @@
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
+import IndexView  from './views/IndexView.vue';
 </script>
 
-<style scoped>
+<style>
+
 </style>
