@@ -30,26 +30,26 @@
             <el-text class="mx-1 between-main-footer-text"
                 style="font-size: 30px;">无需代码或设计技能。<br>我们的目标是让每个人都能创建漂亮的图表和表格，包括你。</el-text>
             <el-footer style="padding: 0%;width: 100%;">
-                <el-row v-for="o in 4" :key="o" class="footer-card" :gutter="40">
+                <el-row v-for="course in courseList " :key="course.id" class="footer-card" :gutter="40">
                     <el-col style="width: 100%;flex: 0 0 100%;max-width: 100%;  padding-right: 60px;  padding-left: 60px;" :span="8">
                             <el-card shadow="hover">
 
                                 <div class="card-desc__card">
                                     <div class="card-desc__card-data">
                                         <div class="card-desc__card-data_numbered">
-                                            <div class="icon_number">{{ o }}</div>
+                                            <div class="icon_number">{{ course.id }}</div>
                                         </div>
 
                                         <div class="card-desc__card-data_content">
-                                            <div class="card-desc__card-data_title">上传你的文件</div>
+                                            <div class="card-desc__card-data_title">{{ course.title }}</div>
                                             <div class="card-desc__card-data_desc">
-                                                <p>从网络、Excel 或 Google 表格复制数据并粘贴数据表。您还可以上传 CSV/XLS 等文件以获取你的图表</p>
+                                                <p>{{ course.text }}</p>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="card-desc__card-img">
                                         <picture class="card-desc__card-img picture">
-                                            <img width="100%" height="100%" src="@/assets/images/example1.png">
+                                            <img width="100%" height="100%" :src="course.image">
                                         </picture>
                                     </div>
                                 </div>
@@ -64,13 +64,22 @@
 </template>
   
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { getHomeCourse } from '@/api/home/homeCourse'
 
 const activeIndex = ref('1')
 const handleSelect = (key: string, keyPath: string[]) => {
     console.log(key, keyPath)
 }
 
+const courseList = ref([]);
+const getHomeCourseAPI =  async () => { 
+    const res = await getHomeCourse();
+    courseList.value = res.data.data;
+    console.log(courseList.value)
+}
+
+onMounted(() =>getHomeCourseAPI())
 
 </script>
   
@@ -226,4 +235,4 @@ const handleSelect = (key: string, keyPath: string[]) => {
     left: 150px;
 
 }</style>
-  
+  @/api/home/homeCourse
