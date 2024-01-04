@@ -13,7 +13,12 @@ export default ({command}) => {
       createSvgIconsPlugin({
         iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
         symbolId: 'icon-[dir]-[name]',
-      })
+      }),
+      viteMockServe({
+        mockPath: "mock",
+        supportTs: false,
+        logger: false,
+      }),
     ],
     resolve: {
       alias: {
