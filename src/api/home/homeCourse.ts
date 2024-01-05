@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import type {HomeCourseModel} from "./types";
+import type {HomeCourseModel} from "./coureType";
 enum API {
   getHomeCourse = "/getHomeCourse",
 }
