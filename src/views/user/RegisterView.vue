@@ -8,13 +8,14 @@
                     </div>
                 </div>
                 <div class="box">
-                    <div class="font">登录</div>
-                    <login-template> </login-template>
+                    <div class="font">注册</div>
+                    <register-template> </register-template>
                 </div>
             </div>
         </el-main>
     </el-container>
 </template>
+
 
 <style>
 .input {
