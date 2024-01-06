@@ -1,15 +1,15 @@
 <template>
-    <el-header style="height: 160px;" class="">
+    <el-header style="height: 160px; padding: 0%;">
      <el-menu style="height: 160px;" :default-active="activeIndex" class="el-menu-demo" mode="horizontal"
                     :ellipsis="false" @select="handleSelect">
-                    <RouterLink to="/" style="height: 100%; position: relative; left: 106px;">
+                    <RouterLink to="/" style="height: 100%; position: relative; left: 138px;">
                         <el-menu-item index="0" style="top: 55px; padding: 0%;">
                             <img style="width: 182px;height: 59px;position: relative;" src="@\assets\images\logo.jpg"
                                 alt="logo" />
                         </el-menu-item>
                     </RouterLink>
                     <div class="flex-grow" />
-                    <RouterLink to="/" class="text">登录</RouterLink>
+                    <RouterLink to="/login" class="text">登录</RouterLink>
                     <RouterLink to="/" class="text">Dashboard</RouterLink>
                 </el-menu>
             </el-header>
