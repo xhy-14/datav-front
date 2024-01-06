@@ -34,7 +34,7 @@
                                     </div>
                                     <div class="card-desc__card-img">
                                         <picture class="card-desc__card-img picture">
-                                            <img width="100%" height="100%" :src="course.image">
+                                            <img width="100%" height="100%" :src="course.path">
                                         </picture>
                                     </div>
                                 </div>
@@ -55,7 +55,7 @@ import { getHomeCourse } from '@/api/home/homeCourse'
 const courseList = ref([]);
 const getHomeCourseAPI =  async () => { 
     const res = await getHomeCourse();
-    courseList.value = res.data.data;
+    courseList.value = res.data.page.list;
     console.log(courseList.value)
 }
 
