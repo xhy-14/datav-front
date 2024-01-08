@@ -8,17 +8,13 @@
                     </div>
                 </div>
                 <div class="box">
-                    <div class="font">注册</div>
+                    <div class="font">忘记密码</div>
                     <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="20%" class="demo-ruleForm"
                         :size="formSize" status-icon>
-                        <el-form-item label="用户名" prop="username">
-                            <el-input style="width: 80%;" v-model="ruleForm.username" placeholder="Please input"
-                                clearable />
-                        </el-form-item>
                         <el-form-item label="手机" prop="mobile">
                             <el-input style="width: 80%;" v-model="ruleForm.mobile" placeholder="Please input" clearable />
                         </el-form-item>
-                        <el-form-item label="密码" prop="password">
+                        <el-form-item label="新密码" prop="password">
                             <el-input style="width: 80%;" v-model="ruleForm.password" type="password"
                                 placeholder="Please input password" show-password />
                         </el-form-item>
@@ -26,11 +22,15 @@
                             <el-input style="width: 80%;" v-model="ruleForm.confirm" type="confirm"
                                 placeholder="Please input password" show-password />
                         </el-form-item>
+                        <el-form-item label="验证码" prop="captcha">
+                            <el-input style="width: 40%;" v-model="ruleForm.captcha" placeholder="Please input" clearable />
+                            <el-button @click="getCaptcha()" style="margin: 0 auto;">获取验证码</el-button>
+                        </el-form-item>
                         <el-form-item>
                             <el-button type="primary" @click="submitForm(ruleFormRef)">
-                                注册
+                                确认
                             </el-button>
-                            <el-button @click="gotoLogin()" style="margin:0 auto;">已有账号？去登录</el-button>
+                            <el-button @click="gotoLogin()" style="margin: 0 auto;">返回登录</el-button>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -42,6 +42,7 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
+
 import { useRouter } from 'vue-router'
 import { registerAPI } from '@/api/login/index'
 import { triggerEvent } from 'element-plus/es/utils/index.mjs'
@@ -53,7 +54,8 @@ interface RuleForm {
     password: string
     confirm: string
     mobile: string
-    //    captcha: string
+    email: string
+    captcha: string
     type: string
 }
 
@@ -64,7 +66,8 @@ const ruleForm = reactive<RuleForm>({
     password: '',
     confirm: '',
     mobile: '',
-    //    captcha: '',
+    email: '',
+    captcha: '',
     type: '',
 })
 
@@ -106,16 +109,21 @@ const rules = reactive<FormRules<RuleForm>>({
             }
         }
     ],
-    // captcha: [
-    //     { required: true, message: '请输入验证码', trigger: 'blur' }
-    //     {
-    //         validator(rule, value, callback) {
-    //             //调用api发送请求获取验证码（待开发）
-    //             //验证验证码
-    //         }
+    captcha: [
+        { required: true, message: '请输入验证码', trigger: 'blur' },
+        {
+            validator(rule, value, callback) {
+                console.log(value)
+                const captcha = "" // 获取验证码
+                if (captcha === ruleForm.captcha) {
+                    callback()
+                } else {
+                    return callback(new Error("验证码错误"))
+                }
+            }
 
-    //     }
-    // ],
+        }
+    ],
 
 })
 
@@ -131,25 +139,29 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     await formEl.validate((valid, fields) => {
         if (valid) {
             console.log('执行提交!')
-            toRegister(ruleForm)
+            toReset(ruleForm)
         } else {
             console.log('提交错误', fields)
         }
     })
 }
 
-const toRegister = (ruleForm) => {
+const toReset = (ruleForm) => {
     registerAPI(ruleForm).then(function (response) {
         console.log(response.data);
-        if (response.data == 200) {
-            sessionStorage.setItem("isAuthenticated", "true")
-            router.push("/home")
+        if (response.data == 200) { // 验证成功跳转登录
+            alert("重置密码成功，请返回登录界面登录")
+            router.push("/login")
         }
 
     })
+}
 
+const getCaptcha = () => {
+    //获取验证码
 
 }
+
 </script>
 
 <style>
@@ -176,6 +188,7 @@ const toRegister = (ruleForm) => {
     font-size: 55px;
     margin-bottom: 30px;
     margin-left: 50px;
+
 }
 
 body {

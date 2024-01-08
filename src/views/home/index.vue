@@ -8,7 +8,7 @@
                 <div class="main-text" style="height: 55px; width: 270px;  ">
                     <el-text class="mx-1" style="font-size: 43px; color: black;"><span>丰富你的<br>带图表的故事</span></el-text>
                 </div>
-                <RouterLink to="/">
+                <RouterLink to="/test">
                     <el-button type="primary" class="main-botton_start" style=""><span>开 始 创 建</span></el-button>
                 </RouterLink>
             </el-main>
@@ -16,32 +16,33 @@
                 style="font-size: 30px;">无需代码或设计技能。<br>我们的目标是让每个人都能创建漂亮的图表和表格，包括你。</el-text>
             <el-footer style="padding: 0%;width: 100%;">
                 <el-row v-for="course in courseList " :key="course.id" class="footer-card" :gutter="40">
-                    <el-col style="width: 100%;flex: 0 0 100%;max-width: 100%;  padding-right: 60px;  padding-left: 60px;" :span="8">
-                            <el-card shadow="hover">
+                    <el-col style="width: 100%;flex: 0 0 100%;max-width: 100%;  padding-right: 60px;  padding-left: 60px;"
+                        :span="8">
+                        <el-card shadow="hover">
 
-                                <div class="card-desc__card">
-                                    <div class="card-desc__card-data">
-                                        <div class="card-desc__card-data_numbered">
-                                            <div class="icon_number">{{ course.id }}</div>
-                                        </div>
-
-                                        <div class="card-desc__card-data_content">
-                                            <div class="card-desc__card-data_title">{{ course.title }}</div>
-                                            <div class="card-desc__card-data_desc">
-                                                <p>{{ course.text }}</p>
-                                            </div>
-                                        </div>
+                            <div class="card-desc__card">
+                                <div class="card-desc__card-data">
+                                    <div class="card-desc__card-data_numbered">
+                                        <div class="icon_number">{{ course.id }}</div>
                                     </div>
-                                    <div class="card-desc__card-img">
-                                        <picture class="card-desc__card-img picture">
-                                            <img width="100%" height="100%" :src="course.path">
-                                        </picture>
+
+                                    <div class="card-desc__card-data_content">
+                                        <div class="card-desc__card-data_title">{{ course.title }}</div>
+                                        <div class="card-desc__card-data_desc">
+                                            <p>{{ course.text }}</p>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="card-desc__card-img">
+                                    <picture class="card-desc__card-img picture">
+                                        <img width="100%" height="100%" :src="course.path">
+                                    </picture>
+                                </div>
+                            </div>
 
-                            </el-card>
+                        </el-card>
                     </el-col>
-                    
+
                 </el-row>
             </el-footer>
         </el-container>
@@ -53,13 +54,13 @@ import { onMounted, ref } from 'vue'
 import { getHomeCourse } from '@/api/home/homeCourse'
 
 const courseList = ref([]);
-const getHomeCourseAPI =  async () => { 
+const getHomeCourseAPI = async () => {
     const res = await getHomeCourse();
     courseList.value = res.data.page.list;
     console.log(courseList.value)
 }
 
-onMounted(() =>getHomeCourseAPI())
+onMounted(() => getHomeCourseAPI())
 
 </script>
   
@@ -206,7 +207,7 @@ onMounted(() =>getHomeCourseAPI())
     height: 55px !important;
     width: 250px !important;
     font-size: 18px !important;
-    background-color:rgba(67, 214, 186, 0.86) !important;
+    background-color: rgba(67, 214, 186, 0.86) !important;
 }
 
 .main-text {
@@ -214,4 +215,5 @@ onMounted(() =>getHomeCourseAPI())
     bottom: 370px;
     left: 150px;
 
-}</style>
+}
+</style>
