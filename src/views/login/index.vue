@@ -103,18 +103,17 @@
   const gotoRegister = () => {
     router.push("/register");
   }
-  
+  import { useUserStore } from '@/store/user'
   const toLogin = (ruleForm) => {
+   
     loginAPI(ruleForm).then(function (response) {
       console.log(response.data);
-      if (response.data == 200) {
-        sessionStorage.setItem("isAuthenticated", "true")
+      if (response.code == "00000") {
+        useUserStore().setUserInfo(response.data.user.name,response.data.user.mobile,response.data.token)
         router.push("/home")
       }
   
     })
-  
-  
   }
   </script>
   
