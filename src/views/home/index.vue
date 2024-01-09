@@ -3,7 +3,11 @@
         <el-container>
             <el-main style="padding: 0px;">
                 <div>
-                    <img style="height: 570px; width: 100%;" src="@/assets/images/bg.gif" />
+                    <el-carousel style="height: 570px; width: 100%;" trigger="click" height="150px">
+                        <el-carousel-item style="height: 570px; width: 100%;" v-for="item in 4" :key="item">
+                            <img style="height: 570px; width: 100%;" src="@/assets/images/bg.gif" />
+                        </el-carousel-item>
+                    </el-carousel>
                 </div>
                 <div class="main-text" style="height: 55px; width: 270px;  ">
                     <el-text class="mx-1" style="font-size: 43px; color: black;"><span>丰富你的<br>带图表的故事</span></el-text>
@@ -51,20 +55,35 @@
   
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
-import { getHomeCourse } from '@/api/home/homeCourse'
+import { getHomeCourseAPI } from '@/api/home/homeCourse'
 
 const courseList = ref([]);
-const getHomeCourseAPI = async () => {
-    const res = await getHomeCourse();
+const getHomeCourse =  async () => { 
+    const res = await getHomeCourseAPI();
     courseList.value = res.data.page.list;
     console.log(courseList.value)
 }
 
-onMounted(() => getHomeCourseAPI())
+onMounted(() =>getHomeCourse())
 
 </script>
   
 <style>
+.demonstration {
+  color: var(--el-text-color-secondary);
+}
+.el-carousel__container {
+    height: 100% !important;
+}
+.el-carousel__item h3 {
+  /* color: #475669; */
+  opacity: 0.75;
+  line-height: 150px;
+  margin: 0;
+  text-align: center;
+  
+}
+
 .card-desc__card:not(:last-of-type) {
     padding-bottom: 100px
 }

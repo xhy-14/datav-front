@@ -35,7 +35,7 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-
+import { useUserStore } from '@/store/user'
 import { useRouter } from 'vue-router'
 import { loginAPI } from '@/api/login/index'
 
@@ -80,49 +80,44 @@ const rules = reactive<FormRules<RuleForm>>({
           return callback(new Error('请输入正确的手机号码'))
         }
 
+            }
+        }
+    ],
+  
+  })
+  
+  const submitForm = async (formEl: FormInstance | undefined) => {
+    if (!formEl) return
+  
+    await formEl.validate((valid, fields) => {
+      if (valid) {
+        console.log('执行提交!')
+        router.push('/')
+        toLogin(ruleForm)
+      } else {
+        console.log('提交错误', fields)
       }
-    }
-  ],
-
-})
-
-const submitForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-
-  await formEl.validate((valid, fields) => {
-    if (valid) {
-      console.log('执行提交!')
-      toLogin(ruleForm)
-    } else {
-      console.log('提交错误', fields)
-    }
-  })
-}
-
-
-const gotoRegister = () => {
-  router.push("/register");
-}
-
-const gotoForget = () => {
-  router.push('/forget');
-
-}
-
-
-const toLogin = (ruleForm) => {
-  loginAPI(ruleForm).then(function (response) {
-    console.log(response.data);
-    if (response.data == 200) {
-      sessionStorage.setItem("isAuthenticated", "true")
-      router.push("/home")
-    }
-
-  })
-
-
-}
-</script>
+    })
+  }
+  
+  
+  const gotoRegister = () => {
+    router.push("/register");
+  }
+  
+  const toLogin = (ruleForm) => {
+    loginAPI(ruleForm).then(function (response) {
+      console.log(response.data);
+      if (response.code == "00000") {
+        useUserStore().setUserInfo(response.data.user.name,response.data.user.mobile,response.data.token)
+        router.push("/")
+      }
+  
+    })
+  
+  
+  }
+  </script>
   
 <style>
 .input {

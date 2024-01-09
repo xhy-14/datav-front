@@ -1,21 +1,20 @@
 <template>
     <el-breadcrumb class="breadcrumb" :separator-icon="ArrowRight">
-        <el-breadcrumb-item>promotion management</el-breadcrumb-item>
-        <el-breadcrumb-item>promotion list</el-breadcrumb-item>
-        <el-breadcrumb-item>promotion detail</el-breadcrumb-item>
+        <el-breadcrumb-item>设置</el-breadcrumb-item>
+        <el-breadcrumb-item>个人设置</el-breadcrumb-item>
     </el-breadcrumb>
-    <profile />
+    <setting />
     <RouterView :key="$route.fullPath" />
 </template>
   
 <script lang="ts" setup>
 import { ArrowRight } from '@element-plus/icons-vue'
-import profile from './components/profile.vue'
+import setting from './components/setting.vue'
 </script>
   
 <style>
 .breadcrumb {
-    height: 60px;
+    height: 70px;
     font-size: 24px ;
     align-content: center;
     display: flex;
