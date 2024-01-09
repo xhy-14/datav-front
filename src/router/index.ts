@@ -18,7 +18,7 @@ const routes = [
       },
     ]
   },
-  
+
   {
     path: '/login',
     component: () => import("@/views/login/index.vue")
@@ -26,7 +26,15 @@ const routes = [
   {
     path: '/register',
     component: () => import("@/views/login/RegisterView.vue")
-  }
+  },
+  {
+    path: '/forget',
+    component: () => import("@/views/login/ForgetView.vue")
+  },
+  {
+    path: '/test',
+    component: () => import("@/views/my/myView.vue")
+  },
 ]
 
 const router = createRouter({
