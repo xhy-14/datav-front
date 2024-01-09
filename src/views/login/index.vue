@@ -110,7 +110,7 @@ const rules = reactive<FormRules<RuleForm>>({
       console.log(response.data);
       if (response.code == "00000") {
         useUserStore().setUserInfo(response.data.user.name,response.data.user.mobile,response.data.token)
-        router.push("/home")
+        router.push("/")
       }
   
     })
