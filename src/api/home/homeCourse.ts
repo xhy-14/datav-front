@@ -5,7 +5,7 @@ enum API {
 }
 
 // get首页教程
-export function getHomeCourse() {
+export function getHomeCourseAPI() {
   return request.get(API.getHomeCourse);
 }
 

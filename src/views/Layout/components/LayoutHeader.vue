@@ -1,6 +1,6 @@
 <template>
-  <el-header style="height: 160px; padding: 0%;">
-    <el-menu style="height: 160px;" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false"
+  <el-header style="height: 160px; padding: 0%; z-index: 999;">
+    <el-menu style="position: absolute;height: 160px;" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false"
       @select="handleSelect">
       <RouterLink to="/" style="height: 100%; position: relative; left: 138px;">
         <el-menu-item index="0" style="top: 55px; padding: 0%;">
@@ -25,7 +25,12 @@ const handleSelect = (key: string, keyPath: string[]) => {
 
 </script>
   
-<style>
+<style scoped lang='scss'>
+.el-menu {
+  width: 100% !important;
+  z-index: 99 !important;
+
+}
 .flex-grow {
   flex-grow: 1;
 }
