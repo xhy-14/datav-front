@@ -58,13 +58,13 @@ import { onMounted, ref } from 'vue'
 import { getHomeCourseAPI } from '@/api/home/homeCourse'
 
 const courseList = ref([]);
-const getHomeCourseAPI =  async () => { 
-    const res = await getHomeCourse();
+const getHomeCourse =  async () => { 
+    const res = await getHomeCourseAPI();
     courseList.value = res.data.page.list;
     console.log(courseList.value)
 }
 
-onMounted(() =>getHomeCourseAPI())
+onMounted(() =>getHomeCourse())
 
 </script>
   
