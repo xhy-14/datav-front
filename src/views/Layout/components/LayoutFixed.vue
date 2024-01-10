@@ -1,7 +1,7 @@
 <template>
   <div class="header" :class="{ show: y > 78 }">
   <el-header style="height: 70px; padding: 0%;" >
-    <el-menu style="height: 70px;" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false"
+    <el-menu v-if = "user.token =='' " style="height: 70px;" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false"
       @select="handleSelect">
       <RouterLink to="/" style="height: 100%; position: relative; left: 138px;">
         <el-menu-item index="0" style="top: 7px; padding: 0%;">
@@ -11,8 +11,8 @@
       <div class="flex-grow" />
       <!-- <RouterLink to="/login" class="text">登录</RouterLink>
       <RouterLink to="/" class="text">Dashboard</RouterLink> -->
-      <RouterLink to="/login" class="text">进入工作台</RouterLink>
-      <RouterLink to="/" class="text">新建文件</RouterLink>
+      <RouterLink to="/" class="text">进入工作台</RouterLink>
+      <RouterLink to="/visual" class="text">新建文件</RouterLink>
       <RouterLink to="/login" class="text">我的目录</RouterLink>
       <el-sub-menu style="right: 100px;position: relative;" class="menu__title" index="2">
       <template #title>Workspace</template>
@@ -21,6 +21,17 @@
 
     </el-sub-menu>
     </el-menu>
+    <el-menu v-else style="height: 70px;" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false"
+      @select="handleSelect">
+      <RouterLink to="/" style="height: 100%; position: relative; left: 138px;">
+        <el-menu-item index="0" style="top: 7px; padding: 0%;">
+          <img style="width: 130px;height: 35px;position: relative;" src="@\assets\images\logo.jpg" alt="logo" />
+        </el-menu-item>
+      </RouterLink>
+      <div class="flex-grow" />
+      <RouterLink to="/login" class="text">登录</RouterLink>
+      <RouterLink to="/" class="text">Dashboard</RouterLink>
+    </el-menu>
   </el-header>
   </div>
 </template>
@@ -28,6 +39,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import {useScroll}  from '@vueuse/core'
+import { useUserStore } from '@/store/user';
+const user = useUserStore().userInfo
 const {y} = useScroll(window)
 const activeIndex = ref('1')
 const handleSelect = (key: string, keyPath: string[]) => {
