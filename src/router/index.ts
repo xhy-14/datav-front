@@ -9,13 +9,28 @@ const routes = [
     children: [
       {
         path: '',
-        name: 'home',
         component: () => import("@/views/home/index.vue")
       },
       {
         path: '/account',
         component: () => import("@/views/setting/index.vue")
       },
+      {
+        path: '/visual',
+        component: () => import("@/views/visual/index.vue")
+      },
+      {
+        path: '/forget',
+        component: () => import("@/views/login/ForgetView.vue")
+      },
+      {
+        path: '/recent',
+        component: () => import("@/views/my/RecentView.vue")
+      },
+      {
+        path: '/my',
+        component: () => import("@/views/my/MyIndexView.vue")
+      }
     ]
   },
 
@@ -26,14 +41,6 @@ const routes = [
   {
     path: '/register',
     component: () => import("@/views/login/RegisterView.vue")
-  },
-  {
-    path: '/forget',
-    component: () => import("@/views/login/ForgetView.vue")
-  },
-  {
-    path: '/test',
-    component: () => import("@/views/my/myView.vue")
   },
 ]
 

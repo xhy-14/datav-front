@@ -11,9 +11,9 @@
       <div class="flex-grow" />
       <!-- <RouterLink to="/login" class="text">登录</RouterLink>
       <RouterLink to="/" class="text">Dashboard</RouterLink> -->
-      <RouterLink to="/" class="text">进入工作台</RouterLink>
+      <RouterLink to="/recent" class="text">进入工作台</RouterLink>
       <RouterLink to="/visual" class="text">新建文件</RouterLink>
-      <RouterLink to="/login" class="text">我的目录</RouterLink>
+      <a href="/my" class="text">我的目录</a>
       <el-sub-menu style="right: 100px;position: relative;" class="menu__title" index="2">
       <template #title>Workspace</template>
       <el-menu-item index="2-1"><a href="/account" class=" menu_item">设置</a></el-menu-item>

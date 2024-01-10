@@ -23,7 +23,7 @@
                 登录
               </el-button>
               <el-button @click="gotoRegister()" style="margin:0 auto;">没有账号？去注册</el-button>
-              <el-button @click="gotoForget()" style="margin:0 auto;">忘记密码？</el-button>
+              <a href="/forget" style="margin:0 auto;">忘记密码？</a>
             </el-form-item>
           </el-form>
         </div>
