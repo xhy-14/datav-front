@@ -19,10 +19,7 @@ const routes = [
         path: '/visual',
         component: () => import("@/views/visual/index.vue")
       },
-      {
-        path: '/forget',
-        component: () => import("@/views/login/ForgetView.vue")
-      },
+      
       {
         path: '/recent',
         component: () => import("@/views/my/RecentView.vue")
@@ -41,6 +38,10 @@ const routes = [
   {
     path: '/register',
     component: () => import("@/views/login/RegisterView.vue")
+  },
+  {
+    path: '/forget',
+    component: () => import("@/views/login/ForgetView.vue")
   },
 ]
 
