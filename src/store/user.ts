@@ -15,7 +15,7 @@ export const useUserStore = defineStore("user", {
   },
   // 数据操作
   actions: {
-    setUserInfo(name: string, token: string, mobile: string){
+    setUserInfo(name: string, mobile: string, token: string){
         this.userInfo.token = token
         this.userInfo.name = name
         this.userInfo.mobile = mobile
@@ -24,5 +24,6 @@ export const useUserStore = defineStore("user", {
   // 数据读取
   getters: {
     userInfo: (state) => state.user,
-  }
+  },
+  persist: true,
 })

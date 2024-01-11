@@ -2,11 +2,9 @@
   <el-header style="height: 160px; padding: 0%; z-index: 999;">
     <el-menu v-if = "user.token !='' " style="position: absolute;height: 160px;" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false"
       @select="handleSelect">
-      <RouterLink to="/" style="height: 100%; position: relative; left: 138px;">
-        <el-menu-item index="0" style="top: 55px; padding: 0%;">
-          <img style="width: 182px;height: 59px;position: relative;" src="@\assets\images\logo.jpg" alt="logo" />
-        </el-menu-item>
-      </RouterLink>
+      <a href="/" style="height: 100%; position: relative; left: 138px;">
+          <img style="width: 182px;height: 59px;position: relative;top: 55px;" src="@\assets\images\logo.jpg" alt="logo" />
+      </a>
       <div class="flex-grow" />
       <RouterLink to="/login" class="text">我的目录</RouterLink>
       <RouterLink to="/" class="text">Dashboard</RouterLink>
@@ -14,11 +12,9 @@
 
     <el-menu v-else style="position: absolute;height: 160px;" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false"
       @select="handleSelect">
-      <RouterLink to="/" style="height: 100%; position: relative; left: 138px;">
-        <el-menu-item index="0" style="top: 55px; padding: 0%;">
-          <img style="width: 182px;height: 59px;position: relative;" src="@\assets\images\logo.jpg" alt="logo" />
-        </el-menu-item>
-      </RouterLink>
+      <a href="/" style="height: 100%; position: relative; left: 138px;">
+          <img style="width: 182px;height: 59px;position: relative;top: 55px;" src="@\assets\images\logo.jpg" alt="logo" />
+      </a>
       <div class="flex-grow" />
       <a href="/login" class="text">登录</a>
       <RouterLink to="/" class="text">Dashboard</RouterLink>

@@ -6,7 +6,7 @@ import ElementPlus from 'element-plus'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import router from './router'
 import { createPinia } from 'pinia'
-
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 const app = createApp(App)
 
 // 配置element-plus组件库
@@ -24,6 +24,6 @@ import 'virtual:svg-icons-register'
 import '@/styles/index.scss'
 
 // 使用pinia仓库
-app.use(createPinia())
+app.use(createPinia().use(piniaPluginPersistedstate))
 
 app.mount('#app')
