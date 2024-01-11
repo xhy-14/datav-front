@@ -12,7 +12,7 @@
                 <div class="main-text" style="height: 55px; width: 270px;  ">
                     <el-text class="mx-1" style="font-size: 43px; color: black;"><span>丰富你的<br>带图表的故事</span></el-text>
                 </div>
-                <RouterLink to="/test">
+                <RouterLink to="/my">
                     <el-button type="primary" class="main-botton_start" style=""><span>开 始 创 建</span></el-button>
                 </RouterLink>
             </el-main>
@@ -58,30 +58,32 @@ import { onMounted, ref } from 'vue'
 import { getHomeCourseAPI } from '@/api/home/homeCourse'
 
 const courseList = ref([]);
-const getHomeCourse =  async () => { 
+const getHomeCourse = async () => {
     const res = await getHomeCourseAPI();
     courseList.value = res.data.page.list;
     console.log(courseList.value)
 }
 
-onMounted(() =>getHomeCourse())
+onMounted(() => getHomeCourse())
 
 </script>
   
 <style>
 .demonstration {
-  color: var(--el-text-color-secondary);
+    color: var(--el-text-color-secondary);
 }
+
 .el-carousel__container {
     height: 100% !important;
 }
+
 .el-carousel__item h3 {
-  /* color: #475669; */
-  opacity: 0.75;
-  line-height: 150px;
-  margin: 0;
-  text-align: center;
-  
+    /* color: #475669; */
+    opacity: 0.75;
+    line-height: 150px;
+    margin: 0;
+    text-align: center;
+
 }
 
 .card-desc__card:not(:last-of-type) {
