@@ -6,7 +6,7 @@
           <img style="width: 182px;height: 59px;position: relative;top: 55px;" src="@\assets\images\logo.jpg" alt="logo" />
       </a>
       <div class="flex-grow" />
-      <RouterLink to="/login" class="text">我的目录</RouterLink>
+      <RouterLink to="/my" class="text">我的目录</RouterLink>
       <RouterLink to="/" class="text">Dashboard</RouterLink>
     </el-menu>
 
