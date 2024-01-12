@@ -1,13 +1,11 @@
 <template>
   <div class="header" :class="{ show: y > 78 }">
   <el-header style="height: 70px; padding: 0%;" >
-    <el-menu v-if = "user.token =='' " style="height: 70px;" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false"
+    <el-menu v-if = "user.token !='' " style="height: 70px;" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false"
       @select="handleSelect">
-      <RouterLink to="/" style="height: 100%; position: relative; left: 138px;">
-        <el-menu-item index="0" style="top: 7px; padding: 0%;">
-          <img style="width: 130px;height: 35px;position: relative;" src="@\assets\images\logo.jpg" alt="logo" />
-        </el-menu-item>
-      </RouterLink>
+      <a href="/" style="height: 100%; position: relative; left: 138px;">
+          <img style="width: 130px;height: 35px;position: relative;top: 17px;" src="@\assets\images\logo.jpg" alt="logo" />
+      </a>
       <div class="flex-grow" />
       <!-- <RouterLink to="/login" class="text">登录</RouterLink>
       <RouterLink to="/" class="text">Dashboard</RouterLink> -->
@@ -23,13 +21,11 @@
     </el-menu>
     <el-menu v-else style="height: 70px;" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false"
       @select="handleSelect">
-      <RouterLink to="/" style="height: 100%; position: relative; left: 138px;">
-        <el-menu-item index="0" style="top: 7px; padding: 0%;">
-          <img style="width: 130px;height: 35px;position: relative;" src="@\assets\images\logo.jpg" alt="logo" />
-        </el-menu-item>
-      </RouterLink>
+      <a href="/" style="height: 100%; position: relative; left: 138px;">
+          <img style="width: 130px;height: 35px;position: relative;top: 17px;" src="@\assets\images\logo.jpg" alt="logo" />
+      </a>
       <div class="flex-grow" />
-      <RouterLink to="/login" class="text">登录</RouterLink>
+      <a href="/login" class="text">登录</a>
       <RouterLink to="/" class="text">Dashboard</RouterLink>
     </el-menu>
   </el-header>

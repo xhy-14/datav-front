@@ -19,10 +19,7 @@ const routes = [
         path: '/visual',
         component: () => import("@/views/visual/index.vue")
       },
-      {
-        path: '/forget',
-        component: () => import("@/views/login/ForgetView.vue")
-      },
+
       {
         path: '/recent',
         component: () => import("@/views/my/RecentView.vue")
