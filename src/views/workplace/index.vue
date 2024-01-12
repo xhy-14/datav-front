@@ -11,33 +11,33 @@
           router="true"
         >
           <el-menu-item index="/workplace/info">
-            <el-icon>
-              <setting />
+            <el-icon :size="size" :color="color">
+              <Edit />
             </el-icon>我的信息
           </el-menu-item>
           <el-menu-item index="/workplace/data/source">
             <el-icon>
-              <setting />
+              <Coin />
             </el-icon>数据源
           </el-menu-item>
           <el-menu-item index="/workplace/project">
             <el-icon>
-              <setting />
+              <Folder />
             </el-icon>项目
           </el-menu-item>
           <el-menu-item index="/workplace/data/tables">
             <el-icon>
-              <setting />
+              <Document />
             </el-icon>数据集
           </el-menu-item>
           <el-menu-item index="/workplace/chart">
             <el-icon>
-              <setting />
+              <DataLine />
             </el-icon>图表
           </el-menu-item>
           <el-menu-item index="/workplace/show">
             <el-icon>
-              <setting />
+              <DataBoard />
             </el-icon>看台
           </el-menu-item>
         </el-menu>

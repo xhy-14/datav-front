@@ -1,5 +1,11 @@
 <template>
-  <div>数据集</div>
+  <div>
+    <el-input>
+      <template #append>
+        <el-button :icon="Search" />
+      </template>
+    </el-input>
+  </div>
 </template>
 
 <script>

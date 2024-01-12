@@ -10,8 +10,10 @@
     "lint": "eslint --fix \"./src/**/*.{ts,js,vue}\""
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
     "@vueuse/core": "^10.7.1",
     "axios": "^1.6.3",
+    "echarts": "^5.4.3",
     "element-plus": "^2.4.2",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",

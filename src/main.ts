@@ -8,6 +8,7 @@ import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import router from './router'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import * as Icons from '@element-plus/icons-vue'
 
 const app = createApp(App)
 
@@ -15,6 +16,10 @@ const app = createApp(App)
 app.use(ElementPlus, {
   locale: zhCn,
 })
+
+for (let i in Icons) {
+  app.component(i, Icons[i])
+}
 
 // 挂载路由
 app.use(router)
