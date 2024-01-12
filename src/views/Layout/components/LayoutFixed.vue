@@ -1,7 +1,7 @@
 <template>
   <div class="header" :class="{ show: y > 78 }">
   <el-header style="height: 70px; padding: 0%;" >
-    <el-menu v-if = "user.token =='' " style="height: 70px;" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false"
+    <el-menu v-if = "user.token !='' " style="height: 70px;" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false"
       @select="handleSelect">
       <a href="/" style="height: 100%; position: relative; left: 138px;">
           <img style="width: 130px;height: 35px;position: relative;top: 17px;" src="@\assets\images\logo.jpg" alt="logo" />
