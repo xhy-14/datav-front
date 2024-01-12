@@ -1,7 +1,5 @@
 <template>
-  <svg>
-    <use xlink-href="#icon-404"></use>
-  </svg>
+  <div>项目</div>
 </template>
 
 <script>
