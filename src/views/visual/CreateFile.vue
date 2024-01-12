@@ -8,8 +8,6 @@
     </div>
   </div>
   <el-radio-group v-model="tabPosition" style="margin-top: 40px">
-    <el-radio-button @Click="fun0" label="复制并粘贴">复制并粘贴</el-radio-button>
-    <el-radio-button @Click="fun0" label="上传文件">
       <el-upload
       :action="uploadUrl"
       :headers ="headers"
@@ -19,9 +17,11 @@
         :on-success="handleSuccess"
         :show-file-list="false"
         >
+    <el-radio-button @Click="fun0" label="上传文件">
         上传文件
-      </el-upload>
     </el-radio-button>
+      </el-upload>
+    <el-radio-button @Click="fun0" label="复制并粘贴">复制并粘贴</el-radio-button>
     <el-radio-button @click="fun1" label="链接外部数据表">链接外部数据表</el-radio-button>
   </el-radio-group>
 </template>
@@ -66,7 +66,7 @@ const handleSuccess = (response, file) => {
   console.log(file_id.value)
   getDataAPI(file_id.value).then(function (response) {
       if (response.code == "00000") {
-        input.value = response.data
+        input.value = response.data.headers + response.data.rows
       }
   
     })
