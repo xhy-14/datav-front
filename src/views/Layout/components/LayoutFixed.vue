@@ -7,8 +7,6 @@
           <img style="width: 130px;height: 35px;position: relative;top: 17px;" src="@\assets\images\logo.jpg" alt="logo" />
       </a>
       <div class="flex-grow" />
-      <!-- <RouterLink to="/login" class="text">登录</RouterLink>
-      <RouterLink to="/" class="text">Dashboard</RouterLink> -->
       <RouterLink to="/recent" class="text">进入工作台</RouterLink>
       <RouterLink to="/visual" class="text">新建文件</RouterLink>
       <a href="/my" class="text">我的目录</a>
@@ -52,7 +50,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
   position: relative;
   flex-wrap: wrap;
   align-content: center;
-  padding: 20px;
+  padding-left: 20px;
   color: #54BCBD;
 }
 .header {

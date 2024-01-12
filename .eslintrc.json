@@ -1,21 +1,21 @@
-{
-  "parserOptions": {
-    "ecmaVersion": 7,
-    "sourceType": "module"
-  },
-  "overrides":[//要配置具体文件规则overrides
-  {
-      "files": ["*.vue"],
-      "extends": [
-      ],
-      "rules": {   //配置具体检测规则
-          "no-console":2
-      }
-  }
-],
-    "extends": "eslint:recommended",
-    "rules": {
-  "no-console": "warn",
-  "semi": ["error", "always"]
-}
-}
+// {
+//   "parserOptions": {
+//     "ecmaVersion": 7,
+//     "sourceType": "module"
+//   },
+//   "overrides":[//要配置具体文件规则overrides
+//   {
+//       "files": ["*.vue"],
+//       "extends": [
+//       ],
+//       "rules": {   //配置具体检测规则
+//           "no-console":2
+//       }
+//   }
+// ],
+//     "extends": "eslint:recommended",
+//     "rules": {
+//   "no-console": "warn",
+//   "semi": ["error", "always"]
+// }
+// }
