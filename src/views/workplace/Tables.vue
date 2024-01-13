@@ -1,10 +1,6 @@
 <template>
   <div>
-    <el-input>
-      <template #append>
-        <el-button :icon="Search" />
-      </template>
-    </el-input>
+    搜索
   </div>
 </template>
 
