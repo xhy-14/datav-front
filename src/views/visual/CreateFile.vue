@@ -1,45 +1,43 @@
 <template>
   <div>
-    <div v-show="active == 0">
-      <div v-for="(value, key) in tableHeader">
-          {{ value }}
-        </div>
-      <el-table :data="tableData" style="width: 100%">
-      </el-table>
-    </div>
+    <el-table :data="data.rows" style="width: 100%" height="250">
+      <el-table-column v-for="item in data.headers" :prop="item" :label="item">
+      </el-table-column>
+    </el-table>
+
     <div v-show="active == 1">
       <el-input v-model="input2" placeholder="https://" style="height: 300px" />
     </div>
   </div>
   <el-radio-group v-model="tabPosition" style="margin-top: 40px">
-      <el-upload
-        :action="uploadUrl"
-        :headers="headers"
-        accept=".csv"
-
-        :on-error="handleError"
-        :on-success="handleSuccess"
-        :show-file-list="false"
-        >
-    <el-radio-button @Click="fun0" label="上传文件">
+    <el-upload :action="uploadUrl" :headers="headers" accept=".csv" :on-error="handleError" :on-success="handleSuccess"
+      :show-file-list="false">
+      <el-radio-button @Click="fun0" label="上传文件">
         上传文件
-    </el-radio-button>
+      </el-radio-button>
 
-      </el-upload>
+    </el-upload>
     <el-radio-button @Click="fun0" label="复制并粘贴">复制并粘贴</el-radio-button>
     <el-radio-button @click="fun1" label="链接外部数据表">链接外部数据表</el-radio-button>
   </el-radio-group>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
-import { getDataAPI } from '@/api/uploadFile/upload'
-import { useUserStore } from '@/store/user' 
+import { ref, reactive, onMounted } from 'vue'
+import { ElMessage,  } from 'element-plus'
+
+import { useUserStore } from '@/store/user'
+
 
 const token = useUserStore().userInfo.token
 
-const uploadUrl = "http://112.124.59.107:8080/renren-fast/common/file/upload?projectId=0&name=" 
+const uploadUrl = "http://112.124.59.107:8080/renren-fast/app/table/data/file"
+
+interface responseData {
+  headers: [],
+  rows: [],
+}
+
 const headers = {
   'token': `${token}`
 };
@@ -54,80 +52,30 @@ const fun1 = () => {
 }
 
 const input2 = ref('')
-const input = ref('')
 
-// 表单数据
-const tableData: any[] = []
-const tableHeader: string[] = []
 
+
+
+let fileList = ref([]);
 // 上传错误提示
 const handleError = () => {
-	ElMessage.error('导入数据失败，请您重新上传！');
-}; 
+  ElMessage.error('导入数据失败，请您重新上传！');
+};
+//上传成功提示
+const data = reactive<responseData>({
+  headers: [],
+  rows: []
 
-
-onMounted(() => {
-  getDataAPI(4).then(response=>{
-    if (response.code == "00000") {
-
-    const tableHeader = response.data.headers
-    
-    console.log(tableHeader);
-    
-    let rows = response.data.rows
-
-    for(let i=0; i<rows.length; i++) {
-      let map = {}
-  
-      for(let j=0; j<tableHeader.length; j++){
-        map[tableHeader[j]] = rows[i][j] 
-      }
-      tableData.push(map)
-    }
-
-    console.log(tableData);
-    
-  }
-  })
 })
 
-//上传成功提示
-const file_id = ref('')
 const handleSuccess = (response, file) => {
-  file_id.value = response.data.id
-
-  console.log(file_id.value)
-  
-  getDataAPI(file_id.value).then(function (response) {
-      if (response.code == "00000") {
-        // 获取数据
-        let headers = response.data.headers
-        let rows = response.data.rows
-        
-        // 更新数据
-        let data = null;
-
-        console.log(headers);
-        console.log(rows);
-        
-        
-        for(let i=0; i<rows.length; i++) {
-          let map = {}
-          
-          for(let j=0; j<headers.length; j++){
-            map[headers[j]] = rows[i][j] 
-          }
-
-          tableData.push(map)
-          console.log(tableData);
-          
-        }
-      }
-    })
-	ElMessage.success('上传文件成功！');
+  console.log(response)
+  data.headers = response.data.headers
+  data.rows = response.data.rows
+  ElMessage.success('上传文件成功！');
 }
 //上传前校验
-const beforeUpload = (file:any) => {
+const beforeUpload = (file: any) => {
   const isLt2M = file.size / 1024 / 1024 < 10
   if (!isLt2M) {
     ElMessage.error('上传图片大小不能超过 10MB！')
@@ -138,6 +86,61 @@ const beforeUpload = (file:any) => {
     return;
   }
 }
+
+
+
+
+
+// // 上传错误提示
+// const handleError = () => {
+//   ElMessage.error('导入数据失败，请您重新上传！');
+// };
+
+
+
+
+
+
+
+
+// //上传成功提示
+// const dataList = ref()
+// var data = []
+// var tableHeaders = [];
+// var tablerows = [];
+// const handleSuccess = (response, file) => {
+//   dataList.value = response
+//   console.log("文件正在上传")
+//       dataList.value = response.data
+//       tableHeaders = dataList.value.headers;
+//       tablerows = dataList.value.rows;
+//       console.log(tableHeaders)
+//       console.log(tablerows)
+//       // var res = {};
+
+//       // for (let i = 0; i < tablerows.length; i++) {
+//       //   res = {};
+//       //   for (let j = 0; j < tableHeaders.length; j++) {
+//       //     res[tableHeaders[j]] = tablerows[i][j]
+//       //   }
+
+//       //   data.push(res)
+//       // }
+//       console.log(dataList.value)
+//       // 获取数据
+//       console.log("文件上传成功！")
+//     }
+//   })
+//   ElMessage.success('上传文件成功！');
+// }
+
+
+
+
+
+
+
+
 
 </script>
 
