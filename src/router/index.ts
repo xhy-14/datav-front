@@ -1,4 +1,4 @@
-import {createRouter, createWebHistory} from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
   // 路由配置
@@ -17,48 +17,31 @@ const routes = [
       },
       {
         path: '/visual',
-        component: () => import("@/views/visual/index.vue")
+        component: () => import("@/views/visual/index.vue"),
       },
-      
+
       {
         path: '/recent',
         component: () => import("@/views/my/RecentView.vue")
       },
       {
         path: '/my',
-        component: () => import("@/views/my/MyIndexView.vue")
-      },
-      {
-        path: '/workplace',
-        component: () => import("@/views/workplace/index.vue"),
-        redirect: '/workplace/info',
+        redirect: '/my/recent',
+        component: () => import("@/views/my/MyIndexView.vue"),
+        meta: { title: '我的' },
         children: [
           {
-            path: '/workplace/info',
-            component: () => import("@/views/workplace/MyInfo.vue")
+            path: '/my/recent',
+            component: () => import("@/views/my/recent/RecentEdit.vue"),
+            meta: { title: "最近编辑" },
           },
           {
-            path: '/workplace/data/source',
-            component: () => import("@/views/workplace/Datasource.vue")
-          },
-          {
-            path: '/workplace/project',
-            component: () => import("@/views/workplace/Project.vue")
-          },
-          {
-            path: '/workplace/data/tables',
-            component: () => import("@/views/workplace/Tables.vue")
-          },
-          {
-            path: '/workplace/chart',
-            component: () => import("@/views/workplace/Charts.vue")
-          },
-          {
-            path: '/workplace/show',
-            component: () => import("@/views/workplace/Show.vue")
+            path: '/my/file',
+            component: () => import("@/views/my/MyFile.vue"),
+            meta: { title: "我的文件" }
           }
         ]
-      }
+      },
     ]
   },
 
@@ -74,6 +57,7 @@ const routes = [
     path: '/forget',
     component: () => import("@/views/login/ForgetView.vue")
   },
+
 ]
 
 const router = createRouter({
