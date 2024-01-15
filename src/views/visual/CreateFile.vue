@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-table :data="data.rows" style="width: 100%" height="250">
+    <el-table :data="data.rows" style="width: 100%" height="450px">
       <el-table-column v-for="item in data.headers" :prop="item" :label="item">
       </el-table-column>
     </el-table>
@@ -24,13 +24,19 @@
 
 <script lang="ts" setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessageBox, ElMessage, tabNavEmits } from 'element-plus'
-import type { UploadProps, UploadUserFile } from 'element-plus'
-import { getDataAPI } from '@/api/uploadFile/upload'
+import { ElMessage, } from 'element-plus'
+
 import { useUserStore } from '@/store/user'
-import { rowProps } from 'element-plus'
+
 
 const token = useUserStore().userInfo.token
+
+const uploadUrl = "http://112.124.59.107:8080/renren-fast/app/table/data/file"
+
+interface responseData {
+  headers: [],
+  rows: [],
+}
 
 const uploadUrl = "http://112.124.59.107:8080/renren-fast/app/table/data/file"
 

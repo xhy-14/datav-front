@@ -72,6 +72,5 @@ const complite = () => {
 
 .el-steps--vertical {
     height: 70%;
-}
-</style>
+}</style>
   
