@@ -16,7 +16,7 @@
                 <RouterView />
             </div>
             <div v-show="active == 1">2</div>
-            <div v-show="active == 2">3</div>
+            <div v-show="active == 2"><visual /><RouterView /></div>
             <div v-show="active == 3">4</div>
         </el-main>
         <el-button class="next" type="success" v-if="active != 4" @click="next">继续</el-button>
@@ -28,6 +28,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import CreateFile from './CreateFile.vue';
+import visual from './visual.vue';
 const active = ref(0)
 const next = () => {
     console.log(active.value)

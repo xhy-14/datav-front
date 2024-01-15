@@ -16,7 +16,7 @@
         :action="uploadUrl"
         :headers="headers"
         accept=".csv"
-        :before-upload="beforeUpload"
+
         :on-error="handleError"
         :on-success="handleSuccess"
         :show-file-list="false"
@@ -32,12 +32,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from 'vue'
-import { ElMessageBox,ElMessage } from 'element-plus'
-import type { UploadProps, UploadUserFile } from 'element-plus'
+import { ref, onMounted } from 'vue'
+import { ElMessage } from 'element-plus'
 import { getDataAPI } from '@/api/uploadFile/upload'
 import { useUserStore } from '@/store/user' 
-import { rowProps } from 'element-plus'
 
 const token = useUserStore().userInfo.token
 
@@ -72,7 +70,7 @@ onMounted(() => {
   getDataAPI(4).then(response=>{
     if (response.code == "00000") {
 
-    tableHeader = response.data.headers
+    const tableHeader = response.data.headers
     
     console.log(tableHeader);
     
