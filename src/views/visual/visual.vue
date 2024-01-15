@@ -11,8 +11,8 @@
               <note />
             </el-tab-pane>
           </el-tabs>
-
-
+ 
+  
         </div>
       </el-header>
       <el-main>
@@ -67,18 +67,22 @@ const initChart = () => {
 }
 
 const getChilderVal = (currentType: string) => {
+  initChart();
+
   type.value = currentType
   // location.reload();
   document.getElementById('main').removeAttribute("_echarts_instance_");
   document.getElementById('main').innerHTML = "";
   initChart();
+
   console.log(type.value, '123')
 }
 onMounted(() => {
   // 基于准备好的dom，初始化echarts实例
-  console.log(chartInfo)
 
   initChart();
+  console.log(chartInfo)
+
 })
 </script>
   

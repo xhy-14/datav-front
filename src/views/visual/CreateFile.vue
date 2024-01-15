@@ -6,15 +6,15 @@
     </el-table>
     <div v-show="active == 1">
       <el-input v-model="input2" placeholder="https://" style="height: 300px" />
-    </div>
-  </div>
+    </div>  
+  </div>   
   <el-radio-group v-model="tabPosition" style="margin-top: 40px">
     <el-upload :action="uploadUrl" :headers="headers" accept=".csv" :on-error="handleError" :on-success="handleSuccess"
       :show-file-list="false">
       <el-radio-button @Click="fun0" label="上传文件">
         上传文件
       </el-radio-button>
-
+         
     </el-upload>
     <el-radio-button @Click="fun0" label="复制并粘贴">复制并粘贴</el-radio-button>
     <el-radio-button @click="fun1" label="链接外部数据表">链接外部数据表</el-radio-button>
@@ -51,17 +51,9 @@ const token = useUserStore().userInfo.token
 const uploadUrl = "http://112.124.59.107:8080/renren-fast/app/table/data/file"
 
 interface responseData {
-  headers: [],
+  headers: [], 
   rows: [],
 }
-
-const uploadUrl = "http://112.124.59.107:8080/renren-fast/app/table/data/file"
-
-interface responseData {
-  headers: [],
-  rows: [],
-}
-  
 const headers = {
   'token': `${token}`
 };
@@ -96,7 +88,7 @@ const data = reactive<responseData>({
   headers: [],
   rows: []
 
-})
+})    
 
 const handleSuccess = (response, file) => {
   data.headers = response.data.headers;
@@ -134,7 +126,7 @@ watch(
         map[newX] = data.rows[i][newX];
         map[newY] = data.rows[i][newY];
         selectData.push(map);
-      }
+      }  
       let parameter = {};
       parameter["headers"] = [newX, newY];
       parameter["rows"] = selectData;
