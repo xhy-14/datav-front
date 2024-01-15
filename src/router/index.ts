@@ -42,6 +42,37 @@ const routes = [
           }
         ]
       },
+      {
+        path: '/workplace',
+        component: () => import("@/views/workplace/index.vue"),
+        redirect: '/workplace/info',
+        children: [
+          {
+            path: '/workplace/info',
+            component: () => import("@/views/workplace/MyInfo.vue")
+          },
+          {
+            path: '/workplace/data/source',
+            component: () => import("@/views/workplace/Datasource.vue")
+          },
+          {
+            path: '/workplace/project',
+            component: () => import("@/views/workplace/Project.vue")
+          },
+          {
+            path: '/workplace/data/tables',
+            component: () => import("@/views/workplace/Tables.vue")
+          },
+          {
+            path: '/workplace/chart',
+            component: () => import("@/views/workplace/Charts.vue")
+          },
+          {
+            path: '/workplace/show',
+            component: () => import("@/views/workplace/Show.vue")
+          }
+        ]
+      }
     ]
   },
 
