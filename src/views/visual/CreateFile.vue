@@ -1,10 +1,9 @@
 <template>
-  <div>
+  <div  v-show="active == 0">
     <el-table :data="data.rows" style="width: 100%" height="450px">
       <el-table-column v-for="item in data.headers" :prop="item" :label="item">
       </el-table-column>
     </el-table>
-
     <div v-show="active == 1">
       <el-input v-model="input2" placeholder="https://" style="height: 300px" />
     </div>
@@ -19,14 +18,32 @@
     </el-upload>
     <el-radio-button @Click="fun0" label="复制并粘贴">复制并粘贴</el-radio-button>
     <el-radio-button @click="fun1" label="链接外部数据表">链接外部数据表</el-radio-button>
-  </el-radio-group>
+  </el-radio-group> 
+  
+  <div class="header-select">
+    <div>
+      <p>x轴</p>
+      <el-select v-model="xAxis" class="m-2" placeholder="Select" style="width: 240px">
+        <el-option v-for="item in options" :key="item.value" :label="item.value" :value="item.value" />
+      </el-select>
+    </div>
+
+    <div style="margin-left: 10px">
+      <p>y轴</p>
+      <el-select v-model="yAxis" class="m-2" placeholder="Select" style="width: 240px">
+        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+      </el-select>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, watch } from 'vue'
 import { ElMessage, } from 'element-plus'
-
+import { useChartStore } from '@/store/chart'
 import { useUserStore } from '@/store/user'
+import { getChartInfoAPI } from '@/api/chart/chart'
+
 
 
 const token = useUserStore().userInfo.token
@@ -44,7 +61,7 @@ interface responseData {
   headers: [],
   rows: [],
 }
-
+  
 const headers = {
   'token': `${token}`
 };
@@ -60,6 +77,12 @@ const fun1 = () => {
 
 const input2 = ref('')
 
+let options = ref([]);
+let chartType = ref("");
+// x轴
+const xAxis = ref("");
+// y轴
+const yAxis = ref("");
 
 
 
@@ -76,9 +99,17 @@ const data = reactive<responseData>({
 })
 
 const handleSuccess = (response, file) => {
-  console.log(response)
-  data.headers = response.data.headers
-  data.rows = response.data.rows
+  data.headers = response.data.headers;
+  data.rows = response.data.rows;
+  let opt = [];
+  for (let i = 0; i < data.headers.length; i++) {
+    let map = {};
+    map["label"] = data.headers[i];
+    map["value"] = data.headers[i];
+    opt.push(map);
+  }
+  options = opt;
+  console.log(options,"option");
   ElMessage.success('上传文件成功！');
 }
 //上传前校验
@@ -88,13 +119,37 @@ const beforeUpload = (file: any) => {
     ElMessage.error('上传图片大小不能超过 10MB！')
     return;
   }
-  if (fileList.value.length > 1) {
-    ElMessage.error('只支持上传一个文件')
-    return;
-  }
 }
 
 
+
+watch(
+  [() => xAxis.value, () => yAxis.value],
+
+  ([newX, newY]) => {
+      console.log(newX, newY)
+      let selectData = [];
+      for (let i = 0; i < data.rows.length; i++) {
+        let map = {};
+        map[newX] = data.rows[i][newX];
+        map[newY] = data.rows[i][newY];
+        selectData.push(map);
+      }
+      let parameter = {};
+      parameter["headers"] = [newX, newY];
+      parameter["rows"] = selectData;
+      
+      getChartInfoAPI(parameter)
+        .then(res => {
+          if (res.code == "00000") {
+            useChartStore().setChartInfo(res.data)
+            console.log("rows",res.data)
+          }
+        })
+        .catch(err => { });
+    
+  }
+)
 
 
 

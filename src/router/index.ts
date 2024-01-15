@@ -89,6 +89,7 @@ const routes = [
     component: () => import("@/views/login/ForgetView.vue")
   },
 
+
 ]
 
 const router = createRouter({
