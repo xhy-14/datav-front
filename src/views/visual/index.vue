@@ -17,7 +17,9 @@
             </div>
             <div v-show="active == 1">2</div>
             <div v-show="active == 2"><visual /><RouterView /></div>
-            <div v-show="active == 3">4</div>
+            <div v-show="active == 3">
+                <Export />
+                <RouterView /></div>
         </el-main>
         <el-button class="next" type="success" v-if="active != 4" @click="next">继续</el-button>
         <el-button class="next" type="success" v-if="active == 4" @click="complite">完成</el-button>
@@ -29,6 +31,7 @@
 import { ref } from 'vue'
 import CreateFile from './CreateFile.vue';
 import visual from './visual.vue';
+import Export from './ExportChart.vue'
 const active = ref(0)
 const next = () => {
     console.log(active.value)
