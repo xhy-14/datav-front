@@ -1,5 +1,15 @@
 <template>
-  <div>表</div>
+  <div>
+    
+    <div class="config">
+
+    </div>
+
+    <div class="charts">
+
+    </div>
+
+  </div>
 </template>
 
 <script>
