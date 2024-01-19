@@ -1,24 +1,20 @@
 <template>
-  <div id="main"></div>
+  <div id="main">柱状图</div>
 </template>
 
 <script>
-import { lineApi } from "@/api/chart/chart";
+import { PolarBarApi } from "@/api/chart/chart";
 import * as echarts from "echarts";
 import { useChartStore } from "@/store/chart";
 export default {
   data() {
     return {
       parameter: {
-        headers: ["日期", "开盘价"],
+        headers: ["单价", "数量"],
         rows: [
           {
-            最低价: 90,
-            日期: 1.1,
-          },
-          {
-            最低价: 98,
-            日期: 1.2
+            单价: 100,
+            数量: 10
           }
         ]
       },
@@ -30,30 +26,27 @@ export default {
     this.chartStore = useChartStore();
   },
   mounted() {
-    this.bar = echarts.init(document.getElementById("main"));
+    this.bar = echarts.init(document.getElementById("main"))
     this.drawLine();
   },
   methods: {
     async drawLine() {
       let options = null;
       // 获取图表数据
-      await lineApi(this.parameter)
+      await PolarBarApi(this.parameter)
         .then(result => {
-          console.log(result);
           options = result.data;
         })
-        .catch(err => {
-          console.log(err);
-        });
+        .catch(err => {});
       // 基于准备好的dom，初始化echarts实例
       // 绘制图表
-      this.chartStore.setOptions(options);
+      this.chartStore.setOptions(options)
     }
   },
   watch: {
     "chartStore.options": {
       handler(newVal, oldVal) {
-        this.bar.setOption(newVal);
+        this.bar.setOption(newVal)
       },
       deep: true
     }

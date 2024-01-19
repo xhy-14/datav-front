@@ -5,8 +5,8 @@
         <h2>创建图表</h2>
       </div>
       <div class="chart-header-left-button">
-        <el-button type="primary">保存</el-button>
-        <el-button>取消</el-button>
+        <el-button @click="saveChart()" type="primary">保存</el-button>
+        <el-button @click="back()">取消</el-button>
       </div>
     </div>
     <div class="chart-content">
@@ -60,6 +60,10 @@
               <LineConfig v-if="chartType === 'line'"></LineConfig>
               <PieConfig v-if="chartType === 'pie'"></PieConfig>
               <ScatterConfig v-if="chartType === 'scatter'"></ScatterConfig>
+              <RadarConfig v-if="chartType === 'radar'"></RadarConfig>
+              <KLineConfig v-if="chartType == 'k-line'"></KLineConfig>
+              <MoreBarConfig v-if="chartType == 'more-bar'"></MoreBarConfig>
+              <PolarConfig v-if="chartType == 'polar'"></PolarConfig>
             </div>
           </div>
 
@@ -68,7 +72,7 @@
               <el-popover
                 @click="changeChart('line')"
                 placement="top-start"
-                title="Title"
+                title="折线图"
                 :width="200"
                 trigger="hover"
                 content="折线图"
@@ -85,7 +89,7 @@
               <el-popover
                 @click="changeChart('bar')"
                 placement="top-start"
-                title="Title"
+                title="柱状图"
                 :width="200"
                 trigger="hover"
                 content="柱状图"
@@ -101,7 +105,40 @@
 
               <el-popover
                 placement="top-start"
-                title="Title"
+                title="多重柱状图"
+                :width="200"
+                trigger="hover"
+                content="多重柱状图"
+              >
+                <template #reference>
+                  <div @click="changeChart('more-bar')" class="chart-select-item">
+                    <svg class="charts-icon">
+                      <use xlink:href="#icon-charts-more_bar" />
+                    </svg>
+                  </div>
+                </template>
+              </el-popover>
+
+
+              <el-popover
+                placement="top-start"
+                title="极坐标柱状图"
+                :width="200"
+                trigger="hover"
+                content="极坐标柱状图"
+              >
+                <template #reference>
+                  <div @click="changeChart('polar')" class="chart-select-item">
+                    <svg class="charts-icon">
+                      <use xlink:href="#icon-charts-polar" />
+                    </svg>
+                  </div>
+                </template>
+              </el-popover>
+
+              <el-popover
+                placement="top-start"
+                title="饼状图"
                 :width="200"
                 trigger="hover"
                 content="饼状图"
@@ -117,7 +154,7 @@
 
               <el-popover
                 placement="top-start"
-                title="Title"
+                title="散点图"
                 :width="200"
                 trigger="hover"
                 content="散点图"
@@ -131,12 +168,48 @@
                 </template>
               </el-popover>
 
+              <el-popover
+                placement="top-start"
+                title="雷达图"
+                :width="200"
+                trigger="hover"
+                content="雷达图"
+              >
+                <template #reference>
+                  <div @click="changeChart('radar')" class="chart-select-item">
+                    <svg class="charts-icon">
+                      <use xlink:href="#icon-charts-radar" />
+                    </svg>
+                  </div>
+                </template>
+              </el-popover>
+
+              <el-popover
+                placement="top-start"
+                title="k线图"
+                :width="200"
+                trigger="hover"
+                content="k线图"
+              >
+                <template #reference>
+                  <div @click="changeChart('k-line')" class="chart-select-item">
+                    <svg class="charts-icon">
+                      <use xlink:href="#icon-charts-kline" />
+                    </svg>
+                  </div>
+                </template>
+              </el-popover>
+
             </div>
             <div class="chart-view">
               <Bar v-if="chartType == 'bar'"></Bar>
               <Line v-if="chartType == 'line'"></Line>
               <Pie v-if="chartType == 'pie'"></Pie>
               <Scatter v-if="chartType == 'scatter'"></Scatter>
+              <Radar v-if="chartType == 'radar'"></Radar>
+              <KLine v-if="chartType == 'k-line'"></KLine>
+              <MoreBar v-if="chartType == 'more-bar'"></MoreBar>
+              <Polar v-if="chartType == 'polar'"></Polar>
             </div>
           </div>
         </div>
@@ -147,6 +220,9 @@
 
 <script>
 
+/**
+ * 图表组件
+ */
 import Bar from "@/components/chart/Bar.vue";
 import BarConfig from "@/components/chart/BarConfig.vue";
 import Line from "@/components/chart/Line.vue";
@@ -155,6 +231,15 @@ import Pie from "@/components/chart/Pie.vue";
 import PieConfig from "@/components/chart/PieConfig.vue";
 import Scatter from "@/components/chart/Scatter.vue";
 import ScatterConfig from "@/components/chart/ScatterConfig.vue";
+import Radar from "@/components/chart/Radar.vue";
+import RadarConfig from "@/components/chart/RadarConfig.vue";
+import KLine from "@/components/chart/KLine.vue";
+import KLineConfig from "@/components/chart/KLineConfig.vue";
+import MoreBar from "@/components/chart/MoreBar.vue";
+import MoreBarConfig from "@/components/chart/MoreBarConfig.vue";
+import Polar from "@/components/chart/Polar.vue";
+import PolarConfig from "@/components/chart/PolarConfig.vue";
+
 import { myDatasetApi, getDatasetApi } from "@/api/table/index.ts";
 import { useChartStore } from "@/store/chart.ts";
 
@@ -167,7 +252,15 @@ export default {
     Line,
     LineConfig,
     Scatter,
-    ScatterConfig
+    ScatterConfig,
+    Radar,
+    RadarConfig,
+    KLine,
+    KLineConfig,
+    MoreBar,
+    MoreBarConfig,
+    Polar,
+    PolarConfig,
   },
   data() {
     return {
@@ -194,6 +287,9 @@ export default {
     },
     changeChart(type) {
       this.chartType = type;
+    },
+    back() {
+      this.$router.replace("/workplace/chart")
     }
   },
   watch: {

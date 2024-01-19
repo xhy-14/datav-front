@@ -3,22 +3,28 @@
 </template>
 
 <script>
-import { lineApi } from "@/api/chart/chart";
+import { kLineApi } from "@/api/chart/chart";
 import * as echarts from "echarts";
 import { useChartStore } from "@/store/chart";
 export default {
   data() {
     return {
       parameter: {
-        headers: ["日期", "开盘价"],
+        headers: ["日期", "开盘价", "最高价", "最低价", "收盘价"],
         rows: [
           {
             最低价: 90,
             日期: 1.1,
+            最高价: 50,
+            开盘价: 100,
+            收盘价: 60
           },
           {
             最低价: 98,
-            日期: 1.2
+            日期: 1.2,
+            最高价: 115,
+            开盘价: 106,
+            收盘价: 108
           }
         ]
       },
@@ -37,14 +43,11 @@ export default {
     async drawLine() {
       let options = null;
       // 获取图表数据
-      await lineApi(this.parameter)
+      await kLineApi(this.parameter)
         .then(result => {
-          console.log(result);
           options = result.data;
         })
-        .catch(err => {
-          console.log(err);
-        });
+        .catch(err => {});
       // 基于准备好的dom，初始化echarts实例
       // 绘制图表
       this.chartStore.setOptions(options);
@@ -53,6 +56,7 @@ export default {
   watch: {
     "chartStore.options": {
       handler(newVal, oldVal) {
+        console.log(newVal);
         this.bar.setOption(newVal);
       },
       deep: true

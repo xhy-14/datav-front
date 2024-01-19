@@ -8,8 +8,8 @@
     <div style="margin-top: 20px">
       <div v-if="select == 'data'" class="chart-data">
         <div>
-          <h4>x轴</h4>
-          <div class="x-col" @dragover="dealX($event)" @drop="handleDropX($event)">
+          <h4>指标轴</h4>
+          <div class="x-col" @dragover="deal($event)" @drop="handleDropX($event)">
             <div ref="x-box" class="x-box" v-show="xExists">
               <div ref="x" class="header"></div>
               <div @click="deleteXCol()">
@@ -20,19 +20,20 @@
             </div>
           </div>
         </div>
-
         <div>
-          <h4>y轴</h4>
-          <div class="y-col" @dragover="dealY($event)" @drop="handleDropY($event)">
-            <div ref="y-box" class="y-box" v-show="yExists">
-              <div ref="y" class="header"></div>
-              <div @click="deleteYCol()">
-                <svg class="close-icon">
-                  <use xlink:href="#icon-charts-close" />
-                </svg>
+          <h4>数据列</h4>
+          <el-scrollbar height="380px">
+            <div class="select-clonums" @drop="handleDrop($event)" @dragover="deal($event)">
+              <div v-for="(item, index) in dataName" class="data-col">
+                <div class="header">{{ item }}</div>
+                <div @click="deleteData(index)">
+                  <svg class="close-icon">
+                    <use xlink:href="#icon-charts-close" />
+                  </svg>
+                </div>
               </div>
             </div>
-          </div>
+          </el-scrollbar>
         </div>
       </div>
 
@@ -67,29 +68,15 @@
 
             <el-collapse-item class="title" name="2">
               <template #title>
-                <h2>x轴</h2>
+                <h2>图标字体</h2>
               </template>
               <div>
-                <h3>x轴名</h3>
-                <el-input v-model="options.xAxis.name" class="w-50 m-2" placeholder="Pick a date" />
+                <h3 class="ml-3 w-35 text-gray-600 inline-flex items-center">字体颜色</h3>
+                <el-color-picker v-model="options.textStyle.color" />
               </div>
-
               <div>
-                <h3 class="ml-3 w-35 text-gray-600 inline-flex items-center">x轴刻度</h3>
-                <el-button @click="changeXPre('category')">类别</el-button>
-                <el-button @click="changeXPre('log')">对数</el-button>
-                <el-button @click="changeXPre('time')">时间</el-button>
-                <el-button @click="changeXPre('value')">值</el-button>
-              </div>
-            </el-collapse-item>
-
-            <el-collapse-item class="title" name="3">
-              <template #title>
-                <h2>y标题</h2>
-              </template>
-              <div>
-                <h3>y轴名</h3>
-                <el-input v-model="options.yAxis.name" class="w-50 m-2" placeholder="Pick a date" />
+                <h3 class="ml-3 w-35 text-gray-600 inline-flex items-center">字体大小</h3>
+                <el-slider v-model="options.textStyle.fontSize" />
               </div>
             </el-collapse-item>
           </el-collapse>
@@ -101,7 +88,7 @@
 
 <script>
 import { useChartStore } from "@/store/chart";
-import { lineApi } from "@/api/chart/chart";
+import { moreBarApi } from "@/api/chart/chart";
 export default {
   name: "Chart",
   data() {
@@ -109,30 +96,34 @@ export default {
       chartStore: null,
       select: "data",
       xExists: false,
-      yExists: false,
+      dataExists: false,
       xCol: "",
-      yCol: "",
+      dataName: [],
       options: {
-        xAxis: {
-          type: "category",
-          data: [],
-          name: "x标题"
-        },
-        yAxis: {
-          type: "value",
-          name: "y坐标轴"
-        },
         title: {
           text: "标题",
           textStyle: {
             color: "black",
             fontSize: 18,
-            fontFamily: null
-          }
+            fontFamily: "monspace"
+          },
+          left: null
+        },
+        textStyle: {
+          color: "black",
+          fontSize: 18,
+          fontFamily: "monspace"
+        },
+        legend: {
+          show: true
+        },
+        radar: {
+          indicator: []
         },
         series: [
           {
-            type: "line",
+            name: "",
+            type: "radar",
             data: []
           }
         ]
@@ -146,10 +137,7 @@ export default {
     handleSelect(key, keyPath) {
       this.select = key;
     },
-    dealX(event) {
-      event.preventDefault();
-    },
-    dealY(event) {
+    deal($event) {
       event.preventDefault();
     },
     handleDropX(event, item) {
@@ -157,48 +145,63 @@ export default {
       this.xCol = event.dataTransfer.getData("header");
       this.xExists = true;
     },
-    handleDropY(event, item) {
-      this.$refs.y.innerHTML = event.dataTransfer.getData("header");
-      this.yCol = event.dataTransfer.getData("header");
-      this.yExists = true;
+    handleDrop(event) {
+      let tmp = this.dataName;
+      tmp.push(event.dataTransfer.getData("header"))
+      this.dataName = tmp;
     },
     deleteXCol() {
       this.xExists = false;
     },
-    deleteYCol() {
-      this.yExists = false;
+    deleteData(index) {
+      let tmp = this.dataName;
+      tmp.splice(index, 1);
+      this.dataName = tmp;
     },
     /**
      * 处理数据
      * @return {[any]} [处理后的数据]
      */
-    dealData(column) {
-      let data = this.chartStore.data;
-      let selectData = [];
+    dealData() {
+      let data = this.chartStore.data
+      let selectData = []
       for (let i = 0; i < data.rows.length; i++) {
-        let map = {};
-        map[this.xCol] = data.rows[i][this.xCol];
-        map[this.yCol] = data.rows[i][this.yCol];
-        selectData.push(map);
+        let map = {}
+        map[this.xCol] = data.rows[i][this.xCol]
+        for(let item of this.dataName) {
+          map[item] = data.rows[i][item]
+        }
+        selectData.push(map)
       }
-      let parameter = {};
-      parameter["headers"] = [this.xCol, this.yCol];
-      parameter["rows"] = selectData;
+      let parameter = {}
+      let headerTmp = []
+      headerTmp.push(this.xCol)
+      for(let item of this.dataName) {
+        headerTmp.push(item)
+      }
+      parameter["headers"] = headerTmp
+      parameter["rows"] = selectData
       console.log(parameter);
-      lineApi(parameter)
+      moreBarApi(parameter)
         .then(result => {
+          console.log(result.data);
           this.options = result.data;
         })
         .catch(err => {});
     },
     /**
      * 改变标题位置
+     * @param  {[type]} type [description]
      */
     changeTitlePos(type) {
       this.options.title.left = type;
     },
-    changeXPre(type) {
-      this.options.xAxis.type = type;
+    /**
+     * 改变图列位置
+     * @param {*} type
+     */
+    changesymbolPos(type) {
+      this.options.legend.left = type;
     }
   },
   watch: {
@@ -214,18 +217,10 @@ export default {
       },
       deep: true
     },
-    xCol: {
+    dataName: {
       handler(newVal, oldVal) {
-        if (this.yCol != "") {
-          this.dealData();
-        }
-      },
-      deep: true
-    },
-    yCol: {
-      handler(newVal, oldVal) {
-        if (this.xCol != "") {
-          this.dealData();
+        if (this.dataName.length >= 1 && this.xCol != "") { 
+          this.dealData()
         }
       },
       deep: true
@@ -252,6 +247,8 @@ export default {
 }
 
 .chart-data {
+  width: 100%;
+  height: 100%;
   padding: 10px;
 }
 
@@ -298,5 +295,24 @@ export default {
   height: 36px;
   text-align: center;
   color: white;
+}
+
+.select-clonums {
+  height: 380px;
+  background-color: rgb(239, 242, 245);
+}
+.select-clonums {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+}
+.data-col {
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  background-color: rgb(105, 156, 223);
+  margin-top: 5px;
+  border-radius: 10px;
 }
 </style>

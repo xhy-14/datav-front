@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { lineApi } from "@/api/chart/chart";
+import { barApi } from "@/api/chart/chart";
 import * as echarts from "echarts";
 import { useChartStore } from "@/store/chart";
 export default {
@@ -33,7 +33,7 @@ export default {
     async drawLine() {
       let options = null;
       // 获取图表数据
-      await lineApi(this.parameter)
+      await barApi(this.parameter)
         .then(result => {
           options = result.data;
         })

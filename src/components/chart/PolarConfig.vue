@@ -75,7 +75,7 @@
 
 <script>
 import { useChartStore } from "@/store/chart";
-import { barApi } from "@/api/chart/chart"
+import { PolarBarApi } from "@/api/chart/chart"
 export default {
   name: "Chart",
   data() {
@@ -106,7 +106,7 @@ export default {
         },
         series: [
           {
-            type: "line",
+            type: "polar",
             data: []
           }
         ]
@@ -160,7 +160,7 @@ export default {
       parameter["headers"] = [this.xCol, this.yCol];
       parameter["rows"] = selectData;
       console.log(parameter);
-      barApi(parameter).then((result) => {
+      PolarBarApi(parameter).then((result) => {
         this.options = result.data;
       }).catch((err) => {
         
