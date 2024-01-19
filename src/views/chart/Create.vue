@@ -12,12 +12,12 @@
     <div class="chart-content">
       <div class="data-select">
         <div class="dataset-select">
-          <el-select v-model="value" class="m-2" placeholder="请选择数据集" style="border:none">
+          <el-select v-model="selectDataset" class="m-2" placeholder="请选择数据集" style="border:none">
             <el-option
-              v-for="item in options"
+              v-for="item in myDataset"
               :key="item.id"
               :label="item.name"
-              :value="item.name"
+              :value="item.id"
             />
           </el-select>
         </div>
@@ -27,135 +27,21 @@
             <el-icon style="margin-left: 10px">
               <Grid />
             </el-icon>
-            <h4 style="margin-left: 5px">全国超市订单数据</h4>
+            <h4 style="margin-left: 5px" v-html="currentDatasetName"></h4>
           </div>
 
           <el-scrollbar style="height: 94%;">
-            <div class="dataset-col">
+            <div
+              v-for="(item, index) in currentDataset.headers"
+              class="dataset-col"
+              draggable="true"
+              @dragstart="dragStart($event, item)"
+            >
               <div class="dataset-col-item">
                 <el-icon style="margin-left: 25px">
                   <Discount />
                 </el-icon>
-                <p style="margin-left: 5px">字段一</p>
-              </div>
-
-              <div class="dataset-col-item">
-                <el-icon style="margin-left: 25px">
-                  <Discount />
-                </el-icon>
-                <p style="margin-left: 5px">字段一</p>
-              </div>
-
-              <div class="dataset-col-item">
-                <el-icon style="margin-left: 25px">
-                  <Discount />
-                </el-icon>
-                <p style="margin-left: 5px">字段一</p>
-              </div>
-
-              <div class="dataset-col-item">
-                <el-icon style="margin-left: 25px">
-                  <Discount />
-                </el-icon>
-                <p style="margin-left: 5px">字段一</p>
-              </div>
-
-              <div class="dataset-col-item">
-                <el-icon style="margin-left: 25px">
-                  <Discount />
-                </el-icon>
-                <p style="margin-left: 5px">字段一</p>
-              </div>
-
-              <div class="dataset-col-item">
-                <el-icon style="margin-left: 25px">
-                  <Discount />
-                </el-icon>
-                <p style="margin-left: 5px">字段一</p>
-              </div>
-
-              <div class="dataset-col-item">
-                <el-icon style="margin-left: 25px">
-                  <Discount />
-                </el-icon>
-                <p style="margin-left: 5px">字段一</p>
-              </div>
-
-              <div class="dataset-col-item">
-                <el-icon style="margin-left: 25px">
-                  <Discount />
-                </el-icon>
-                <p style="margin-left: 5px">字段一</p>
-              </div>
-
-              <div class="dataset-col-item">
-                <el-icon style="margin-left: 25px">
-                  <Discount />
-                </el-icon>
-                <p style="margin-left: 5px">字段一</p>
-              </div>
-
-              <div class="dataset-col-item">
-                <el-icon style="margin-left: 25px">
-                  <Discount />
-                </el-icon>
-                <p style="margin-left: 5px">字段一</p>
-              </div>
-
-              <div class="dataset-col-item">
-                <el-icon style="margin-left: 25px">
-                  <Discount />
-                </el-icon>
-                <p style="margin-left: 5px">字段一</p>
-              </div>
-
-              <div class="dataset-col-item">
-                <el-icon style="margin-left: 25px">
-                  <Discount />
-                </el-icon>
-                <p style="margin-left: 5px">字段一</p>
-              </div>
-
-              <div class="dataset-col-item">
-                <el-icon style="margin-left: 25px">
-                  <Discount />
-                </el-icon>
-                <p style="margin-left: 5px">字段一</p>
-              </div>
-
-              <div class="dataset-col-item">
-                <el-icon style="margin-left: 25px">
-                  <Discount />
-                </el-icon>
-                <p style="margin-left: 5px">字段一</p>
-              </div>
-
-              <div class="dataset-col-item">
-                <el-icon style="margin-left: 25px">
-                  <Discount />
-                </el-icon>
-                <p style="margin-left: 5px">字段一</p>
-              </div>
-
-              <div class="dataset-col-item">
-                <el-icon style="margin-left: 25px">
-                  <Discount />
-                </el-icon>
-                <p style="margin-left: 5px">字段一</p>
-              </div>
-
-              <div class="dataset-col-item">
-                <el-icon style="margin-left: 25px">
-                  <Discount />
-                </el-icon>
-                <p style="margin-left: 5px">字段一</p>
-              </div>
-
-              <div class="dataset-col-item">
-                <el-icon style="margin-left: 25px">
-                  <Discount />
-                </el-icon>
-                <p style="margin-left: 5px">字段一</p>
+                <p style="margin-left: 5px">{{ item }}</p>
               </div>
             </div>
           </el-scrollbar>
@@ -166,18 +52,21 @@
         <div class="create-chart-view">
           <div class="create-chart-view-left">
             <div class="create-chart-view-left-title">
-              <p>配置图表</p>
+              <div>设置你的图表</div>
             </div>
 
             <div class="create-chart-view-left-config">
-              <p>属性</p>
+              <BarConfig v-if="chartType === 'bar'"></BarConfig>
+              <LineConfig v-if="chartType === 'line'"></LineConfig>
+              <PieConfig v-if="chartType === 'pie'"></PieConfig>
+              <ScatterConfig v-if="chartType === 'scatter'"></ScatterConfig>
             </div>
           </div>
 
           <div class="create-chart-view-right">
             <div class="chart-select">
-              
               <el-popover
+                @click="changeChart('line')"
                 placement="top-start"
                 title="Title"
                 :width="200"
@@ -185,7 +74,24 @@
                 content="折线图"
               >
                 <template #reference>
-                  <div class="chart-select-item">
+                  <div @click="changeChart('line')" class="chart-select-item">
+                    <svg class="charts-icon">
+                      <use xlink:href="#icon-charts-line" />
+                    </svg>
+                  </div>
+                </template>
+              </el-popover>
+
+              <el-popover
+                @click="changeChart('bar')"
+                placement="top-start"
+                title="Title"
+                :width="200"
+                trigger="hover"
+                content="柱状图"
+              >
+                <template #reference>
+                  <div @click="changeChart('bar')" class="chart-select-item">
                     <svg class="charts-icon">
                       <use xlink:href="#icon-charts-bar" />
                     </svg>
@@ -198,12 +104,12 @@
                 title="Title"
                 :width="200"
                 trigger="hover"
-                content="折线图"
+                content="饼状图"
               >
                 <template #reference>
-                  <div class="chart-select-item">
+                  <div @click="changeChart('pie')" class="chart-select-item">
                     <svg class="charts-icon">
-                      <use xlink:href="#icon-charts-bar" />
+                      <use xlink:href="#icon-charts-pie" />
                     </svg>
                   </div>
                 </template>
@@ -214,179 +120,24 @@
                 title="Title"
                 :width="200"
                 trigger="hover"
-                content="折线图"
+                content="散点图"
               >
                 <template #reference>
-                  <div class="chart-select-item">
+                  <div @click="changeChart('scatter')" class="chart-select-item">
                     <svg class="charts-icon">
-                      <use xlink:href="#icon-charts-bar" />
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-
-              <el-popover
-                placement="top-start"
-                title="Title"
-                :width="200"
-                trigger="hover"
-                content="折线图"
-              >
-                <template #reference>
-                  <div class="chart-select-item">
-                    <svg class="charts-icon">
-                      <use xlink:href="#icon-charts-bar" />
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-
-              <el-popover
-                placement="top-start"
-                title="Title"
-                :width="200"
-                trigger="hover"
-                content="折线图"
-              >
-                <template #reference>
-                  <div class="chart-select-item">
-                    <svg class="charts-icon">
-                      <use xlink:href="#icon-charts-bar" />
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-
-              <el-popover
-                placement="top-start"
-                title="Title"
-                :width="200"
-                trigger="hover"
-                content="折线图"
-              >
-                <template #reference>
-                  <div class="chart-select-item">
-                    <svg class="charts-icon">
-                      <use xlink:href="#icon-charts-bar" />
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-
-              <el-popover
-                placement="top-start"
-                title="Title"
-                :width="200"
-                trigger="hover"
-                content="折线图"
-              >
-                <template #reference>
-                  <div class="chart-select-item">
-                    <svg class="charts-icon">
-                      <use xlink:href="#icon-charts-bar" />
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-
-              <el-popover
-                placement="top-start"
-                title="Title"
-                :width="200"
-                trigger="hover"
-                content="折线图"
-              >
-                <template #reference>
-                  <div class="chart-select-item">
-                    <svg class="charts-icon">
-                      <use xlink:href="#icon-charts-bar" />
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-
-              <el-popover
-                placement="top-start"
-                title="Title"
-                :width="200"
-                trigger="hover"
-                content="折线图"
-              >
-                <template #reference>
-                  <div class="chart-select-item">
-                    <svg class="charts-icon">
-                      <use xlink:href="#icon-charts-bar" />
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-
-              <el-popover
-                placement="top-start"
-                title="Title"
-                :width="200"
-                trigger="hover"
-                content="折线图"
-              >
-                <template #reference>
-                  <div class="chart-select-item">
-                    <svg class="charts-icon">
-                      <use xlink:href="#icon-charts-bar" />
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-
-              <el-popover
-                placement="top-start"
-                title="Title"
-                :width="200"
-                trigger="hover"
-                content="折线图"
-              >
-                <template #reference>
-                  <div class="chart-select-item">
-                    <svg class="charts-icon">
-                      <use xlink:href="#icon-charts-bar" />
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-
-              <el-popover
-                placement="top-start"
-                title="Title"
-                :width="200"
-                trigger="hover"
-                content="折线图"
-              >
-                <template #reference>
-                  <div class="chart-select-item">
-                    <svg class="charts-icon">
-                      <use xlink:href="#icon-charts-bar" />
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-
-              <el-popover
-                placement="top-start"
-                title="Title"
-                :width="200"
-                trigger="hover"
-                content="折线图"
-              >
-                <template #reference>
-                  <div class="chart-select-item">
-                    <svg class="charts-icon">
-                      <use xlink:href="#icon-charts-bar" />
+                      <use xlink:href="#icon-charts-scatter" />
                     </svg>
                   </div>
                 </template>
               </el-popover>
 
             </div>
-            <div class="chart-view"></div>
+            <div class="chart-view">
+              <Bar v-if="chartType == 'bar'"></Bar>
+              <Line v-if="chartType == 'line'"></Line>
+              <Pie v-if="chartType == 'pie'"></Pie>
+              <Scatter v-if="chartType == 'scatter'"></Scatter>
+            </div>
           </div>
         </div>
       </div>
@@ -395,21 +146,64 @@
 </template>
 
 <script>
+
+import Bar from "@/components/chart/Bar.vue";
+import BarConfig from "@/components/chart/BarConfig.vue";
+import Line from "@/components/chart/Line.vue";
+import LineConfig from "@/components/chart/LineConfig.vue";
+import Pie from "@/components/chart/Pie.vue";
+import PieConfig from "@/components/chart/PieConfig.vue";
+import Scatter from "@/components/chart/Scatter.vue";
+import ScatterConfig from "@/components/chart/ScatterConfig.vue";
+import { myDatasetApi, getDatasetApi } from "@/api/table/index.ts";
+import { chartStore } from "@/store/chart.ts";
+
 export default {
+  components: {
+    Bar,
+    BarConfig,
+    Pie,
+    PieConfig,
+    Line,
+    LineConfig,
+    Scatter,
+    ScatterConfig
+  },
   data() {
     return {
-      options: [
-        {
-          id: 1,
-          name: "数据表一"
-        },
-        {
-          id: 2,
-          name: "数据表二"
-        }
-      ],
-      value: "请选择数据集"
+      myDataset: [],
+      currentDataset: {},
+      selectDataset: "请选择数据集",
+      currentDatasetName: "请选择数据集",
+      chartStore: null,
+      chartType: "bar"
     };
+  },
+  mounted() {
+    // 获取我的数据集
+    this.chartStore = chartStore();
+    myDatasetApi()
+      .then(result => {
+        this.myDataset = result.data;
+      })
+      .catch(err => {});
+  },
+  methods: {
+    dragStart(event, header) {
+      event.dataTransfer.setData("header", header);
+    },
+    changeChart(type) {
+      this.chartType = type;
+    }
+  },
+  watch: {
+    selectDataset(newVal, oldVal) {
+      getDatasetApi(this.selectDataset).then(res => {
+        this.currentDataset = res.data.data;
+        this.currentDatasetName = res.data.name;
+        this.chartStore.saveData(res.data.data);
+      });
+    }
   }
 };
 </script>
@@ -512,6 +306,9 @@ export default {
 .create-chart-view-left-title {
   height: 10%;
   background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .create-chart-view-left-config {
