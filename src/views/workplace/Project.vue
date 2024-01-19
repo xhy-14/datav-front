@@ -248,6 +248,7 @@ export default {
 }
 </script>
 
+<<<<<<< HEAD
 <style scoped>
 .con {
   height: 100%;
@@ -326,3 +327,7 @@ export default {
   margin-top: 10px;
 }
 </style>
+=======
+<style>
+</style>
+>>>>>>> 5d6ef0e724174ffdc466f2b50903b793ed65d280

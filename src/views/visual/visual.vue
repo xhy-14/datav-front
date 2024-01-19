@@ -8,7 +8,7 @@
               <chooseChart @currentType="getChilderVal" />
             </el-tab-pane>
             <el-tab-pane label="注释">
-              <note />
+              <note @notes="getNotes" />
             </el-tab-pane>
           </el-tabs>
 
@@ -24,71 +24,94 @@
 </template>
   
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, nextTick } from 'vue'
 import chooseChart from './visualSteps/chooseChart.vue'
 import note from './visualSteps/note.vue'
 import * as echarts from 'echarts';
+import { useChartStore } from '@/store/chart'
+
+
+const label = {
+            show: true,
+            formatter: [
+              'Plain text',
+            ],
+            position: 'top',
+            distance: 10,
+            padding: 10,
+            color: '#000',
+            fontSize: 20,
+            lineHeight: 30,
+          }
+const chartInfo = useChartStore().chartInfo.info
+
 
 const type = ref('pie')
 const data = ref([])
 
 const tabPosition = ref('left')
 const initChart = () => {
-  var myChart = echarts.init(document.getElementById('main'));
-  // 绘制图表
-  var option = {
-    title: {
-      text: 'ECharts 入门示例'
-    },
-    tooltip: {},
-    xAxis: {
-      data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
-    },
-    yAxis: {},
-    series: [
-      {
-        name: '销量',
-        type: type.value,
-        data: [5, 20, 36, 10, 10, 20]
-      }
-    ]
-  }
-  const option_pie = {
-    series: [
-      {
-        type: 'pie',
-        data: [
-          {
-            value: 335,
-            name: ''
-          },
-          {
-            value: 234,
-            name: ''
-          },
-          {
-            value: 1548,
-            name: ''
-          }
-        ]
-      }
-    ]
-  };
-  if (type.value == 'pie') { myChart.setOption(option_pie); }
-  else { myChart.setOption(option); }
+  nextTick(() => {
+    var myChart = echarts.init(document.getElementById('main'));
+    // 绘制图表
+    var option = chartInfo
+
+    console.log("option", option)
+    const option_pie = {
+      series: [
+        {
+          type: 'pie',
+          
+          data: [
+            {
+              value: 335,
+              name: '1'
+            },
+            {
+              value: 234,
+              name: '2'
+            },
+            {
+              value: 1548,
+              name: '3'
+            }
+          ]
+        }
+      ]
+    };
+    if (type.value == 'pie') { myChart.setOption(option_pie); }
+    else {
+      console.log("chartInfo+++", chartInfo)
+      option.series[0].type = type.value
+      option.series[0].label = label
+      myChart.setOption(option);
+    }
+    useChartStore().setChartInfo(option)
+  })
+
 }
 
 const getChilderVal = (currentType: string) => {
+
   type.value = currentType
   // location.reload();
   document.getElementById('main').removeAttribute("_echarts_instance_");
   document.getElementById('main').innerHTML = "";
   initChart();
+
   console.log(type.value, '123')
+}
+const getNotes = (notes: any) => {
+  chartInfo.title.text = notes.title
+  document.getElementById('main').removeAttribute("_echarts_instance_");
+  document.getElementById('main').innerHTML = "";
+  initChart();
 }
 onMounted(() => {
   // 基于准备好的dom，初始化echarts实例
-  initChart();
+  initChart()
+  console.log(chartInfo)
+
 })
 </script>
   

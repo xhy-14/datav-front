@@ -109,6 +109,7 @@ const rules = reactive<FormRules<RuleForm>>({
     loginAPI(ruleForm).then(function (response) {
       console.log(response.data);
       if (response.code == "00000") {
+        localStorage.setItem('token', response.data.token)
         useUserStore().setUserInfo(response.data.user.name,response.data.user.mobile,response.data.token)
         router.push("/")
       }

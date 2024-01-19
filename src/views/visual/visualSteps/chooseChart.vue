@@ -41,7 +41,13 @@
 </template>
       
 <script lang="ts" setup>
+import { useChartStore} from '@/store/chart'
+import { onMounted } from 'vue';
 
+const data = useChartStore().chartInfo
+onMounted(() => {
+    console.log(data)
+})
 const emits = defineEmits(['currentType'])
 const chooseChart = (type: string) => {
     emits('currentType', type);

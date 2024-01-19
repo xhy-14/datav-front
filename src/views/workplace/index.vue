@@ -1,17 +1,14 @@
 <template>
-  <div>
+  <div class="workplace">
     <div class="workplace-box">
       <div class="workplace-menu">
         <el-menu
           default-active="/workplace/info"
           class="el-menu-vertical-demo"
-          :collapse="isCollapse"
-          @open="handleOpen"
-          @close="handleClose"
-          router="true"
+          :router="true"
         >
           <el-menu-item index="/workplace/info">
-            <el-icon :size="size" :color="color">
+            <el-icon>
               <Edit />
             </el-icon>我的信息
           </el-menu-item>
@@ -54,23 +51,45 @@
 export default {
   name: "Workplace",
   data() {
-    return {};
+    return {
+    };
   },
-  methods: {}
+  methods: {
+  }
 };
 </script>
 
 <style>
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
-  min-height: 525px;
+  min-height: 663px;
+  border-radius: 5px;
+  font-size: 36px;
+  align-items: center;
+}
+
+.workplace {
+  background-color: #f1f1f1;
 }
 
 .workplace-box {
   width: 100%;
   display: grid;
+  height: 100%;
   grid-template:
     "menu content" 1fr
     / 14% 1fr;
+}
+
+.workplace-content {
+  margin-top: 5px;
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.workplace-menu {
+  margin-top: 5px;
 }
 </style>
