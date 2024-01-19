@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import { chartStore } from "@/store/chart";
+import { useChartStore } from "@/store/chart";
 import { lineApi } from "@/api/chart/chart";
 export default {
   name: "Chart",
@@ -140,7 +140,7 @@ export default {
     };
   },
   mounted() {
-    this.chartStore = chartStore();
+    this.chartStore = useChartStore();
   },
   methods: {
     handleSelect(key, keyPath) {

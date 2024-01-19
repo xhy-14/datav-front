@@ -156,7 +156,7 @@ import PieConfig from "@/components/chart/PieConfig.vue";
 import Scatter from "@/components/chart/Scatter.vue";
 import ScatterConfig from "@/components/chart/ScatterConfig.vue";
 import { myDatasetApi, getDatasetApi } from "@/api/table/index.ts";
-import { chartStore } from "@/store/chart.ts";
+import { useChartStore } from "@/store/chart.ts";
 
 export default {
   components: {
@@ -181,7 +181,7 @@ export default {
   },
   mounted() {
     // 获取我的数据集
-    this.chartStore = chartStore();
+    this.chartStore = useChartStore();
     myDatasetApi()
       .then(result => {
         this.myDataset = result.data;

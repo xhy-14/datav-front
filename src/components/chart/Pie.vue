@@ -5,7 +5,7 @@
 <script>
 import { pieApi } from "@/api/chart/chart";
 import * as echarts from "echarts";
-import { chartStore } from "@/store/chart";
+import { useChartStore } from "@/store/chart";
 export default {
   data() {
     return {
@@ -23,7 +23,7 @@ export default {
     };
   },
   created() {
-    this.chartStore = chartStore();
+    this.chartStore = useChartStore();
   },
   mounted() {
     this.bar = echarts.init(document.getElementById("main"))
