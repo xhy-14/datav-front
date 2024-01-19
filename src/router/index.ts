@@ -53,7 +53,7 @@ const routes = [
           },
           {
             path: '/workplace/data/source',
-            component: () => import("@/views/workplace/Datasource.vue")
+            component: () => import("@/views/workplace/DataSource.vue")
           },
           {
             path: '/workplace/project',
@@ -95,6 +95,10 @@ const routes = [
   {
     path: '/chart',
     component: () => import("@/views/chart/Create.vue"),
+  },
+  {
+    path: '/dashboard',
+    component: () => import("@/views/workplace/mergeChart.vue")
   }
 ]
 

@@ -62,13 +62,15 @@ export default {
 <style>
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
-  min-height: 663px;
+  height: 100%;
   border-radius: 5px;
   font-size: 36px;
   align-items: center;
 }
 
 .workplace {
+  width: 100%;
+  height: 90.5%;
   background-color: #f1f1f1;
 }
 
@@ -91,5 +93,6 @@ export default {
 
 .workplace-menu {
   margin-top: 5px;
+  height: 100%;
 }
 </style>

@@ -1,8 +1,8 @@
 <template>
   <div class="data-source">
     <div class="data-source-view">
-      <div class="table">
-        <el-scrollbar height="650px">
+      <div class="table" height="700px">
+        <el-scrollbar height="700px">
           <el-menu class="database">
             <el-sub-menu>
               <template #title>
@@ -18,14 +18,27 @@
           </el-menu>
         </el-scrollbar>
       </div>
-      <div class="sql-excute"></div>
+      
+      <div class="sql-excute">
+        <v-ace-editor class="editor"
+          v-model:value="content"
+          @init="editorInit"
+          lang="html"
+          theme="chrome"
+          style="height: 400px"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { getDatabaseByIDApi } from "@/api/datasource/index.ts";
+import { VAceEditor } from "vue3-ace-editor";
 export default {
+  components: {
+    VAceEditor
+  },
   data() {
     return {
       database: {}
@@ -43,7 +56,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .data-source {
   width: 100%;
   height: 100%;
@@ -55,6 +68,10 @@ export default {
 .data-source-view {
   width: 98%;
   height: 98%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  border-right: 1px solid #ccc;
 }
 
 .table {
@@ -85,5 +102,18 @@ export default {
 .database {
   height: 100%;
   border: none;
+}
+
+.sql-excute{
+  width: 80%;
+  height: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.editor{
+  width: 90%;
+  height: 80%;
 }
 </style>

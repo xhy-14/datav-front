@@ -144,7 +144,7 @@ export default {
       tableData = originData
       displayData.value = getDisplayData()
     }
-  };
+    };
     function submitSaveForm() {
       // 处理保存逻辑
       saveProject({
@@ -197,7 +197,6 @@ export default {
           multipleSelection.value.splice(index, 1)
         }
       }
-      console.log(multipleSelection.value)
     };
     function currentPageChange() {
       displayData.value = getDisplayData()
@@ -248,7 +247,6 @@ export default {
 }
 </script>
 
-<<<<<<< HEAD
 <style scoped>
 .con {
   height: 100%;
@@ -276,7 +274,7 @@ export default {
 }
 .main {
   margin-top: 20px;
-  height: 85%;
+  height: 75%;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -327,7 +325,3 @@ export default {
   margin-top: 10px;
 }
 </style>
-=======
-<style>
-</style>
->>>>>>> 5d6ef0e724174ffdc466f2b50903b793ed65d280
