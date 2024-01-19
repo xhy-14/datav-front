@@ -110,7 +110,6 @@ interface responseData {
   headers: [];
   rows: [];
 }
-
 const headers = {
   token: `${token}`
 };

@@ -8,7 +8,7 @@ const routes = [
     component: () => import("@/views/Layout/index.vue"),
     children: [
       {
-        path: '',
+        path: '/',
         component: () => import("@/views/home/index.vue")
       },
       {
@@ -91,7 +91,7 @@ const routes = [
   {
     path: '/chart',
     component: () => import("@/views/chart/Create.vue"),
-  },
+  }
 ]
 
 const router = createRouter({

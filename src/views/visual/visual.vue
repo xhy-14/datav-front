@@ -11,8 +11,8 @@
               <note />
             </el-tab-pane>
           </el-tabs>
-
-
+ 
+  
         </div>
       </el-header>
       <el-main>
@@ -28,6 +28,9 @@ import { onMounted, ref } from 'vue'
 import chooseChart from './visualSteps/chooseChart.vue'
 import note from './visualSteps/note.vue'
 import * as echarts from 'echarts';
+import { useChartStore} from '@/store/chart'
+
+const chartInfo = useChartStore().chartInfo.info
 
 const type = ref('pie')
 const data = ref([])
@@ -36,23 +39,8 @@ const tabPosition = ref('left')
 const initChart = () => {
   var myChart = echarts.init(document.getElementById('main'));
   // 绘制图表
-  var option = {
-    title: {
-      text: 'ECharts 入门示例'
-    },
-    tooltip: {},
-    xAxis: {
-      data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
-    },
-    yAxis: {},
-    series: [
-      {
-        name: '销量',
-        type: type.value,
-        data: [5, 20, 36, 10, 10, 20]
-      }
-    ]
-  }
+  var option = chartInfo
+  console.log("chartInfo",option)
   const option_pie = {
     series: [
       {
@@ -79,16 +67,22 @@ const initChart = () => {
 }
 
 const getChilderVal = (currentType: string) => {
+  initChart();
+
   type.value = currentType
   // location.reload();
   document.getElementById('main').removeAttribute("_echarts_instance_");
   document.getElementById('main').innerHTML = "";
   initChart();
+
   console.log(type.value, '123')
 }
 onMounted(() => {
   // 基于准备好的dom，初始化echarts实例
+
   initChart();
+  console.log(chartInfo)
+
 })
 </script>
   
