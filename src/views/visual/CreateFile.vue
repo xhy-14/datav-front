@@ -14,7 +14,7 @@
       <el-radio-button @Click="fun0" label="上传文件">
         上传文件
       </el-radio-button>
-              
+               
     </el-upload>
     <el-radio-button @Click="fun0" label="复制并粘贴">复制并粘贴</el-radio-button>
     <el-radio-button @click="fun1" label="链接外部数据表">链接外部数据表</el-radio-button>
@@ -38,12 +38,11 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, watch } from "vue";
 import { ElMessage } from "element-plus";
 import { useUserStore } from "@/store/user";
+import { useChartStore } from "@/store/chart";
 import { lineApi } from "@/api/chart/chart";
-import * as echarts from "echarts";
-import Chart from "@/components/chart";
 const token = useUserStore().userInfo.token;
 
 const uploadUrl = "http://112.124.59.107:8080/renren-fast/app/table/data/file";
@@ -113,39 +112,8 @@ const data = reactive<responseData>({
 });
 
 let options = ref([]);
-let chartType = ref("");
-let myChart = ref(null);
 
-const initChart = option => {
-  myChart = echarts.init(document.getElementById("main"));
-  myChart.setOption(option);
-};
 
-/**
- * 提交
- */
-const submitChart = () => {
-  if (chartType == "line") {
-    let selectData = [];
-    for (let i = 0; i < data.rows.length; i++) {
-      let map = {};
-      map[xAxis.value] = data.rows[i][xAxis.value];
-      map[yAxis.value] = data.rows[i][yAxis.value];
-      selectData.push(map);
-    }
-    let parameter = {};
-    parameter["headers"] = [xAxis.value, yAxis.value];
-    parameter["rows"] = selectData;
-    lineApi(parameter)
-      .then(res => {
-        if (res.code == "00000") {
-          chartOption = res.data;
-          initChart(chartOption);
-        }
-      })
-      .catch(err => {});
-  }
-};
 
 const handleSuccess = (response, file) => {
   data.headers = response.data.headers;
@@ -157,10 +125,9 @@ const handleSuccess = (response, file) => {
     map["value"] = data.headers[i];
     opt.push(map);
   }
-  options = opt;
-  ElMessage.success("上传文件成功！");
-};
-
+  options.value = opt;
+  ElMessage.success('上传文件成功！');
+}
 //上传前校验
 const beforeUpload = (file: any) => {
   const isLt2M = file.size / 1024 / 1024 < 10;
@@ -174,9 +141,33 @@ const beforeUpload = (file: any) => {
   }
 };
 
-const chooseChart = type => {
-  chartType = type;
-};
+watch(
+  [() => xAxis.value, () => yAxis.value],
+  ([newX, newY]) => {
+      console.log(newX, newY)
+      let selectData = [];
+      for (let i = 0; i < data.rows.length; i++) {
+        let map = {};
+        map[newX] = data.rows[i][newX];
+        map[newY] = data.rows[i][newY];
+        selectData.push(map);
+      }
+      let parameter = {};
+      parameter["headers"] = [newX, newY];
+      parameter["rows"] = selectData;
+      
+      lineApi(parameter)
+        .then(res => {
+          if (res.code == "00000") {
+            useChartStore().setChartInfo(res.data)
+            console.log("opt store",useChartStore().chartInfo)
+          }
+        })
+        .catch(err => { });
+    
+  }
+)
+
 </script>
 
 <style>

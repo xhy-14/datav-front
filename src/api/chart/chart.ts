@@ -8,7 +8,7 @@ enum API {
   LINE = "/common/chart/line",
   PIE = "/common/chart/pie",
   SCATTER = "/app/chart/scatter/draw",
-  getChartInfo = "/common/chart/line"
+
 }
 
 export function lineApi(data: any) {
@@ -41,10 +41,5 @@ export function moreBarApi(data: any) {
 
 export function PolarBarApi(data: any) {
   return request.post(API.POLAR, data)
-}
-
-// get图表数据教程
-export function getChartInfoAPI(params: any) {
-  return request.post(API.getChartInfo , params);
 }
 
