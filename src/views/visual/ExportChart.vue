@@ -5,12 +5,9 @@
     </div>
     <div>
         <h2>导出图片或生成图表</h2>
-
         <el-button type="primary" :icon="Download" @click="exportChart">导出为图片</el-button>
     </div>
 </template>
-
-
 
 
 <script lang="ts" setup>
