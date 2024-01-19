@@ -1,98 +1,40 @@
 <template>
-  <div>
-    <div class="top">
-      <div>
-        <el-table :data="data.rows" style="width: 800px" height="250">
-          <el-table-column v-for="item in data.headers" :prop="item" :label="item"></el-table-column>
-        </el-table>
-
-        <div v-show="active == 1">
-          <el-input v-model="input2" placeholder="https://" style="height: 300px" />
-        </div>
-      </div>
-
-      <div>
-        <el-scrollbar>
-          <div class="scrollbar-flex-content">
-            <el-row class="scrollbar-demo-item">
-              <el-col :span="8">
-                <el-button @click="chooseChart('line')" style="height: auto; width: auto;">
-                  <el-card shadow="hover" :body-style="{ padding: '0px' }">
-                    <img
-                      src="@/assets/images/barChart.png"
-                      class="image"
-                      style="height: 80px;width: 200px;"
-                    />
-                    <div style="padding: 1px">
-                      <span>折线图</span>
-                    </div>
-                  </el-card>
-                </el-button>
-              </el-col>
-            </el-row>
-          </div>
-        </el-scrollbar>
-      </div>
+  <div  v-show="active == 0">
+    <el-table :data="data.rows" style="width: 100%" height="450px">
+      <el-table-column v-for="item in data.headers" :prop="item" :label="item">
+      </el-table-column>
+    </el-table>
+    <div v-show="active == 1">
+      <el-input v-model="input2" placeholder="https://" style="height: 300px" />
+    </div>  
+  </div>   
+  <el-radio-group v-model="tabPosition" style="margin-top: 40px">
+    <el-upload :action="uploadUrl" :headers="headers" accept=".csv" :on-error="handleError" :on-success="handleSuccess"
+      :show-file-list="false">
+      <el-radio-button @Click="fun0" label="上传文件">
+        上传文件
+      </el-radio-button>
+              
+    </el-upload>
+    <el-radio-button @Click="fun0" label="复制并粘贴">复制并粘贴</el-radio-button>
+    <el-radio-button @click="fun1" label="链接外部数据表">链接外部数据表</el-radio-button>
+  </el-radio-group> 
+  
+  <div class="header-select">
+    <div>
+      <p>x轴</p>
+      <el-select v-model="xAxis" class="m-2" placeholder="Select" style="width: 240px">
+        <el-option v-for="item in options" :key="item.value" :label="item.value" :value="item.value" />
+      </el-select>
     </div>
 
-    <el-radio-group v-model="tabPosition" style="margin-top: 40px">
-      <el-upload
-        :action="uploadUrl"
-        :headers="headers"
-        :on-error="handleError"
-        :on-success="handleSuccess"
-        :show-file-list="false"
-      >
-        <el-radio-button @Click="fun0" label="上传文件">上传文件</el-radio-button>
-      </el-upload>
-      <el-radio-button @Click="fun0" label="复制并粘贴">复制并粘贴</el-radio-button>
-      <el-radio-button @click="fun1" label="链接外部数据表">链接外部数据表</el-radio-button>
-    </el-radio-group>
-
-    <div class="header-select">
-      <div>
-        <p>x轴</p>
-        <el-select v-model="xAxis" class="m-2" placeholder="Select" style="width: 240px">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </div>
-
-      <div style="margin-left: 10px">
-        <p>y轴</p>
-        <el-select v-model="yAxis" class="m-2" placeholder="Select" style="width: 240px">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </div>
-    </div>
-
-    <div class="submit">
-      <el-button @click="submitChart()" style="height: auto; width: auto;">生成</el-button>
-    </div>
-    <div class="charts-display">
-      <div id="main" style="width: 1000px; height:600px;"></div>
-      
-      <div id="changeParameter">
-        <el-form :model="chartOption" label-width="120px">
-          <el-form-item label="标题">
-            <el-input v-model="chartOption.title.text" />
-          </el-form-item>
-        </el-form>
-      </div>
-    
-    </div>
-
-    <Chart></Chart>
-  </div>
+    <div style="margin-left: 10px">
+      <p>y轴</p>
+      <el-select v-model="yAxis" class="m-2" placeholder="Select" style="width: 240px">
+        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+      </el-select>
+    </div> 
+  </div>  
 </template>
 
 <script lang="ts" setup>
