@@ -19,7 +19,7 @@
                 <RouterView />
             </div>
             <div v-show="active == 2">
-                <Export />
+                <Export :active="active"/>
                 <RouterView />
             </div>
         </el-main>
