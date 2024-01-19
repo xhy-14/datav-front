@@ -14,7 +14,7 @@
       <el-radio-button @Click="fun0" label="上传文件">
         上传文件
       </el-radio-button>
-         
+              
     </el-upload>
     <el-radio-button @Click="fun0" label="复制并粘贴">复制并粘贴</el-radio-button>
     <el-radio-button @click="fun1" label="链接外部数据表">链接外部数据表</el-radio-button>
@@ -33,8 +33,8 @@
       <el-select v-model="yAxis" class="m-2" placeholder="Select" style="width: 240px">
         <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
-    </div>
-  </div>
+    </div> 
+  </div>  
 </template>
 
 <script lang="ts" setup>
