@@ -12,24 +12,29 @@
             </el-tab-pane>
           </el-tabs>
 
-
+    
         </div>
       </el-header>
       <el-main>
-        <div id="main" class="echarts-vue" style="width: 1000px; height: 400px;"></div>
-
+        <div id="main" class="echarts-vue" ></div>
+  
       </el-main>
     </el-container>
   </div>
 </template>
   
 <script lang="ts" setup>
-import { onMounted, ref, nextTick } from 'vue'
+import { onMounted, ref, nextTick,watch } from 'vue'
 import chooseChart from './visualSteps/chooseChart.vue'
 import note from './visualSteps/note.vue'
 import * as echarts from 'echarts';
 import { useChartStore } from '@/store/chart'
 
+
+var chartInfo = useChartStore().chartInfo.info
+const props = defineProps({
+  active: Number
+})
 
 const label = {
             show: true,
@@ -43,11 +48,8 @@ const label = {
             fontSize: 20,
             lineHeight: 30,
           }
-const chartInfo = useChartStore().chartInfo.info
-
 
 const type = ref('pie')
-const data = ref([])
 
 const tabPosition = ref('left')
 const initChart = () => {
@@ -56,7 +58,7 @@ const initChart = () => {
     // 绘制图表
     var option = chartInfo
 
-    console.log("option", option)
+    console.log("option view", option)
     const option_pie = {
       series: [
         {
@@ -81,11 +83,11 @@ const initChart = () => {
     };
     if (type.value == 'pie') { myChart.setOption(option_pie); }
     else {
-      console.log("chartInfo+++", chartInfo)
+      console.log("option view", option)
       option.series[0].type = type.value
       option.series[0].label = label
       myChart.setOption(option);
-    }
+    }  
     useChartStore().setChartInfo(option)
   })
 
@@ -109,13 +111,34 @@ const getNotes = (notes: any) => {
 }
 onMounted(() => {
   // 基于准备好的dom，初始化echarts实例
+
   initChart()
   console.log(chartInfo)
-
+  console.log(props.active)
 })
+watch(
+  ()=>props.active,
+  ( newValue, oldval) =>{
+    chartInfo = useChartStore().chartInfo.info
+    initChart();
+    console.log(chartInfo,"visual")
+  },
+  {
+    immediate: true,
+    deep: true
+   
+  }
+)
 </script>
   
 <style>
+#main {
+  width: 1000px; height: 400px;
+
+
+}
+
+
 .el-tabs_item {
   padding: 0 20px 0px 0px;
 }
