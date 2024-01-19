@@ -2,10 +2,15 @@ import request from "@/utils/request";
 
 
 enum API {
-  GET_MY_METADATA = "/app/table/data/my"
+  GET_MY_METADATA = "/app/table/data/my",
+  GET_MY_CHART_LIST = "/common/generated_chart/list"
 }
 
-export function uploadFile(params: any) {
+export function getMyMetadata(params: any) {
   return request.get<any>(API.GET_MY_METADATA, params);
+}
+
+export function getMyChartList(params: any) {
+  return request.get<any>(API.GET_MY_CHART_LIST, params);
 }
 
