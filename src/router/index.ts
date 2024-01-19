@@ -72,6 +72,10 @@ const routes = [
             component: () => import("@/views/workplace/Show.vue")
           }
         ]
+      },
+      {
+        path: '/merge',
+        component: () => import("@/views/workplace/mergeChart.vue")
       }
     ]
   },

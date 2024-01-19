@@ -11,17 +11,27 @@
 
 
 <script lang="ts" setup>
-import { onMounted } from 'vue'
+import { onMounted, watch } from 'vue'
 import { useChartStore } from '@/store/chart'
 import * as echarts from "echarts";
 import { Download } from '@element-plus/icons-vue'
 
-defineProps({
-    myChart: Object
+let options = useChartStore().chartInfo.info
+var myChart = {}
+
+const props = defineProps({
+    active: Number
 })
 
-var myChart = {}
-     
+watch(
+    () => props.active,
+    (newValue, oldval) => {
+        options = useChartStore().chartInfo.info
+        init();
+
+    }
+)
+
 
 
 //声明周期函数，自动执行初始化
@@ -33,7 +43,7 @@ function init() {
     // 基于准备好的dom，初始化echarts实例
     myChart = echarts.init(document.getElementById("asd"));
     // 绘制图表
-    let options = useChartStore().chartInfo.info
+    options = useChartStore().chartInfo.info
 
     // 渲染图表
     myChart.setOption(options);
