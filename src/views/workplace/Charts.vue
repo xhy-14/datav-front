@@ -5,21 +5,21 @@
       <div class="header-left">
         <el-input v-model="inputSearch" size="large" placeholder="请输入...">
           <template #append>
-            <el-button type="primary">搜索</el-button>
+            <el-button type="primary" @click="submitSearchForm">搜索</el-button>
           </template>
         </el-input>
       </div>
       <div class="header-right">
         <el-button type="primary" size="large" @click="gotoWorkPlace()">添加</el-button>
-        <el-button type="primary" size="large">编辑</el-button>
-        <el-button type="primary" size="large">查看</el-button>
+        <!-- <el-button type="primary" size="large">编辑</el-button> -->
+        <el-button type="primary" size="large" @click="dialogShow">查看</el-button>
         <el-button type="danger" size="large">删除</el-button>
       </div>
     </div>
 
     <div class="main">
       <div class="card-container">
-        <div v-for="item in displayData" :key="item.id" class="card" @click="handleCardClick(item)">
+        <div v-for="item in displayData" :key="item.id" :class="['card', { 'card-selected': item.selected }]" @click="handleCardClick(item)">
           <div class="card-image">这里到时候放一个image作为封面</div>
           <div class="card-title">
             <el-row class="w-150px">
@@ -39,6 +39,11 @@
       </div>
     </div>
 
+    <el-dialog v-model="chartDialogVisible" align-center class="chart-dialog">
+      <div id="chartcontainer" style="width: 500px;height: 500px;">
+
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -47,11 +52,13 @@ import { getMyChartList } from '@/api/data/data.ts'
 import { ElMessage } from 'element-plus'
 import { ref, onMounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import * as echarts from 'echarts';
 
 interface ChartItem {
   id: number
   name: string
   selected: boolean
+  option: any
 }
 
 export default {
@@ -65,6 +72,7 @@ export default {
     let originData = reactive<ChartItem[]>([])
     let tableData = reactive<ChartItem[]>([])
     let multipleSelection = ref<ChartItem[]>([])
+    let chartDialogVisible = ref(false)
 
     onMounted(() => {
       initData()
@@ -75,8 +83,8 @@ export default {
       .then(response => {
         originData.push(...response.data)
         tableData.push(...response.data)
-        displayData.value = response.data
-        console.log(response)
+        
+        displayData.value = getDisplayData()
       })
     }
     function gotoWorkPlace() {
@@ -93,13 +101,62 @@ export default {
         }
       }
     };
+    function dialogShow() {
+      if(!multipleSelection.value || multipleSelection.value.length !== 1) {
+        ElMessage.warning("请选择一条记录进行查看")
+        return
+      }
+      chartDialogVisible.value = true
+
+      setTimeout(() => {
+        // 初始化echarts图表
+        const chartContainer = document.getElementById('chartcontainer');
+        const chart = echarts.init(chartContainer);
+
+        // 获取选中的图表数据
+        const selectedChart = multipleSelection.value[0];
+
+        // 设置echarts的配置选项
+        const chartOption = selectedChart.option;
+        chart.setOption(chartOption);
+      }, 100);
+    }
+    function submitUpdateForm() {
+      // 处理更新逻辑
+      alert('更新成功！')
+    }
+    function getDisplayData() {
+      const start = (currentPage.value - 1) * pageSize.value
+      const end = start + pageSize.value
+      return tableData.slice(start, end)
+    }
+    function submitSearchForm() {
+    if (inputSearch.value) {
+      const keyword = inputSearch.value.trim()
+      tableData = [...originData]
+      const searchData = tableData.filter(item => {
+        return item.name.toLowerCase().includes(keyword.toLowerCase())
+      })
+      tableData.splice(0, tableData.length, ...searchData)
+      displayData.value = getDisplayData()
+      if (searchData.length === 0) {
+        ElMessage.warning('未找到匹配的项目')
+      }
+      } else {
+        tableData = originData
+        displayData.value = getDisplayData()
+      }
+    };
     return {
       gotoWorkPlace,
       pageSize,
       currentPage,
       inputSearch,
       displayData,
-      handleCardClick
+      chartDialogVisible,
+      handleCardClick,
+      dialogShow,
+      submitSearchForm
     }
   }
 }
@@ -157,6 +214,10 @@ export default {
   margin: 10px;
   overflow: hidden;
 }
+.card-selected {
+  background-color: #eaf6ff; /* 设置选中状态的背景色 */
+  transform: translateY(-5px); /* 设置选中状态下的卡片偏移效果 */
+}
 .card:hover {
   transform: translateY(-5px);
 }
@@ -196,5 +257,10 @@ export default {
   display: flex;
   justify-content: center;
   margin-top: 10px;
+}
+.chart-dialog {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

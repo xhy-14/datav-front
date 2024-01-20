@@ -18,7 +18,7 @@
     </div>
     <div class="main">
       <div class="card-container">
-        <div v-for="item in displayData" :key="item.id" class="card" @click="handleCardClick(item)">
+        <div v-for="item in displayData" :key="item.id" :class="['card', { 'card-selected': item.selected }]" @click="handleCardClick(item)">
           <div class="card-image">这里到时候放一个image作为封面</div>
           <div class="card-title">
             <el-row class="w-150px">
@@ -329,6 +329,11 @@ export default {
   padding: 4px 8px;
   font-size: 12px;
   border-radius: 4px;
+}
+
+.card-selected {
+  background-color: #eaf6ff; /* 设置选中状态的背景色 */
+  transform: translateY(-5px); /* 设置选中状态下的卡片偏移效果 */
 }
 
 .pagination {
