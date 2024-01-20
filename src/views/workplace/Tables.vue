@@ -5,20 +5,20 @@
       <div class="header-left">
         <el-input v-model="inputSearch" size="large" placeholder="请输入...">
           <template #append>
-            <el-button type="primary">搜索</el-button>
+            <el-button type="primary" @click="submitSearchForm">搜索</el-button>
           </template>
         </el-input>
       </div>
       <div class="header-right">
         <el-button type="primary" size="large" @click="uploadDialogVisible = true">添加</el-button>
-        <el-button type="primary" size="large">编辑</el-button>
-        <el-button type="primary" size="large">查看</el-button>
+        <el-button type="primary" size="large" @click="dialogUpdateForm">编辑</el-button>
+        <el-button type="primary" size="large" @click="dialogShow">查看</el-button>
         <el-button type="danger" size="large">删除</el-button>
       </div>
     </div>
     <div class="main">
       <div class="card-container">
-        <div v-for="item in displayData" :key="item.id" class="card" @click="handleCardClick(item)">
+        <div v-for="item in displayData" :key="item.id" :class="['card', { 'card-selected': item.selected }]" @click="handleCardClick(item)">
           <div class="card-image">这里到时候放一个image作为封面</div>
           <div class="card-title">
             <el-row class="w-150px">
@@ -33,10 +33,10 @@
     </div>
     <div>
       <div class="pagination">
-        <el-pagination layout="prev, pager, next" v-model:current-page="currentPage" :total=displayData.length :page-size="pageSize" />
+        <el-pagination @current-change="currentPageChange" layout="prev, pager, next" v-model:current-page="currentPage" :total=myMetadata.length :page-size="pageSize" />
       </div>
     </div>
-
+    
     <!-- uploadForm表单 -->
     <el-dialog v-model="uploadDialogVisible" title="添加" width="30%" align-center >
       <el-form :model="uploadForm" label-width="80px">
@@ -75,6 +75,38 @@
       </template>
     </el-dialog>
 
+    <!--updateForm表单-->
+    <el-dialog v-model="updateDialogVisible" title="编辑" width="30%" align-center >
+      <el-form :model="uploadForm" label-width="80px">
+        <el-form-item label="名称">
+          <el-input v-model="updateForm.name" maxlength="10" show-word-limit required />
+        </el-form-item>
+        <el-form-item label="描述">
+          <el-input type="textarea" v-model="updateForm.depiction" />
+        </el-form-item>
+        <el-form-item label="所属项目">
+          <el-select v-model="updateForm.pid" placeholder="请选择">
+            <el-option v-for="item in projectItems" :key="item.id" :label="item.name" :value="item.id"/>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span>
+          <el-button @click="resetUpdateForm">取消</el-button>
+          <el-button type="primary" @click="submitUpdateForm">
+            确认
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
+
+    <el-dialog v-model="dialogShowVisible" title="数据信息" align-center >
+      <el-table :data="rows" style="width: 800px" height="300">
+        <el-table-column v-for="item in headers" :key="item" :prop="item" :label="item" width="150" />
+      </el-table>
+    </el-dialog>
+    
+
   </div>
 </template>
 
@@ -84,7 +116,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { listProject } from '@/api/project/project.ts'
 import { ElMessage, ElLoading } from 'element-plus'
 import { uploadFile, saveFileByData } from '@/api/file/file.ts'
-import { getMyMetadata } from '@/api/data/data.ts'
+import { getMyMetadata, getDataById } from '@/api/data/data.ts'
 
 interface Project {
   id: string
@@ -106,19 +138,29 @@ export default {
         let inputSearch = ref('');
         let uploadDialogVisible = ref(false);
         let updateDialogVisible = ref(false);
+        let dialogShowVisible = ref(false);
         let projectItems = reactive<Project[]>([]);
         let useSelectHearders = ref(true);
         let selectedHeaders = ref([]);
         let fileList = ref([]);
         let multipleSelection = ref([]);
-        let originData = reactive<any[]>([])
-        let myMetadata = reactive<any[]>([])
+        let originData = reactive<Matedata[]>([])
+        let myMetadata = reactive<Matedata[]>([])
         let displayData = ref<Matedata[]>([])
+        let headers = ref<any[]>([])
+        let rows = ref<any[]>([])
+        let length = ref(0)
         let uploadForm = ref({
             name: "",
             depiction: "",
             projectId: "",
             file: null
+        });
+        let updateForm = ref({
+            id: "",
+            name: "",
+            depiction: "",
+            pid: ""
         });
         let tableData = ref({
           headers: [],
@@ -134,36 +176,48 @@ export default {
           depiction: "",
           pid:""
         })
-        onMounted(() => {
-            initData()
-        });
         function initData() {
           listProject(null)
-              .then(function (response) {
-              if (response.code === "00000") {
-                  projectItems.push(...response.data);
-                }
-              else
-                  ElMessage.error("查询失败");
-              });
-            getMyMetadata(null)
-              .then(function (response) {
-                if(response.code === "00000") {
-                  myMetadata = []
-                  originData = []
-                  myMetadata.push(...response.data);
-                  originData.push(...response.data);
-                  displayData.value = getDisplayData();
-                } else {
-                  ElMessage.error("查询失败")
-                }
-              }) 
+            .then( function (response) {
+            if (response.code === "00000") {
+                projectItems.push(...response.data);
+              }
+            else
+                ElMessage.error("查询失败");
+            });
+          getMyMetadata(null)
+          .then(function (response){
+            if(response.code === "00000") {
+              originData.push(...response.data);
+              myMetadata.push(...response.data);
+              displayData.value = getDisplayData();
+            } else {
+              ElMessage.error("查询失败")
+            }
+          })        
         }
         function getDisplayData() {
           const start = (currentPage.value - 1) * pageSize.value
           const end = start + pageSize.value
           return myMetadata.slice(start, end)
         }
+        function submitSearchForm() {
+          if (inputSearch.value) {
+            const keyword = inputSearch.value.trim()
+            myMetadata = [...originData]
+            const searchData = originData.filter(item => {
+              return item.name.toLowerCase().includes(keyword.toLowerCase())
+            })
+            myMetadata.splice(0, myMetadata.length, ...searchData)
+            displayData.value = getDisplayData()
+            if (searchData.length === 0) {
+              ElMessage.warning('未找到匹配的项目')
+            }
+          } else {
+            myMetadata = originData
+            displayData.value = getDisplayData()
+          }      
+        };
         function handleCardClick(item: Matedata) {
           item.selected = !item.selected;
           if (item.selected) {
@@ -174,7 +228,6 @@ export default {
               multipleSelection.value.splice(index, 1)
             }
           }
-          console.log(multipleSelection.value)
         };
         function fileListChange(fileList: any) {
           const formDate = new FormData();
@@ -215,7 +268,6 @@ export default {
           saveDataForm.value.depiction = uploadForm.value.depiction;
           saveDataForm.value.data = selectedTableData.value;
           saveDataForm.value.pid = uploadForm.value.projectId;
-          console.log(saveDataForm.value);
           saveFileByData(saveDataForm.value)
           .then(response => {
             if(response.code === "00000") {
@@ -229,6 +281,46 @@ export default {
             initData()
           })
         };
+        function dialogUpdateForm() {
+          if(!multipleSelection.value || multipleSelection.value.length !== 1) {
+            ElMessage.warning("请选择一条记录进行更新")
+            return
+          }
+
+          updateForm.value.id = multipleSelection.value[0].id
+          updateForm.value.name = multipleSelection.value[0].name
+          updateForm.value.depiction = multipleSelection.value[0].depiction
+          updateForm.value.pid = multipleSelection.value[0].pid
+          
+          updateDialogVisible.value = true
+        }
+        function submitUpdateForm() {
+            // 处理更新逻辑
+            console.log(updateForm.value);
+            
+            ElMessage.success("更新成功");
+        }
+        function dialogShow() {
+          if(!multipleSelection.value || multipleSelection.value.length !== 1) {
+            ElMessage.warning("请选择一条记录进行查看")
+            return
+          }
+          const loadingInstance = ElLoading.service({
+            fullscreen: true,
+            text: '正在查询文件...',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
+          getDataById(multipleSelection.value[0].id).then(response => {
+            headers.value = []
+            headers.value = [...response.data.data.headers]
+            rows.value = []
+            rows.value = [...response.data.data.rows]    
+          })
+          loadingInstance.close()  
+          setTimeout(() => {
+            dialogShowVisible.value = true
+          }, 300)
+        }
         function resetUploadForm() {
           //重置表单
           uploadForm.value.name = '',
@@ -242,11 +334,35 @@ export default {
           };
           uploadDialogVisible.value = false;
         };
+        function resetUpdateForm() {
+          //重置表单
+          updateForm.value.name = '',
+          updateForm.value.depiction = '',
+          updateForm.value.file = null;
+          updateDialogVisible.value = false;
+        };
+        function currentPageChange() {
+          displayData.value = getDisplayData()
+          if (multipleSelection.value.length > 0) {
+            // 清空选择
+            multipleSelection.value = []
+            // 清除所有项目的选中状态
+            myMetadata.forEach(item => {
+              item.selected = false
+            })
+          }
+        };
+        onMounted(() => {
+          initData() 
+        });
         return {
             inputSearch,
             uploadDialogVisible,
             updateDialogVisible,
+            dialogShowVisible,
+            currentPageChange,
             uploadForm,
+            updateForm,
             fileList,
             projectItems,
             tableData,
@@ -259,11 +375,19 @@ export default {
             currentPage,
             originData,
             displayData,
+            rows,
+            length,
+            headers,
+            dialogShow,
             handleCardClick,
             getDisplayData,
             fileListChange,
             saveFileByDataForm,
-            resetUploadForm
+            resetUploadForm,
+            dialogUpdateForm,
+            resetUpdateForm,
+            submitUpdateForm,
+            submitSearchForm
         };
     },
 }
@@ -354,6 +478,11 @@ export default {
   padding: 4px 8px;
   font-size: 12px;
   border-radius: 4px;
+}
+
+.card-selected {
+  background-color: #eaf6ff; /* 设置选中状态的背景色 */
+  transform: translateY(-5px); /* 设置选中状态下的卡片偏移效果 */
 }
 
 .pagination {
