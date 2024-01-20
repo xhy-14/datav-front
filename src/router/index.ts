@@ -99,6 +99,10 @@ const routes = [
   {
     path: '/dashboard',
     component: () => import("@/views/workplace/mergeChart.vue")
+  },
+  {
+    path: '/datasource',
+    component: () => import("@/views/workplace/DataSource.vue")
   }
 ]
 
