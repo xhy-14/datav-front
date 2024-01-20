@@ -12,7 +12,7 @@
       <div class="header-right">
         <el-button type="primary" size="large" @click="uploadDialogVisible = true">添加</el-button>
         <el-button type="primary" size="large" @click="dialogUpdateForm">编辑</el-button>
-        <el-button type="primary" size="large">查看</el-button>
+        <el-button type="primary" size="large" @click="dialogShow">查看</el-button>
         <el-button type="danger" size="large">删除</el-button>
       </div>
     </div>
@@ -33,10 +33,10 @@
     </div>
     <div>
       <div class="pagination">
-        <el-pagination layout="prev, pager, next" v-model:current-page="currentPage" :total=displayData.length :page-size="pageSize" />
+        <el-pagination @current-change="currentPageChange" layout="prev, pager, next" v-model:current-page="currentPage" :total=myMetadata.length :page-size="pageSize" />
       </div>
     </div>
-
+    
     <!-- uploadForm表单 -->
     <el-dialog v-model="uploadDialogVisible" title="添加" width="30%" align-center >
       <el-form :model="uploadForm" label-width="80px">
@@ -100,6 +100,13 @@
       </template>
     </el-dialog>
 
+    <el-dialog v-model="dialogShowVisible" title="数据信息" align-center >
+      <el-table :data="rows" style="width: 800px" height="300">
+        <el-table-column v-for="item in headers" :key="item" :prop="item" :label="item" width="150" />
+      </el-table>
+    </el-dialog>
+    
+
   </div>
 </template>
 
@@ -109,8 +116,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { listProject } from '@/api/project/project.ts'
 import { ElMessage, ElLoading } from 'element-plus'
 import { uploadFile, saveFileByData } from '@/api/file/file.ts'
-import { getMyMetadata } from '@/api/data/data.ts'
-import func from 'vue-editor-bridge'
+import { getMyMetadata, getDataById } from '@/api/data/data.ts'
 
 interface Project {
   id: string
@@ -132,14 +138,18 @@ export default {
         let inputSearch = ref('');
         let uploadDialogVisible = ref(false);
         let updateDialogVisible = ref(false);
+        let dialogShowVisible = ref(false);
         let projectItems = reactive<Project[]>([]);
         let useSelectHearders = ref(true);
         let selectedHeaders = ref([]);
         let fileList = ref([]);
         let multipleSelection = ref([]);
-        let originData = reactive<any[]>([])
-        let myMetadata = reactive<any[]>([])
+        let originData = reactive<Matedata[]>([])
+        let myMetadata = reactive<Matedata[]>([])
         let displayData = ref<Matedata[]>([])
+        let headers = ref<any[]>([])
+        let rows = ref<any[]>([])
+        let length = ref(0)
         let uploadForm = ref({
             name: "",
             depiction: "",
@@ -166,12 +176,9 @@ export default {
           depiction: "",
           pid:""
         })
-        onMounted(() => {
-            initData()
-        });
         function initData() {
           listProject(null)
-            .then(function (response) {
+            .then( function (response) {
             if (response.code === "00000") {
                 projectItems.push(...response.data);
               }
@@ -179,17 +186,15 @@ export default {
                 ElMessage.error("查询失败");
             });
           getMyMetadata(null)
-            .then(function (response) {
-              if(response.code === "00000") {
-                myMetadata = []
-                originData = []
-                myMetadata.push(...response.data);
-                originData.push(...response.data);
-                displayData.value = getDisplayData();
-              } else {
-                ElMessage.error("查询失败")
-              }
-            }) 
+          .then(function (response){
+            if(response.code === "00000") {
+              originData.push(...response.data);
+              myMetadata.push(...response.data);
+              displayData.value = getDisplayData();
+            } else {
+              ElMessage.error("查询失败")
+            }
+          })        
         }
         function getDisplayData() {
           const start = (currentPage.value - 1) * pageSize.value
@@ -295,6 +300,27 @@ export default {
             
             ElMessage.success("更新成功");
         }
+        function dialogShow() {
+          if(!multipleSelection.value || multipleSelection.value.length !== 1) {
+            ElMessage.warning("请选择一条记录进行查看")
+            return
+          }
+          const loadingInstance = ElLoading.service({
+            fullscreen: true,
+            text: '正在查询文件...',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
+          getDataById(multipleSelection.value[0].id).then(response => {
+            headers.value = []
+            headers.value = [...response.data.data.headers]
+            rows.value = []
+            rows.value = [...response.data.data.rows]    
+          })
+          loadingInstance.close()  
+          setTimeout(() => {
+            dialogShowVisible.value = true
+          }, 300)
+        }
         function resetUploadForm() {
           //重置表单
           uploadForm.value.name = '',
@@ -315,10 +341,26 @@ export default {
           updateForm.value.file = null;
           updateDialogVisible.value = false;
         };
+        function currentPageChange() {
+          displayData.value = getDisplayData()
+          if (multipleSelection.value.length > 0) {
+            // 清空选择
+            multipleSelection.value = []
+            // 清除所有项目的选中状态
+            myMetadata.forEach(item => {
+              item.selected = false
+            })
+          }
+        };
+        onMounted(() => {
+          initData() 
+        });
         return {
             inputSearch,
             uploadDialogVisible,
             updateDialogVisible,
+            dialogShowVisible,
+            currentPageChange,
             uploadForm,
             updateForm,
             fileList,
@@ -333,6 +375,10 @@ export default {
             currentPage,
             originData,
             displayData,
+            rows,
+            length,
+            headers,
+            dialogShow,
             handleCardClick,
             getDisplayData,
             fileListChange,
