@@ -1,8 +1,8 @@
 <template>
   <div class="data-source">
     <div class="data-source-view">
-      <div class="table" height="700px">
-        <el-scrollbar height="700px">
+      <div class="table" height="725px">
+        <el-scrollbar height="725px">
           <el-menu class="database">
             <el-sub-menu>
               <template #title>
@@ -18,30 +18,77 @@
           </el-menu>
         </el-scrollbar>
       </div>
-      
-      <div class="sql-excute">
-        <v-ace-editor class="editor"
-          v-model:value="content"
-          @init="editorInit"
-          lang="html"
-          theme="chrome"
-          style="height: 400px"
-        />
+
+      <div class="sql-box">
+        <div class="sql-excute">
+          <div class="editor-title">
+            <div class="editor-title-icon">
+              <svg class="execute-icon" size="20px">
+                <use xlink:href="#icon-execute" />
+              </svg>
+
+              <svg class="execute-icon" size="20px">
+                <use xlink:href="#icon-font-size" />
+              </svg>
+            </div>
+          </div>
+          <v-ace-editor
+            v-model:value="content"
+            @init="editorInit"
+            :options="editorOptions"
+            lang="html"
+            theme="chrome"
+            style="height: 350px"
+          />
+        </div>
+        <div class="data-show">
+          <div class="data-show-title" style="height: 20%;">
+            <div class="header">
+              <h2>代码执行结果:</h2>
+              <el-button type="primary">添加数据集</el-button>
+            </div>
+          </div>
+          <div class="table-box">
+            <el-table
+              :data="tableData"
+              style="width: 95%; height: 95%;"
+              :row-class-name="tableRowClassName"
+            ></el-table>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+/**
+ *
+ */
 import { getDatabaseByIDApi } from "@/api/datasource/index.ts";
 import { VAceEditor } from "vue3-ace-editor";
 export default {
   components: {
-    VAceEditor
+    VAceEditor,
+    tableData: []
   },
   data() {
     return {
-      database: {}
+      database: {},
+      editorOptions: {
+        mode: "mysql",
+        theme: "twilight",
+        fontSize: 20,
+        readOnly: false,
+        highlightActiveLine: true,
+        showPrintMargin: true,
+        displayIndentGuides: true,
+        tabSize: 4,
+        useSoftTabs: false,
+        enableAutoClosing: true,
+        enableLiveAutocompletion: true,
+        enableSnippets: true
+      }
     };
   },
   methods: {},
@@ -71,14 +118,21 @@ export default {
   display: flex;
   justify-content: center;
   align-content: center;
-  border-right: 1px solid #ccc;
 }
 
 .table {
-  width: 20%;
+  width: 25%;
   height: 100%;
+  border-right: 1px solid #ccc;
 }
-
+.sql-box {
+  width: 75%;
+  height: 100%;
+  margin-left: 20px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
 .mysql-icon {
   width: 40px;
   height: 40px;
@@ -104,16 +158,69 @@ export default {
   border: none;
 }
 
-.sql-excute{
-  width: 80%;
+.sql-excute {
+  width: 100%;
   height: 60%;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+}
+
+.data-show {
+  width: 100%;
+  height: 40%;
+}
+
+.editor {
+  width: 90%;
+  height: 80%;
+}
+
+.editor-title {
+  height: 20%;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.editor{
-  width: 90%;
+.editor-title-icon {
+  width: 80%;
   height: 80%;
+  display: grid;
+  gap: 50px;
+  grid-template-columns: repeat(20, 1fr);
+  align-items: center;
+}
+
+.data-show-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: aliceblue;
+}
+
+.header {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.table-box {
+  height: 80%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  border: 1px solid #ccc;
+}
+
+.execute-icon {
+  width: 25px;
+  height: 25px;
+}
+.execute-icon:hover {
+  cursor: pointer;
 }
 </style>

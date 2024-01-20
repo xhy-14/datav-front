@@ -64,6 +64,9 @@
               <KLineConfig v-if="chartType == 'k-line'"></KLineConfig>
               <MoreBarConfig v-if="chartType == 'more-bar'"></MoreBarConfig>
               <PolarConfig v-if="chartType == 'polar'"></PolarConfig>
+              <FunnelConfig v-if="chartType == 'funnel'"></FunnelConfig>
+              <HeatConfig v-if="chartType == 'heat'"></HeatConfig>
+              <RiverConfig v-if="chartType == 'river'"></RiverConfig>
             </div>
           </div>
 
@@ -200,6 +203,54 @@
                 </template>
               </el-popover>
 
+              <el-popover
+                placement="top-start"
+                title="漏斗图"
+                :width="200"
+                trigger="hover"
+                content="漏斗图"
+              >
+                <template #reference>
+                  <div @click="changeChart('funnel')" class="chart-select-item">
+                    <svg class="charts-icon">
+                      <use xlink:href="#icon-charts-funnel" />
+                    </svg>
+                  </div>
+                </template>
+              </el-popover>
+
+              <el-popover
+                placement="top-start"
+                title="热力图"
+                :width="200"
+                trigger="hover"
+                content="热力图"
+              >
+                <template #reference>
+                  <div @click="changeChart('heat')" class="chart-select-item">
+                    <svg class="charts-icon">
+                      <use xlink:href="#icon-charts-heat" />
+                    </svg>
+                  </div>
+                </template>
+              </el-popover>
+
+              <el-popover
+                placement="top-start"
+                title="河流图"
+                :width="200"
+                trigger="hover"
+                content="河流图"
+              >
+                <template #reference>
+                  <div @click="changeChart('river')" class="chart-select-item">
+                    <svg class="charts-icon">
+                      <use xlink:href="#icon-charts-river" />
+                    </svg>
+                  </div>
+                </template>
+              </el-popover>
+
             </div>
             <div class="chart-view">
               <Bar v-if="chartType == 'bar'"></Bar>
@@ -210,6 +261,9 @@
               <KLine v-if="chartType == 'k-line'"></KLine>
               <MoreBar v-if="chartType == 'more-bar'"></MoreBar>
               <Polar v-if="chartType == 'polar'"></Polar>
+              <Funnel v-if="chartType == 'funnel'"></Funnel>
+              <Funnel v-if="chartType == 'heat'"></Funnel>
+              <River v-if="chartType == 'river'"></River>
             </div>
           </div>
         </div>
@@ -239,6 +293,12 @@ import MoreBar from "@/components/chart/MoreBar.vue";
 import MoreBarConfig from "@/components/chart/MoreBarConfig.vue";
 import Polar from "@/components/chart/Polar.vue";
 import PolarConfig from "@/components/chart/PolarConfig.vue";
+import Funnel from "@/components/chart/Funnel.vue";
+import FunnelConfig from "@/components/chart/FunnelConfig.vue";
+import Heat from "@/components/chart/Heat.vue";
+import HeatConfig from "@/components/chart/HeatConfig.vue";
+import River from "@/components/chart/River.vue";
+import RiverConfig from "@/components/chart/RiverConfig.vue";
 
 import { myDatasetApi, getDatasetApi } from "@/api/table/index.ts";
 import { useChartStore } from "@/store/chart.ts";
@@ -261,6 +321,12 @@ export default {
     MoreBarConfig,
     Polar,
     PolarConfig,
+    Funnel,
+    FunnelConfig,
+    Heat,
+    HeatConfig,
+    River,
+    RiverConfig
   },
   data() {
     return {

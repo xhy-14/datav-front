@@ -32,7 +32,7 @@
               <DataLine />
             </el-icon>图表
           </el-menu-item>
-          <el-menu-item index="/workplace/show">
+          <el-menu-item @click="toDashboard()">
             <el-icon>
               <DataBoard />
             </el-icon>看台
@@ -55,6 +55,9 @@ export default {
     };
   },
   methods: {
+    toDashboard() {
+      this.$router.replace("/dashboard")
+    }
   }
 };
 </script>

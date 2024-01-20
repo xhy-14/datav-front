@@ -1,5 +1,8 @@
 import request from "@/utils/request";
 enum API {
+  RIVER = "/app/chart/themetiver/draw",
+  HEAT = "/app/chart/heatmap/draw",
+  FUNNEL = "/app/chart/funnel/draw",
   POLAR = "/common/chart/polar_bar",
   MORE_BAR = "/common/chart/more_bar",
   BAR = "/common/chart/bar",
@@ -47,3 +50,14 @@ export function ChartListApi() {
   return request.get(API.CHART_LIST)
 }
 
+export function FunnelApi(data: any) {
+  return request.post(API.FUNNEL, data)
+}
+
+export function HeatApi(data: any) {
+  return request.post(API.HEAT, data)
+}
+
+export function RiverApi(data: any) {
+  return request.post(API.RIVER, data)
+}

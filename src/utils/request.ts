@@ -2,11 +2,7 @@ import axios from 'axios'
 
 const request = axios.create({ 
   // baseURL: '/api',
-<<<<<<< HEAD
   baseURL: 'http://127.0.0.1:8080/renren-fast',
-=======
-  baseURL: 'http://127.0.0.1:8080//renren-fast',
->>>>>>> 9066c97443825e0d907e002ffbd7570c6bcf7083
   timeout: 5000,
 })
 

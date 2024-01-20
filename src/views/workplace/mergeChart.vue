@@ -48,8 +48,7 @@ export default {
       let again = event.dataTransfer.getData("again");
       if (again == "false") {
         let config = JSON.parse(event.dataTransfer.getData("config"));
-        let soption = config.config;
-        let option = JSON.parse(soption);
+        let option = config.option;
         // 创建一个节点放入画板
         let div = document.createElement("div");
         div.id = "chart-item-" + config.id;
