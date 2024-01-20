@@ -310,39 +310,52 @@ export default {
   flex-wrap: wrap;
 }
 .card {
-  width: 20%;
-  height: 50%;
-  padding-top: 0px;
+  padding: 0px;
+  width: 18%;
+  height: 40%;
   position: relative;
-  cursor: pointer; /* 添加指针样式 */
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease-in-out;
+  margin: 10px;
+  overflow: hidden;
 }
-.card.selected {
-  background-color: lightblue;
-  border: 2px solid darkblue;
+.card:hover {
+  transform: translateY(-5px);
 }
 .card-image {
   width: 100%;
   height: 70%;
-  background-color: antiquewhite;
+  background-color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.card-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
 }
 .card-title {
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-direction: column;
   margin-top: 10px;
 }
 .card-tip {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  width: 25px;
+  right: 10px;
   background-color: rgba(93, 217, 251, 0.8);
   color: #fff;
   padding: 4px 8px;
   font-size: 12px;
   border-radius: 4px;
-  margin-bottom: 30px;
 }
+
 .pagination {
   width: 100%;
   display: flex;
