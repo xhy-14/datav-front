@@ -5,7 +5,9 @@
       <div class="header-left">
         <el-input v-model="inputSearch" size="large" placeholder="请输入...">
           <template #append>
-            <el-button type="primary" @click="submitSearchForm">搜索</el-button>
+            <el-button type="primary" 
+            style="color: white;height: 100%;background-color: rgb(64, 158, 255);border-top-left-radius: 0px;border-bottom-left-radius: 0px;"
+            @click="submitSearchForm">搜索</el-button>
           </template>
         </el-input>
       </div>
@@ -19,7 +21,9 @@
     <div class="main">
       <div class="card-container">
         <div v-for="item in displayData" :key="item.id" :class="['card', { 'card-selected': item.selected }]" @click="handleCardClick(item)">
-          <div class="card-image">这里到时候放一个image作为封面</div>
+          <div class="card-image">
+            <img src="../../assets/images/project.png" alt="">
+          </div>
           <div class="card-title">
             <el-row class="w-150px">
               <el-text truncated size="large">{{ item.name }}</el-text>
@@ -264,6 +268,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: 10px;
 }
 .header-right {
   height: 100%;

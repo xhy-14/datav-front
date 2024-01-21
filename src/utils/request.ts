@@ -3,7 +3,7 @@ import axios from 'axios'
 const request = axios.create({ 
   // baseURL: '/api',
   baseURL: 'http://127.0.0.1:8080/renren-fast',
-  timeout: 5000,
+  timeout: 20000,
 })
 
 request.interceptors.request.use(
