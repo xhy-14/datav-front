@@ -36,6 +36,7 @@
       <div class="dashboard-box">
         <div
           id="canvas"
+          ref="dashboard"
           :style="canvacStyle"
           class="dashboard"
           @dragover="deal($event)"
@@ -50,25 +51,30 @@
           <el-color-picker v-model="canvacStyle.backgroundColor" />
         </div>
 
-        <div class="change-item">
+        <div class="change-item background-img">
           <h3 class="ml-3 w-35 text-gray-600 inline-flex items-center">设置背景图</h3>
-          <el-input
-            @change="changeBackgroundImg($e)"
-            v-model="canvacStyle.backgroundImage"
-            class="w-50 m-2"
-            placeholder="输入图片地址"
-          />
-        </div>
-
-        <div class="change-item">
-          <el-button type="primary" @click="exportImage()">
-            导出为图片
-            <el-icon>
-              <Bottom />
+          <el-upload
+            class="upload-demo"
+            drag
+            action="http://112.124.59.107:8080/renren-fast/app/table/data/file"
+            multiple
+            :on-error="handleError" :on-success="handleSuccess"
+          >
+            <el-icon class="el-icon--upload">
+              <upload-filled />
             </el-icon>
-          </el-button>
+            <div class="el-upload__text">
+              拖拽文件到这上传或
+              <em>点击上传</em>
+            </div>
+            <template #tip>
+              <div class="el-upload__tip">请上传png/jpge格式图片</div>
+            </template>
+          </el-upload>
+          <div class="change-img">
+            <el-button style="margin-top: 10px;" @click="changeImg()" type="success">设置</el-button>
+          </div>
         </div>
-
         <div id="test"></div>
       </div>
     </div>
@@ -84,7 +90,8 @@ import {
   Search,
   Share,
   Upload,
-  Bottom
+  Bottom,
+  Check
 } from "@element-plus/icons-vue";
 export default {
   data() {
@@ -94,69 +101,76 @@ export default {
         backgroundColor: "#fffff",
         backgroundImage: ""
       },
-      dashboardData: {}
+      dashboardData: {},
+      dashboardConfig: {
+        backgroundImage: ""
+      }
     };
   },
   methods: {
+    handleError() {
+      this.$message.error("上传失败");
+    },
+    handleSuccess(response) {
+      console.log(response);
+    },
     exportImage() {},
     toHome() {
       this.$router.replace("/workplace");
     },
     changeBackgroundImg(e) {
-      console.log(e);
       this.canvacStyle.backgroundImage = `url(${e.target.value})`;
-      console.log(this.canvacStyle.backgroundImage);
     },
     deal(event) {
       event.preventDefault();
     },
     /**
      * 图表移动
-     * @param {*} node 
+     * @param {*} node
      */
     move(node) {
-      node.addEventListener("mousedown", e=>{
-        let px = e.clientX
-        let py = e.clientY
-        let dashboard = document.getElementById('canvas')
+      node.addEventListener("mousedown", e => {
+        let px = e.clientX;
+        let py = e.clientY;
+        let dashboard = document.getElementById("canvas");
         document.onmousemove = e => {
           let mx = e.clientX;
           let my = e.clientY;
           let dx = mx - px;
           let dy = my - py;
-          let offsetX = parseInt(node.style.left)
-          let offsetY = parseInt(node.style.top)
+          let offsetX = parseInt(node.style.left);
+          let offsetY = parseInt(node.style.top);
           node.style.left = offsetX + dx + "px";
           node.style.top = offsetY + dy + "px";
           px = mx;
           py = my;
-        }
+        };
         document.onmouseup = e => {
           document.onmousemove = null;
-        }
-      })
+        };
+      });
     },
     changeSize(node, echart) {
       node.addEventListener("mousedown", e => {
-        let px = e.clientX
-        let py = e.clientY
+        let px = e.clientX;
+        let py = e.clientY;
         document.onmousemove = e => {
           let mx = e.clientX;
           let my = e.clientY;
           let dx = mx - px;
           let dy = my - py;
-          let width = parseInt(node.style.width)
-          let height = parseInt(node.style.height)
+          let width = parseInt(node.style.width);
+          let height = parseInt(node.style.height);
           node.style.width = width + dx + "px";
           node.style.height = height + dy + "px";
           echart.resize(width + dx, height + dy);
           px = mx;
           py = my;
-        }
+        };
         document.onmouseup = e => {
           document.onmousemove = null;
-        }
-      })
+        };
+      });
     },
     handleDraw(event) {
       let again = event.dataTransfer.getData("again");
@@ -198,11 +212,11 @@ export default {
           // 改变大小
           console.log("改变大小");
           div.style.cursor = "left";
-          this.changeSize(div, echart)
+          this.changeSize(div, echart);
         } else {
           // 在右下角拉伸盒子
           div.style.cursor = "move";
-          this.move(div)
+          this.move(div);
         }
       });
 
@@ -216,7 +230,7 @@ export default {
       parent.appendChild(div);
       event.target.appendChild(parent);
 
-      echart = echarts.init(document.getElementById(div.id))
+      echart = echarts.init(document.getElementById(div.id));
       echart.setOption(option);
     },
     dragStart(event, index) {
@@ -226,12 +240,15 @@ export default {
       );
 
       event.dataTransfer.setData("again", false);
+    },
+    changeImg() {
+      this.$refs.dashboard.style.backgroundImage = `url(${this.dashboardConfig.backgroundImage})`;
+      console.log(this.$refs.dashboard.style.backgroundImage);
     }
   },
   mounted() {
     ChartListApi().then(res => {
       this.chartList = res.data;
-      console.log(this.chartList);
     });
   }
 };
@@ -249,7 +266,6 @@ export default {
   align-items: center;
   background-color: white;
   border-bottom: 1px solid #ccc;
-
 }
 
 .dashboard {
@@ -273,7 +289,7 @@ export default {
 
 .charts {
   padding: 10px;
-  width: 10%;
+  width: 12%;
   display: flex;
   justify-content: start;
   flex-direction: column;
@@ -347,6 +363,16 @@ export default {
   margin-top: 20px;
   display: flex;
   justify-content: start;
+  align-items: center;
+}
+
+.background-img {
+  display: block;
+}
+
+.change-img {
+  display: flex;
+  justify-content: end;
   align-items: center;
 }
 </style>

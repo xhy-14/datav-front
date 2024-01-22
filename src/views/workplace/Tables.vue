@@ -12,11 +12,12 @@
         </el-input>
       </div>
       <div class="header-right">
-        <el-select @change="projectSelectChange" v-model="selectProjectId" class="m-2" placeholder="Select" size="large" style="width: 140px;margin-right: 8px;">
+        <el-select @change="projectSelectChange" v-model="selectProjectId" class="m-2" placeholder="Select" size="large" style="width: 140px;margin-right: 10px;">
           <el-option :label="'所有项目'" :value="0"/>
           <el-option v-for="item in projectItems" :key="item.id" :label="item.name" :value="item.id"/>
         </el-select>
         <el-button type="primary" size="large" @click="uploadDialogVisible = true">添加</el-button>
+        <el-button type="primary" size="large" @click="editMetadata">修改数据</el-button>
         <el-button type="primary" size="large" @click="dialogUpdateForm">编辑</el-button>
         <el-button type="primary" size="large" @click="dialogShow">查看</el-button>
         <el-button type="danger" size="large" @click="deleteComfirm">删除</el-button>
@@ -133,6 +134,7 @@
 
 <script lang="ts">
 
+import { useRouter } from 'vue-router';
 import { ref, reactive, onMounted } from 'vue'
 import { listProject } from '@/api/project/project.ts'
 import { ElMessage, ElLoading } from 'element-plus'
@@ -156,6 +158,7 @@ interface Matedata {
 
 export default {
   setup() {
+    const router = useRouter();
     const pageSize = ref(10)
     const currentPage = ref(1)
     let inputSearch = ref('');
@@ -166,7 +169,7 @@ export default {
     let useSelectHearders = ref(true);
     let selectedHeaders = ref([]);
     let fileList = ref([]);
-    let multipleSelection = ref([]);
+    let multipleSelection = ref<Matedata[]>([]);
     let originData = reactive<Matedata[]>([])
     let myMetadata = reactive<Matedata[]>([])
     let displayData = ref<Matedata[]>([])
@@ -303,7 +306,11 @@ export default {
       }).finally(() => {
         loadingInstance.close();
         resetUploadForm()
+        projectItems = []
+        originData = []
+        myMetadata = []
         initData()
+        displayData.value = []
       })
     };
     function dialogUpdateForm() {
@@ -392,13 +399,37 @@ export default {
       ElMessage.success('删除成功')
     }
     function projectSelectChange() {
-      console.log(selectProjectId.value);
+      if (selectProjectId.value === 0) {
+        // 如果选择的项目是"所有项目"，则直接将originData复制到myMetadata
+        myMetadata.splice(0, myMetadata.length, ...originData);
+      } else {
+        // 否则，筛选出projectId与selectProjectId相同的记录复制到myMetadata
+        const selectedData = originData.filter(item => item.projectId === selectProjectId.value);
+        myMetadata.splice(0, myMetadata.length, ...selectedData);
+      }
+      // 更新displayData
+      displayData.value = getDisplayData();
+      // 重置当前页数为1
+      currentPage.value = 1;
+    }
+    function editMetadata() {
+      if (multipleSelection.value.length != 1) {
+        ElMessage.warning('请选择一条记录进行编辑')
+        return
+      }
+      router.push({
+        path: '/workplace/data-editor',
+        query: {
+          id : multipleSelection.value[0].id
+        }
+      })
     }
     onMounted(() => {
       initData() 
     });
     return {
       inputSearch,
+      editMetadata,
       uploadDialogVisible,
       updateDialogVisible,
       dialogShowVisible,
@@ -462,7 +493,7 @@ export default {
 }
 .header-right {
   height: 100%;
-  width: 40%;
+  width: 50%;
   display: flex;
   align-items: center;
 }

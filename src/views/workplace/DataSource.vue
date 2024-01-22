@@ -99,7 +99,10 @@
           <div class="data-show">
             <div class="data-show-title" style="height: 20%;">
               <div class="header">
-                <h2>代码执行结果:</h2>
+                <h2>执行结果:</h2>
+                <el-scrollbar height="100%" width="100%">
+                  <div>{{ message }}</div>
+                </el-scrollbar>
                 <el-button @click="dialogVisible = true" type="primary">添加数据集</el-button>
               </div>
             </div>
@@ -171,8 +174,8 @@ import "ace-builds/src-noconflict/theme-chrome";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/ext-error_marker";
 import { listProject } from "@/api/project/project.ts";
-import { saveFileByData } from '@/api/file/file.ts'
-import { ElMessage, ElLoading } from 'element-plus'
+import { saveFileByData } from "@/api/file/file.ts";
+import { ElMessage, ElLoading } from "element-plus";
 export default {
   components: {
     VAceEditor
@@ -201,6 +204,7 @@ export default {
       dialogVisible: false,
       databaseList: [],
       myProjects: [],
+      message: "",
       editorOptions: {
         mode: "ace/mode/sql",
         theme: "light",
@@ -232,31 +236,47 @@ export default {
         this.executeData.id = this.database.id;
       });
     },
-    toWorkplace(){
-      this.$router.replace('/workplace')
+    toWorkplace() {
+      this.$router.replace("/workplace");
     },
     /**
      * 执行sql语句
      */
     execute() {
-      executeApi(this.executeData).then(res => {
-        console.log(res.data);
-        this.tableData = res.data;
-        let tmp = [];
-        for (let i = 0; i < this.tableData.headers.length; i++) {
-          let map = {};
-          map["key"] = this.tableData.headers[i];
-          map["value"] = this.tableData.headers[i];
-          tmp.push(map);
-        }
-        this.headers = tmp;
-        console.log(this.headers);
+      const loadingInstance = ElLoading.service({
+        fullscreen: true,
+        text: "正在创建数据集...",
+        background: "rgba(0, 0, 0, 0.7)"
       });
+      executeApi(this.executeData).then(res => {
+        if (res.code === "00000") {
+          console.log(res.data);
+          this.tableData = res.data;
+          let tmp = [];
+          for (let i = 0; i < this.tableData.headers.length; i++) {
+            let map = {};
+            map["key"] = this.tableData.headers[i];
+            map["value"] = this.tableData.headers[i];
+            tmp.push(map);
+          }
+          this.headers = tmp;
+          this.message = res.msg;
+        } else {
+          this.$message.error(res.msg);
+          this.message = res.msg;
+        }
+      });
+      loadingInstance.close();
     },
     /**
      * 保存数据集
      */
     save() {
+      const loadingInstance = ElLoading.service({
+        fullscreen: true,
+        text: "正在创建数据集...",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
       let data = this.tableData;
       let selectData = [];
       for (let i = 0; i < data.rows.length; i++) {
@@ -267,15 +287,20 @@ export default {
         selectData.push(map);
       }
       this.saveDataForm.data.rows = selectData;
-      saveFileByData(this.saveDataForm).then(res=>{
-        console.log(res);
-        if(res.code == "00000") {
-          ElMessage.success("数据集创建成功")
-          this.dialogVisible = false
-        }
-      }).catch(err=>{
-          ElMessage.error("数据集创建失败")
-      })
+      saveFileByData(this.saveDataForm)
+        .then(res => {
+          console.log(res);
+          if (res.code == "00000") {
+            ElMessage.success("数据集创建成功");
+            this.dialogVisible = false;
+          } else {
+            ElMessage.error("数据集创建失败");
+          }
+        })
+        .catch(err => {
+          ElMessage.error("数据集创建失败");
+        });
+      loadingInstance.close();
     }
   },
   created() {
