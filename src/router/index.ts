@@ -111,6 +111,10 @@ const routes = [
   {
     path: '/pay',
     component: () => import("@/views/order/Submit.vue")
+  },
+  {
+    path: '/datasource/add',
+    component: () => import("@/views/workplace/AddDataSource.vue")
   }
 ]
 

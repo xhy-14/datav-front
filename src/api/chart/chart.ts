@@ -11,7 +11,8 @@ enum API {
   LINE = "/common/chart/line",
   PIE = "/common/chart/pie",
   SCATTER = "/app/chart/scatter/draw",
-  CHART_LIST = "/common/generated_chart/list"
+  CHART_LIST = "/common/generated_chart/list",
+  SAVE = "/common/generated_chart/save"
 }
 
 export function lineApi(data: any) {
@@ -60,4 +61,8 @@ export function HeatApi(data: any) {
 
 export function RiverApi(data: any) {
   return request.post(API.RIVER, data)
+}
+
+export function saveChartApi(data: any) {
+  return request.post(API.SAVE, data)
 }

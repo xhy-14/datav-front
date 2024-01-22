@@ -147,7 +147,7 @@
           </el-row>
 
           <el-row :gutter="16" class="form-item-submit">
-            <el-button @click="save()" type="primary">Primary</el-button>
+            <el-button @click="save()" type="primary">保存</el-button>
           </el-row>
         </el-form>
       </el-dialog>
