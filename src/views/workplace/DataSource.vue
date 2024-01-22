@@ -1,6 +1,9 @@
 <template>
   <div class="view">
-    <div class="nav">导航栏</div>
+    <div class="nav">
+      <h2 style="margin-left: 50px;">数据源</h2>
+      <el-button @click="toWorkplace()">返回工作台</el-button>
+    </div>
     <div class="data-source">
       <div class="data-source-view">
         <div class="table" height="700px">
@@ -97,22 +100,57 @@
             <div class="data-show-title" style="height: 20%;">
               <div class="header">
                 <h2>代码执行结果:</h2>
-                <el-button type="primary">添加数据集</el-button>
+                <el-button @click="dialogVisible = true" type="primary">添加数据集</el-button>
               </div>
             </div>
             <div class="table-box">
-                <el-table :data="tableData.rows" style="width: 90%; height: 90%">
-                  <el-table-column
-                    v-for="(item, index) in tableData.headers"
-                    :key="item"
-                    :prop="item"
-                    :label="item"
-                  />
-                </el-table>
+              <el-table :data="tableData.rows" style="width: 90%; height: 90%">
+                <el-table-column
+                  v-for="(item, index) in tableData.headers"
+                  :key="item"
+                  :prop="item"
+                  :label="item"
+                />
+              </el-table>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- 上传数据集 --->
+      <el-dialog v-model="dialogVisible" title="上传数据集" width="35%">
+        <el-form label-width="100px" :model="uploadData" style="max-width: 560px">
+          <el-row class="form-item" :gutter="20">
+            <h2>数据集名</h2>
+            <el-input
+              v-model="saveDataForm.name"
+              class="w-50 m-2"
+              placeholder="数据集名"
+              :suffix-icon="Calendar"
+            />
+          </el-row>
+          <el-row :gutter="20" class="form-item">
+            <h2>所属项目</h2>
+            <div>
+              <el-select
+                v-model="saveDataForm.pid"
+                placeholder="选择所属项目"
+                style="margin-left: 20px; display: block;"
+              >
+                <el-option v-for="(item, index) in myProjects" :label="item.name" :value="item.id" />
+              </el-select>
+            </div>
+          </el-row>
+          <el-row :gutter="16" class="form-item">
+            <h2>选择你的数据列</h2>
+            <el-transfer class="selectHeader" v-model="saveDataForm.data.headers" :data="headers" />
+          </el-row>
+
+          <el-row :gutter="16" class="form-item-submit">
+            <el-button @click="save()" type="primary">Primary</el-button>
+          </el-row>
+        </el-form>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -132,7 +170,9 @@ import "ace-builds/src-noconflict/ext-beautify";
 import "ace-builds/src-noconflict/theme-chrome";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/ext-error_marker";
-
+import { listProject } from "@/api/project/project.ts";
+import { saveFileByData } from '@/api/file/file.ts'
+import { ElMessage, ElLoading } from 'element-plus'
 export default {
   components: {
     VAceEditor
@@ -143,11 +183,24 @@ export default {
         id: 1,
         code: ""
       },
+      uploadData: {},
       tableData: [],
       database: {},
+      headers: [],
+      selectHeader: [],
       content: "",
+      saveDataForm: {
+        data: {
+          headers: [{}],
+          rows: [{}]
+        },
+        name: "string",
+        pid: null
+      },
       drakOrLight: false,
+      dialogVisible: false,
       databaseList: [],
+      myProjects: [],
       editorOptions: {
         mode: "ace/mode/sql",
         theme: "light",
@@ -179,21 +232,57 @@ export default {
         this.executeData.id = this.database.id;
       });
     },
+    toWorkplace(){
+      this.$router.replace('/workplace')
+    },
     /**
      * 执行sql语句
      */
     execute() {
-      executeApi(this.executeData)
-        .then(res => {
-          this.tableData = res.data;
-          console.log(this.tableData.headers);
-        })
-        .catch(err => {
-          console.log("请求失败");
-        });
+      executeApi(this.executeData).then(res => {
+        console.log(res.data);
+        this.tableData = res.data;
+        let tmp = [];
+        for (let i = 0; i < this.tableData.headers.length; i++) {
+          let map = {};
+          map["key"] = this.tableData.headers[i];
+          map["value"] = this.tableData.headers[i];
+          tmp.push(map);
+        }
+        this.headers = tmp;
+        console.log(this.headers);
+      });
+    },
+    /**
+     * 保存数据集
+     */
+    save() {
+      let data = this.tableData;
+      let selectData = [];
+      for (let i = 0; i < data.rows.length; i++) {
+        let map = {};
+        for (let item of this.saveDataForm.data.headers) {
+          map[item] = data.rows[i][item];
+        }
+        selectData.push(map);
+      }
+      this.saveDataForm.data.rows = selectData;
+      saveFileByData(this.saveDataForm).then(res=>{
+        console.log(res);
+        if(res.code == "00000") {
+          ElMessage.success("数据集创建成功")
+          this.dialogVisible = false
+        }
+      }).catch(err=>{
+          ElMessage.error("数据集创建失败")
+      })
     }
   },
-  created() {},
+  created() {
+    listProject().then(res => {
+      this.myProjects = res.data;
+    });
+  },
   mounted() {
     /**
      * 获取所有数据库连接
@@ -218,6 +307,9 @@ export default {
 .nav {
   height: 5%;
   border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .view {
   width: 100%;
@@ -375,5 +467,22 @@ export default {
   justify-content: center;
   align-items: center;
   font-size: 20px;
+}
+
+.selectHeader {
+}
+
+.form-item {
+  margin-top: 10px;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+
+.form-item-submit {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  margin-top: 20px;
 }
 </style>

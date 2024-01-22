@@ -103,6 +103,10 @@ const routes = [
   {
     path: '/datasource',
     component: () => import("@/views/workplace/DataSource.vue")
+  },
+  {
+    path: '/data-editor',
+    component: () => import("@/views/workplace/DataEditor.vue")
   }
 ]
 

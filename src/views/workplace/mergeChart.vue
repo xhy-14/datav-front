@@ -4,7 +4,7 @@
       <h2 style="margin-left: 170px;">绘制你的仪表盘</h2>
       <div style="margin-right: 170px;">
         <el-button type="primary">保存</el-button>
-        <el-button style="margin-left: 25px;">取消</el-button>
+        <el-button @click="toHome()" style="margin-left: 25px;">取消</el-button>
       </div>
     </div>
     <div class="dashboard-view">
@@ -100,7 +100,9 @@ export default {
     exportImage() {
       
     },
-
+    toHome() {
+      this.$router.replace("/workplace");
+    },
     changeBackgroundImg(e) {
       console.log(e);
       this.canvacStyle.backgroundImage = `url(${e.target.value})`;
