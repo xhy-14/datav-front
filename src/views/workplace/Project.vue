@@ -13,24 +13,25 @@
       </div>
       <div class="header-right">
         <el-button type="primary" size="large" @click="saveDialogVisible = true">添加</el-button>
-        <el-button type="primary" size="large" @click="dialogUpdateForm">编辑</el-button>
-        <el-button type="primary" size="large">查看</el-button>
         <el-button type="danger" size="large">删除</el-button>
       </div>
     </div>
     <div class="main">
       <div class="card-container">
-        <div v-for="item in displayData" :key="item.id" :class="['card', { 'card-selected': item.selected }]" @click="handleCardClick(item)">
-          <div class="card-image">
+        <div v-for="item in displayData" :key="item.id" :class="['card', { 'card-selected': item.selected }]">
+          <div class="card-image" @click="handleCardClick(item)">
             <img src="../../assets/images/project.png" alt="">
           </div>
           <div class="card-title">
             <el-row class="w-150px">
               <el-text truncated size="large">{{ item.name }}</el-text>
+              <span class="card-tip" v-if="item.selected">√</span>
             </el-row>
-            <span class="card-tip" v-if="item.selected">
-            √
-            </span>
+            <div class="icon">
+              <el-tooltip content="编辑文件属性" placement="bottom">
+                <div @click="dialogUpdateForm(item)"><el-icon><Edit /></el-icon></div>
+              </el-tooltip>
+            </div>
           </div>
         </div>
       </div>
@@ -175,15 +176,11 @@ export default {
       } )
     }
 
-    function dialogUpdateForm() {
-      if(!multipleSelection.value || multipleSelection.value.length !== 1) {
-        ElMessage.warning("请选择一条记录进行更新")
-        return
-      }
+    function dialogUpdateForm(item) {
       // 处理更新逻辑
-      updateForm.value.id = multipleSelection.value[0].id
-      updateForm.value.name = multipleSelection.value[0].name
-      updateForm.value.depiction = multipleSelection.value[0].depiction
+      updateForm.value.id = item.id
+      updateForm.value.name = item.name
+      updateForm.value.depiction = item.depiction
       updateDialogVisible.value = true
     }
     function submitUpdateForm() {
@@ -272,7 +269,7 @@ export default {
 }
 .header-right {
   height: 100%;
-  width: 30%;
+  width: 20%;
   display: flex;
   align-items: center;
 
@@ -339,6 +336,20 @@ export default {
 .card-selected {
   background-color: #eaf6ff; /* 设置选中状态的背景色 */
   transform: translateY(-5px); /* 设置选中状态下的卡片偏移效果 */
+}
+.icon {
+  margin-top: 2px;
+  height: 32px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #eaf6ff;
+}
+
+.icon div {
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .pagination {

@@ -109,7 +109,6 @@ export default {
   height: 600px;
   max-height: 600px;
   margin-top: 10px;
-  overflow: auto;
 }
 
 .table {

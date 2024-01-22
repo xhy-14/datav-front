@@ -17,25 +17,31 @@
           <el-option v-for="item in projectItems" :key="item.id" :label="item.name" :value="item.id"/>
         </el-select>
         <el-button type="primary" size="large" @click="uploadDialogVisible = true">添加</el-button>
-        <el-button type="primary" size="large" @click="editMetadata">修改数据</el-button>
-        <el-button type="primary" size="large" @click="dialogUpdateForm">编辑</el-button>
-        <el-button type="primary" size="large" @click="dialogShow">查看</el-button>
         <el-button type="danger" size="large" @click="deleteComfirm">删除</el-button>
       </div>
     </div>
     <div class="main">
       <div class="card-container">
-        <div v-for="item in displayData" :key="item.id" :class="['card', { 'card-selected': item.selected }]" @click="handleCardClick(item)">
-          <div class="card-image">
+        <div v-for="item in displayData" :key="item.id" :class="['card', { 'card-selected': item.selected }]">
+          <div class="card-image" @click="handleCardClick(item)">
             <img src="../../assets/images/table.png" alt="">
           </div>
           <div class="card-title">
             <el-row class="w-150px">
-                <el-text truncated size="large">{{ item.name }}</el-text>
+                <el-text truncated size="large">{{ item.name }}</el-text>              
+                <span class="card-tip" v-if="item.selected">√</span>
             </el-row>
-            <span class="card-tip" v-if="item.selected">
-              √
-            </span>
+            <div class="icon">
+              <el-tooltip content="查看数据" placement="bottom">
+                <div @click="dialogShow(item)"><el-icon><View /></el-icon></div>
+              </el-tooltip>
+              <el-tooltip content="编辑文件属性" placement="bottom">
+                <div @click="dialogUpdateForm(item)"><el-icon><Edit /></el-icon></div>
+              </el-tooltip>
+              <el-tooltip content="编辑数据集" placement="bottom">
+                <div @click="editMetadata(item)"><el-icon><EditPen /></el-icon></div>
+              </el-tooltip>
+            </div>
           </div>
         </div>
       </div>
@@ -313,37 +319,28 @@ export default {
         displayData.value = []
       })
     };
-    function dialogUpdateForm() {
-      if(!multipleSelection.value || multipleSelection.value.length !== 1) {
-        ElMessage.warning("请选择一条记录进行更新")
-        return
-      }
-
-      updateForm.value.id = multipleSelection.value[0].id
-      updateForm.value.name = multipleSelection.value[0].name
-      updateForm.value.depiction = multipleSelection.value[0].depiction
-      updateForm.value.pid = multipleSelection.value[0].pid
-      
+    function dialogUpdateForm(item:any) { 
+      updateForm.value.id = item.id
+      updateForm.value.name = item.name
+      updateForm.value.depiction = item.depiction
+      updateForm.value.pid = item.pid
       updateDialogVisible.value = true
     }
     function submitUpdateForm() {
+        
         // 处理更新逻辑
         console.log(updateForm.value);
         
         ElMessage.success("更新成功");
     }
-    function dialogShow() {
-      if (!multipleSelection.value || multipleSelection.value.length !== 1) {
-        ElMessage.warning("请选择一条记录进行查看");
-        return;
-      }
+    function dialogShow(item:any) {
       const loadingInstance = ElLoading.service({
         fullscreen: true,
         text: '正在查询文件...',
         background: 'rgba(0, 0, 0, 0.7)'
       });
       
-      getDataById(multipleSelection.value[0].id).then(response => {
+      getDataById(item.id).then(response => {
         headers.value = [...response.data.data.headers];
         rows.value = [...response.data.data.rows];
 
@@ -412,15 +409,11 @@ export default {
       // 重置当前页数为1
       currentPage.value = 1;
     }
-    function editMetadata() {
-      if (multipleSelection.value.length != 1) {
-        ElMessage.warning('请选择一条记录进行编辑')
-        return
-      }
+    function editMetadata(item:any) {
       router.push({
         path: '/workplace/data-editor',
         query: {
-          id : multipleSelection.value[0].id
+          id : item.id
         }
       })
     }
@@ -493,11 +486,10 @@ export default {
 }
 .header-right {
   height: 100%;
-  width: 50%;
+  width: 30%;
   display: flex;
   align-items: center;
 }
-
 .upload {
   width: 100%;
 }
@@ -554,19 +546,33 @@ export default {
 }
 .card-tip {
   width: 25px;
+  height: 18px;
+  font-size: 18px;
   right: 10px;
-  background-color: rgba(93, 217, 251, 0.8);
+  background-color: rgba(94, 194, 241, 0.8);
   color: #fff;
   padding: 4px 8px;
   font-size: 12px;
   border-radius: 4px;
 }
-
 .card-selected {
   background-color: #eaf6ff; /* 设置选中状态的背景色 */
   transform: translateY(-5px); /* 设置选中状态下的卡片偏移效果 */
 }
+.icon {
+  margin-top: 2px;
+  height: 32px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #eaf6ff;
+}
 
+.icon div {
+  margin-left: 10px;
+  margin-right: 10px;
+}
 .pagination {
   width: 100%;
   display: flex;
