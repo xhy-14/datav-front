@@ -3,6 +3,7 @@ enum API {
   LIST = "/app/sql/mysql/my-sql",
   DATABASE = "/app/sql/mysql/get_database/",
   EXECTUTE = "/app/sql/mysql/execute",
+  TEST = "/app/sql/mysql/test",
 }
 
 /**
@@ -14,10 +15,13 @@ export function sqlListAPI() {
 }
 
 export function getDatabaseByIDApi(id: string) {
-  return request.get(API.DATABASE+id)
+  return request.get(API.DATABASE + id)
 }
 
 export function executeApi(data: any) {
   return request.post(API.EXECTUTE, data)
 }
 
+export function testDatabaseConnectionApi(Json: any) {
+  return request.post(API.TEST, Json)
+}
