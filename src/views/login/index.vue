@@ -1,5 +1,5 @@
 <template>
-  <el-container style="height: 98vh;">
+  <el-container class="login-body">
     <el-main style="display: flex; justify-content: center;align-items: center;">
       <div class="input">
         <div class="box">
@@ -38,7 +38,7 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { useUserStore } from '@/store/user'
 import { useRouter } from 'vue-router'
 import { loginAPI } from '@/api/login/index'
-
+import { ElMessage } from 'element-plus'
 const router = useRouter()
 
 interface RuleForm {
@@ -80,45 +80,51 @@ const rules = reactive<FormRules<RuleForm>>({
           return callback(new Error('请输入正确的手机号码'))
         }
 
-            }
-        }
-    ],
-  
+      }
+    }
+  ],
+
+})
+
+const submitForm = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      console.log('执行提交!')
+      toLogin(ruleForm)
+    } else {
+      console.log('提交错误', fields)
+    }
   })
-  
-  const submitForm = async (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-  
-    await formEl.validate((valid, fields) => {
-      if (valid) {
-        console.log('执行提交!')
-        router.push('/')
-        toLogin(ruleForm)
-      } else {
-        console.log('提交错误', fields)
-      }
-    })
-  }
-  
-  
-  const gotoRegister = () => {
-    router.push("/register");
-  }
-  
-  const toLogin = (ruleForm) => {
-    loginAPI(ruleForm).then(function (response) {
-      console.log(response.data);
-      if (response.code == "00000") {
-        localStorage.setItem('token', response.data.token)
-        useUserStore().setUserInfo(response.data.user.name,response.data.user.mobile,response.data.token)
-        router.push("/")
-      }
-  
-    })
-  
-  
-  }
-  </script>
+}
+
+
+const gotoRegister = () => {
+  router.replace("/register");
+}
+
+const toLogin = (ruleForm) => {
+  loginAPI(ruleForm).then(async function (response) {
+    console.log(response.data);
+    if (response.code == "00000") {
+      localStorage.setItem('token', response.data.token)
+      useUserStore().setUserInfo(response.data.user.name, response.data.user.mobile, response.data.token)
+      ElMessage({
+        message: "登陆成功",
+        type: "success"
+      })
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      router.replace("/")
+    } else {
+      ElMessage.error("发生错误请重试")
+    }
+
+  })
+
+
+}
+</script>
   
 <style>
 .input {
@@ -147,7 +153,7 @@ const rules = reactive<FormRules<RuleForm>>({
 
 }
 
-body {
+.login-body {
   background-image: url(@/assets/images/loginBg.png) !important;
   background-size: cover;
   width: 100vw;

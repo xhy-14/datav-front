@@ -44,7 +44,9 @@ import { reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { registerAPI } from '@/api/login/index'
-import { triggerEvent } from 'element-plus/es/utils/index.mjs'
+import { ElMessage } from 'element-plus'
+
+
 
 const router = useRouter()
 
@@ -53,7 +55,6 @@ interface RuleForm {
     password: string
     confirm: string
     mobile: string
-    //    captcha: string
     type: string
 }
 
@@ -64,7 +65,6 @@ const ruleForm = reactive<RuleForm>({
     password: '',
     confirm: '',
     mobile: '',
-    //    captcha: '',
     type: '',
 })
 
@@ -139,11 +139,19 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 }
 
 const toRegister = (ruleForm) => {
-    registerAPI(ruleForm).then(function (response) {
+    registerAPI(ruleForm).then(async function (response) {
         console.log(response.data);
-        if (response.data == 200) {
-            sessionStorage.setItem("isAuthenticated", "true")
-            router.push("/home")
+        if (response.code == "00000") {
+            ElMessage({
+                message: "注册成功，请登录",
+                type: "success"
+            })
+            await new Promise(resolve => setTimeout(resolve, 2000)); //等待2秒
+            router.push("/login")
+        } else if (response.code == "A0111") {
+            ElMessage.error('手机号已被注册')
+        } else {
+            ElMessage.error('非法操作')
         }
 
     })
