@@ -12,7 +12,7 @@
               <Edit />
             </el-icon>我的信息
           </el-menu-item>
-          <el-menu-item index="/workplace/data/source">
+          <el-menu-item @click="toData()">
             <el-icon>
               <Coin />
             </el-icon>数据源
@@ -57,6 +57,9 @@ export default {
   methods: {
     toDashboard() {
       this.$router.replace("/dashboard")
+    },
+    toData() {
+      this.$router.replace("/datasource")
     }
   }
 };

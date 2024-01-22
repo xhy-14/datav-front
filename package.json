@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
+    "@grapecity/spread-sheets": "^17.0.2",
+    "@grapecity/spread-sheets-vue": "^17.0.2",
     "@vueuse/core": "^10.7.1",
     "ace-builds": "^1.32.3",
     "axios": "^1.6.3",
@@ -22,6 +24,8 @@
     "pinia-plugin-persistedstate": "^3.2.1",
     "vue": "^3.3.11",
     "vue-draggable-plus": "^0.3.5",
+    "vue-grid-layout": "^2.4.0",
+    "vue-resizable": "^2.1.7",
     "vue-router": "^4.2.5",
     "vue3-ace-editor": "^2.2.4"
   },

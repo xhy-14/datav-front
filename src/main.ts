@@ -9,9 +9,9 @@ import router from './router'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import * as Icons from '@element-plus/icons-vue'
-
+import VueResizable from 'vue-resizable'
 const app = createApp(App)
-
+app.component('vue-resizable', VueResizable)
 // 配置element-plus组件库
 app.use(ElementPlus, {
   locale: zhCn,

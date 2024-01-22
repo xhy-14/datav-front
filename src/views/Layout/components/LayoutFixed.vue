@@ -7,7 +7,7 @@
           <img style="width: 130px;height: 35px;position: relative;top: 17px;" src="@\assets\images\logo.jpg" alt="logo" />
       </a>
       <div class="flex-grow" />
-      <RouterLink to="/recent" class="text">进入工作台</RouterLink>
+      <RouterLink to="/workplace" class="text">进入工作台</RouterLink>
       <RouterLink to="/visual" class="text">新建文件</RouterLink>
       <a href="/my" class="text">我的目录</a>
       <el-sub-menu style="right: 100px;position: relative;" class="menu__title" index="2">
