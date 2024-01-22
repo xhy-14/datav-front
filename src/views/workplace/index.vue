@@ -35,7 +35,7 @@
           <el-menu-item @click="toDashboard()">
             <el-icon>
               <DataBoard />
-            </el-icon>看台
+            </el-icon>画布
           </el-menu-item>
         </el-menu>
       </div>

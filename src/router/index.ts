@@ -107,6 +107,10 @@ const routes = [
   {
     path: '/data-editor',
     component: () => import("@/views/workplace/DataEditor.vue")
+  },
+  {
+    path: '/pay',
+    component: () => import("@/views/order/Submit.vue")
   }
 ]
 

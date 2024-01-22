@@ -93,13 +93,12 @@ export default {
       canvacStyle: {
         backgroundColor: "#fffff",
         backgroundImage: ""
-      }
+      },
+      dashboardData: {}
     };
   },
   methods: {
-    exportImage() {
-      
-    },
+    exportImage() {},
     toHome() {
       this.$router.replace("/workplace");
     },
@@ -111,67 +110,114 @@ export default {
     deal(event) {
       event.preventDefault();
     },
+    /**
+     * 图表移动
+     * @param {*} node 
+     */
+    move(node) {
+      node.addEventListener("mousedown", e=>{
+        let px = e.clientX
+        let py = e.clientY
+        let dashboard = document.getElementById('canvas')
+        document.onmousemove = e => {
+          let mx = e.clientX;
+          let my = e.clientY;
+          let dx = mx - px;
+          let dy = my - py;
+          let offsetX = parseInt(node.style.left)
+          let offsetY = parseInt(node.style.top)
+          node.style.left = offsetX + dx + "px";
+          node.style.top = offsetY + dy + "px";
+          px = mx;
+          py = my;
+        }
+        document.onmouseup = e => {
+          document.onmousemove = null;
+        }
+      })
+    },
+    changeSize(node, echart) {
+      node.addEventListener("mousedown", e => {
+        let px = e.clientX
+        let py = e.clientY
+        document.onmousemove = e => {
+          let mx = e.clientX;
+          let my = e.clientY;
+          let dx = mx - px;
+          let dy = my - py;
+          let width = parseInt(node.style.width)
+          let height = parseInt(node.style.height)
+          node.style.width = width + dx + "px";
+          node.style.height = height + dy + "px";
+          echart.resize(width + dx, height + dy);
+          px = mx;
+          py = my;
+        }
+        document.onmouseup = e => {
+          document.onmousemove = null;
+        }
+      })
+    },
     handleDraw(event) {
       let again = event.dataTransfer.getData("again");
-      if (again == "false") {
-        let config = JSON.parse(event.dataTransfer.getData("config"));
-        let option = config.option;
-        let parent = document.createElement("div");
-        // 创建一个节点放入画板
-        let div = document.createElement("div");
-        div.id = "chart-item-" + config.id;
-        div.style.position = "absolute";
-        div.style.left = event.clientX + "px";
-        div.style.top = event.clientY + "px";
-        div.style.width = "500px";
-        div.style.height = "300px";
-        div.draggable = "true";
-        div.padding = "10px";
+      let config = JSON.parse(event.dataTransfer.getData("config"));
+      let option = config.option;
+      let parent = document.createElement("div");
+      // 创建一个节点放入画板
+      let div = document.createElement("div");
+      let echart = null;
+      div.id = "chart-item-" + config.id;
+      div.style.position = "absolute";
+      div.style.left = event.clientX + "px";
+      div.style.top = event.clientY + "px";
+      div.style.width = "500px";
+      div.style.height = "300px";
+      div.padding = "10px";
+      div.style.border = "1px dashed white";
+
+      div.addEventListener("mouseenter", e => {
+        div.style.border = "1px dashed black";
+        let width = e.target.style.width;
+        let height = e.target.style.width;
+        let mouseX = e.clientX;
+        let mouseY = e.clientY;
+
+        // 左上角位置
+        let divLeft = parseInt(e.target.style.left);
+        let divTop = parseInt(e.target.style.top);
+
+        // 右下角
+        let divRight = divLeft + parseInt(width);
+        let divBottom = divTop + parseInt(height);
+
+        // 在右下角盒子
+        if (
+          Math.abs(divRight - mouseX) < 200 &&
+          Math.abs(divBottom - mouseY) < 300
+        ) {
+          // 改变大小
+          console.log("改变大小");
+          div.style.cursor = "left";
+          this.changeSize(div, echart)
+        } else {
+          // 在右下角拉伸盒子
+          div.style.cursor = "move";
+          this.move(div)
+        }
+      });
+
+      div.addEventListener("mouseleave", e => {
         div.style.border = "1px dashed white";
-        div.addEventListener("dragstart", e => {
-          e.dataTransfer.setData("config", JSON.stringify(config));
-          e.dataTransfer.setData("again", true);
-          e.dataTransfer.setData("id", div.id);
-        });
+      });
+      // 设置一个改变大小的
+      let changeSizeDiv = document.createElement("div");
+      changeSizeDiv.className = "change-size";
 
-        div.addEventListener("mouseenter", e => {
-          div.style.border = "1px dashed black";
-          let width = e.target.style.width;
-          let height = e.target.style.width;
-          let mouseX = e.clientX;
-          let mouseY = e.clientY;
-          let divLeft = parseInt(e.target.style.left);
-          let divTop = parseInt(e.target.style.top);
+      parent.appendChild(div);
+      event.target.appendChild(parent);
 
-          let dx = divLeft + parseInt(width);
-          let dy = divTop + parseInt(height);
-          if (Math.abs(dx - mouseX) < 200 && Math.abs(dy - mouseY) < 400) {
-            e.preventDefault();
-            e.target.addEventListener("mousedown", ce => {
-              let echart = echarts.init(document.getElementById(e.target.id));
-              echart.resize(500, 500);
-              echart.setOption(option);
-            });
-          }
-        });
-
-        div.addEventListener("mouseleave", e => {
-          div.style.border = "1px dashed white";
-        });
-        // 设置一个改变大小的
-        let changeSizeDiv = document.createElement("div");
-        changeSizeDiv.className = "change-size";
-
-        parent.appendChild(div);
-        event.target.appendChild(parent);
-
-        echarts.init(document.getElementById(div.id)).setOption(option);
-      } else {
-        let id = event.dataTransfer.getData("id");
-        let div = document.getElementById(id);
-        div.style.left = event.clientX + "px";
-        div.style.top = event.clientY + "px";
-      }
+      echart = echarts.init(document.getElementById(div.id))
+      echart.setOption(option);
     },
     dragStart(event, index) {
       event.dataTransfer.setData(
@@ -203,12 +249,14 @@ export default {
   align-items: center;
   background-color: white;
   border-bottom: 1px solid #ccc;
+
 }
 
 .dashboard {
   background-color: #ffffff;
   width: 95%;
   height: 95%;
+  overflow: hidden;
 }
 
 .item-1 {
