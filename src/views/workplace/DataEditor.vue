@@ -97,21 +97,23 @@ export default {
   flex-direction: column;
 }
 .button-container {
-  width: 90%;
-  height: 5%;
+  width: 1200px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: end;
 }
 
 .table-container {
-  width: 90%;
-  height: 85%;
+  width: 1200px;
+  height: 600px;
+  max-height: 600px;
   margin-top: 10px;
 }
 
 .table {
-  height: fit-content;
-  width: fit-content;
+  width: 1200px;
+  max-height: 550px;
+  overflow: auto;
 }
 </style>
