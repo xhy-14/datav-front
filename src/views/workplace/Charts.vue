@@ -5,7 +5,9 @@
       <div class="header-left">
         <el-input v-model="inputSearch" size="large" placeholder="请输入...">
           <template #append>
-            <el-button type="primary" @click="submitSearchForm">搜索</el-button>
+            <el-button type="primary" 
+            style="color: white;height: 100%;background-color: rgb(64, 158, 255);border-top-left-radius: 0px;border-bottom-left-radius: 0px;" 
+            @click="submitSearchForm">搜索</el-button>
           </template>
         </el-input>
       </div>
@@ -13,14 +15,16 @@
         <el-button type="primary" size="large" @click="gotoWorkPlace()">添加</el-button>
         <!-- <el-button type="primary" size="large">编辑</el-button> -->
         <el-button type="primary" size="large" @click="dialogShow">查看</el-button>
-        <el-button type="danger" size="large">删除</el-button>
+        <el-button type="danger" size="large" @click="deleteComfirm">删除</el-button>
       </div>
     </div>
 
     <div class="main">
       <div class="card-container">
         <div v-for="item in displayData" :key="item.id" :class="['card', { 'card-selected': item.selected }]" @click="handleCardClick(item)">
-          <div class="card-image">这里到时候放一个image作为封面</div>
+          <div class="card-image">
+            <img src="../../assets/images/chart.png" alt="">
+          </div>
           <div class="card-title">
             <el-row class="w-150px">
               <el-text truncated size="large">{{ item.name }}</el-text>
@@ -39,16 +43,30 @@
       </div>
     </div>
 
-    <el-dialog v-model="chartDialogVisible" align-center class="chart-dialog">
+    <el-dialog @close="closeShow" v-model="chartDialogVisible" align-center class="chart-dialog">
       <div id="chartcontainer" style="width: 500px;height: 500px;">
 
       </div>
     </el-dialog>
+
+    <!-- 删除提示 -->
+    <el-dialog v-model="deleteWarning" width="30%" align-center >
+      <span>确认删除所选项？</span>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="deleteWarning = false">取消</el-button>
+          <el-button type="primary" @click="deleteExcute()">
+            确认
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
+
   </div>
 </template>
 
 <script lang="ts">
-import { getMyChartList } from '@/api/data/data.ts'
+import { getMyChartList, deleteChartById } from '@/api/data/data.ts'
 import { ElMessage } from 'element-plus'
 import { ref, onMounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
@@ -73,6 +91,7 @@ export default {
     let tableData = reactive<ChartItem[]>([])
     let multipleSelection = ref<ChartItem[]>([])
     let chartDialogVisible = ref(false)
+    let deleteWarning = ref(false)
 
     onMounted(() => {
       initData()
@@ -101,6 +120,11 @@ export default {
         }
       }
     };
+    function closeShow() {
+        const chartContainer = document.getElementById('chartcontainer');
+        const chart = echarts.init(chartContainer);
+        chart.clear()
+    }
     function dialogShow() {
       if(!multipleSelection.value || multipleSelection.value.length !== 1) {
         ElMessage.warning("请选择一条记录进行查看")
@@ -147,6 +171,21 @@ export default {
         displayData.value = getDisplayData()
       }
     };
+    function deleteComfirm() {
+      if (multipleSelection.value.length > 0) { // 检查是否有选中项
+        deleteWarning.value = true // 显示删除确认对话框
+      } else {
+        ElMessage.warning('请先选择要删除的项')
+      }
+    }
+    function deleteExcute() {
+      deleteWarning.value = false // 隐藏删除确认对话框
+      // 执行删除操作
+      multipleSelection.value.forEach(item => {
+        deleteChartById(item.id);
+      })
+      ElMessage.success('删除成功')
+    }
     return {
       gotoWorkPlace,
       pageSize,
@@ -154,9 +193,13 @@ export default {
       inputSearch,
       displayData,
       chartDialogVisible,
+      deleteWarning,
       handleCardClick,
       dialogShow,
-      submitSearchForm
+      submitSearchForm,
+      closeShow,
+      deleteComfirm,
+      deleteExcute
     }
   }
 }
@@ -180,6 +223,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: 10px;
 }
 .header-right {
   height: 100%;
