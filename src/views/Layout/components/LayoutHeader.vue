@@ -17,7 +17,7 @@
       </a>
       <div class="flex-grow" />
       <a href="/login" class="text">登录</a>
-      <RouterLink to="/workplace" class="text">进入工作台</RouterLink>
+      <RouterLink to="/visual" class="text">新建文件</RouterLink>
     </el-menu>
   </el-header>
 
@@ -45,7 +45,7 @@
       </a>
       <div class="flex-grow" />
       <a href="/login" class="text">登录</a>
-      <RouterLink to="/" class="text">Dashboard</RouterLink>
+      <RouterLink to="/visual" class="text">新建文件</RouterLink>
     </el-menu>
   </el-header>
 </template>

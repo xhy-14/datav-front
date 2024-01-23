@@ -25,7 +25,7 @@
         </a>
         <div class="flex-grow" />
         <a href="/login" class="text">登录</a>
-        <RouterLink to="/" class="text">Dashboard</RouterLink>
+        <RouterLink to="/visual" class="text">新建文件</RouterLink>
       </el-menu>
     </el-header>
   </div>
@@ -45,7 +45,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
 }
 const logout = () => {
-  localStorage.removeItem("token")
+  localStorage.removeItem("user")
   useUserStore().$reset
   router.replace('/login')
   ElMessage({
