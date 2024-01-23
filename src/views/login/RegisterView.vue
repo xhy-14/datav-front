@@ -129,10 +129,8 @@ const toRegister = async (formEl: FormInstance | undefined) => {
                     })
                     await new Promise(resolve => setTimeout(resolve, 2000)); //等待2秒
                     router.replace("/login")
-                } else if (response.code == "A0111") {
-                    ElMessage.error('手机号已被注册')
                 } else {
-                    ElMessage.error('非法操作')
+                    ElMessage.error(response.msg)
                 }
 
             })
@@ -142,7 +140,7 @@ const toRegister = async (formEl: FormInstance | undefined) => {
     })
 }
 
-const submitForm = debounce(toRegister, 800)
+const submitForm = debounce(toRegister, 400)
 
 </script>
 
