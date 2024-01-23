@@ -21,28 +21,6 @@ const routes = [
       },
 
       {
-        path: '/recent',
-        component: () => import("@/views/my/RecentView.vue")
-      },
-      {
-        path: '/my',
-        redirect: '/my/recent',
-        component: () => import("@/views/my/MyIndexView.vue"),
-        meta: { title: '我的' },
-        children: [
-          {
-            path: '/my/recent',
-            component: () => import("@/views/my/recent/RecentEdit.vue"),
-            meta: { title: "最近编辑" },
-          },
-          {
-            path: '/my/file',
-            component: () => import("@/views/my/MyFile.vue"),
-            meta: { title: "我的文件" }
-          }
-        ]
-      },
-      {
         path: '/workplace',
         component: () => import("@/views/workplace/index.vue"),
         redirect: '/workplace/project',

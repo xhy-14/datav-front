@@ -1,12 +1,12 @@
 import { defineConfig } from 'vite'
-import {createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import path from 'path'
 import { viteMockServe } from 'vite-plugin-mock'
 
 import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
-export default ({command}) => {
+export default ({ command }) => {
   return {
     plugins: [
       vue(),
@@ -35,6 +35,13 @@ export default ({command}) => {
           additionalData: `@import "@/styles/variables.scss";`,
         },
       },
+    },
+    build: {
+      rollupOptions: {
+        external: [
+          "html2canvas"
+        ]
+      }
     },
   }
 }
