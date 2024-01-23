@@ -1,19 +1,19 @@
 <template>
   <el-header v-if="router.currentRoute.value.path == '/'" style="height: 160px; padding: 0%; z-index: 999;">
-    <el-menu v-if = "user.token !='' " style="position: absolute;height: 160px;" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false"
-      @select="handleSelect">
+    <el-menu v-if="user.token != ''" style="position: absolute;height: 160px;" :default-active="activeIndex"
+      class="el-menu-demo" mode="horizontal" :ellipsis="false" @select="handleSelect">
       <a href="/" style="height: 100%; position: relative; left: 138px;">
-          <img style="width: 182px;height: 59px;position: relative;top: 55px;" src="@\assets\images\logo.jpg" alt="logo" />
+        <img style="width: 182px;height: 59px;position: relative;top: 55px;" src="@\assets\images\logo.jpg" alt="logo" />
       </a>
       <div class="flex-grow" />
       <RouterLink to="/my" class="text">我的目录</RouterLink>
       <RouterLink to="/" class="text">Dashboard</RouterLink>
     </el-menu>
 
-    <el-menu v-else style="position: absolute;height: 160px;" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false"
-      @select="handleSelect">
+    <el-menu v-else style="position: absolute;height: 160px;" :default-active="activeIndex" class="el-menu-demo"
+      mode="horizontal" :ellipsis="false" @select="handleSelect">
       <a href="/" style="height: 100%; position: relative; left: 138px;">
-          <img style="width: 182px;height: 59px;position: relative;top: 55px;" src="@\assets\images\logo.jpg" alt="logo" />
+        <img style="width: 182px;height: 59px;position: relative;top: 55px;" src="@\assets\images\logo.jpg" alt="logo" />
       </a>
       <div class="flex-grow" />
       <a href="/login" class="text">登录</a>
@@ -21,27 +21,27 @@
     </el-menu>
   </el-header>
 
-  <el-header v-else style="height: 70px; padding: 0%;" >
-    <el-menu v-if = "user.token !='' " style="height: 70px;" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false"
-      @select="handleSelect">
+  <el-header v-else style="height: 70px; padding: 0%;">
+    <el-menu v-if="user.token != ''" style="height: 70px;" :default-active="activeIndex" class="el-menu-demo"
+      mode="horizontal" :ellipsis="false" @select="handleSelect">
       <a href="/" style="height: 100%; position: relative; left: 138px;">
-          <img style="width: 130px;height: 35px;position: relative;top: 17px;" src="@\assets\images\logo.jpg" alt="logo" />
+        <img style="width: 130px;height: 35px;position: relative;top: 17px;" src="@\assets\images\logo.jpg" alt="logo" />
       </a>
       <div class="flex-grow" />
       <RouterLink to="/workplace" class="text">进入工作台</RouterLink>
       <RouterLink to="/visual" class="text">新建文件</RouterLink>
       <a href="/my" class="text">我的目录</a>
       <el-sub-menu style="right: 100px;position: relative;" class="menu__title" index="2">
-      <template #title>Workspace</template>
-      <el-menu-item index="2-1"><a href="/account" class=" menu_item">设置</a></el-menu-item>
-      <el-menu-item index="2-2"><RouterLink to="/" class="menu_item">Logout</RouterLink></el-menu-item>
+        <template #title>Workspace</template>
+        <el-menu-item index="2-1"><a href="/account" class=" menu_item">设置</a></el-menu-item>
+        <el-menu-item index="2-2" @click="logout">LogOut</el-menu-item>
 
-    </el-sub-menu>
+      </el-sub-menu>
     </el-menu>
-    <el-menu v-else style="height: 70px;" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false"
-      @select="handleSelect">
+    <el-menu v-else style="height: 70px;" :default-active="activeIndex" class="el-menu-demo" mode="horizontal"
+      :ellipsis="false" @select="handleSelect">
       <a href="/" style="height: 100%; position: relative; left: 138px;">
-          <img style="width: 130px;height: 35px;position: relative;top: 17px;" src="@\assets\images\logo.jpg" alt="logo" />
+        <img style="width: 130px;height: 35px;position: relative;top: 17px;" src="@\assets\images\logo.jpg" alt="logo" />
       </a>
       <div class="flex-grow" />
       <a href="/login" class="text">登录</a>
@@ -53,18 +53,28 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useUserStore } from '@/store/user';
-import { useRouter  } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { onMounted } from 'vue'
+import { ElMessage } from 'element-plus'
 
 const router = useRouter()
-onMounted(()=>{
-        //当前路由路径名称
-        console.log(router.currentRoute.value.path)
-      })
+onMounted(() => {
+  //当前路由路径名称
+  console.log(router.currentRoute.value.path)
+})
 const user = useUserStore().userInfo
 const activeIndex = ref('1')
 const handleSelect = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
+}
+const logout = () => {
+  localStorage.removeItem("token")
+  useUserStore().$reset
+  router.replace('/login')
+  ElMessage({
+    message: "登出成功",
+    type: "success"
+  })
 }
 
 
@@ -76,6 +86,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
   z-index: 99 !important;
 
 }
+
 .flex-grow {
   flex-grow: 1;
 }

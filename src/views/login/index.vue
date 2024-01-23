@@ -39,14 +39,13 @@ import { useUserStore } from '@/store/user'
 import { useRouter } from 'vue-router'
 import { loginAPI } from '@/api/login/index'
 import { ElMessage } from 'element-plus'
+import { debounce } from '@/utils/DebounceThrottle'
 const router = useRouter()
 
 interface RuleForm {
   username: string
   password: string
   mobile: string
-  captcha: string
-  type: string
 }
 
 const formSize = ref('default')
@@ -55,8 +54,6 @@ const ruleForm = reactive<RuleForm>({
   username: '',
   password: '',
   mobile: '',
-  captcha: '',
-  type: '',
 })
 
 const rules = reactive<FormRules<RuleForm>>({
@@ -79,50 +76,43 @@ const rules = reactive<FormRules<RuleForm>>({
         } else {
           return callback(new Error('请输入正确的手机号码'))
         }
-
       }
     }
   ],
 
 })
 
-const submitForm = async (formEl: FormInstance | undefined) => {
+const login = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
-
-  await formEl.validate((valid, fields) => {
+  await formEl.validate(async (valid, fields) => {
+    console.log(fields)
+    console.log(ruleForm, "rule")
     if (valid) {
       console.log('执行提交!')
-      toLogin(ruleForm)
+      loginAPI(ruleForm).then(function (response) {
+        if (response.code == "00000") {
+          localStorage.setItem('token', response.data.token)
+          useUserStore().setUserInfo(response.data.user.name, response.data.user.mobile, response.data.token)
+          ElMessage({
+            message: "登陆成功",
+            type: "success"
+          })
+          setTimeout(() => {
+            router.replace("/")
+          }, 1000)
+        }
+      }).catch(() => { ElMessage.error("发生错误，请稍后重试") })
     } else {
       console.log('提交错误', fields)
     }
   })
 }
 
+const submitForm = debounce(login, 800)
+
 
 const gotoRegister = () => {
   router.replace("/register");
-}
-
-const toLogin = (ruleForm) => {
-  loginAPI(ruleForm).then(async function (response) {
-    console.log(response.data);
-    if (response.code == "00000") {
-      localStorage.setItem('token', response.data.token)
-      useUserStore().setUserInfo(response.data.user.name, response.data.user.mobile, response.data.token)
-      ElMessage({
-        message: "登陆成功",
-        type: "success"
-      })
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      router.replace("/")
-    } else {
-      ElMessage.error("发生错误请重试")
-    }
-
-  })
-
-
 }
 </script>
   
