@@ -17,6 +17,9 @@ request.interceptors.request.use(
   },
   (error) => {
     // 对请求错误做些什么
+    if(error.response.status === 401) {
+      this.$router.push('/login')
+    }
     return Promise.reject(error)
   }
 )

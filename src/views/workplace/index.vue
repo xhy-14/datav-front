@@ -3,15 +3,10 @@
     <div class="workplace-box">
       <div class="workplace-menu">
         <el-menu
-          default-active="/workplace/info"
+          default-active="/workplace/project"
           class="el-menu-vertical-demo"
           :router="true"
         >
-          <el-menu-item index="/workplace/info">
-            <el-icon>
-              <Edit />
-            </el-icon>我的信息
-          </el-menu-item>
           <el-menu-item @click="toData()">
             <el-icon>
               <Coin />

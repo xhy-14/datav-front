@@ -2,7 +2,10 @@
   <div class="view">
     <div class="nav">
       <h2 style="margin-left: 50px;">数据源</h2>
-      <el-button @click="toWorkplace()">返回工作台</el-button>
+      <div>
+        <el-button @click="addDialogVisible = true">添加数据源</el-button>
+        <el-button @click="toWorkplace()">返回工作台</el-button>
+      </div>
     </div>
     <div class="data-source">
       <div class="data-source-view">
@@ -154,6 +157,82 @@
           </el-row>
         </el-form>
       </el-dialog>
+
+      <el-dialog v-model="addDialogVisible" title="上传数据集" width="35%">
+        <el-form label-width="100px" :model="uploadData" style="max-width: 560px">
+          <el-row class="form-item" :gutter="20">
+            <h2>数据连接名</h2>
+            <el-input
+              v-model="addDataSource.name"
+              class="w-50 m-2"
+              placeholder="数据集名"
+            />
+          </el-row>
+
+          <el-row class="form-item" :gutter="20">
+            <h2>数据库名</h2>
+            <el-input
+              v-model="addDataSource.database"
+              class="w-50 m-2"
+              placeholder="数据集名"
+            />
+          </el-row>
+
+          <el-row class="form-item" :gutter="20">
+            <h2>数据库ip</h2>
+            <el-input
+              v-model="addDataSource.ip"
+              class="w-50 m-2"
+              placeholder="数据集名"
+            />
+          </el-row>
+
+          <el-row class="form-item" :gutter="20">
+            <h2>数据库端口</h2>
+            <el-input
+              v-model="addDataSource.port"
+              class="w-50 m-2"
+              placeholder="数据集名"
+            />
+          </el-row>
+
+          <el-row class="form-item" :gutter="20">
+            <h2>用户名</h2>
+            <el-input
+              v-model="addDataSource.username"
+              class="w-50 m-2"
+              placeholder="数据集名"
+            />
+          </el-row>
+
+          <el-row class="form-item" :gutter="20">
+            <h2>密码</h2>
+            <el-input
+              v-model="addDataSource.password"
+              class="w-50 m-2"
+              placeholder="数据集名"
+            />
+          </el-row>
+
+          <el-row :gutter="20" class="form-item">
+            <h2>mysql版本</h2>
+            <div>
+              <el-select
+                v-model="addDataSource.mysql8"
+                placeholder="选择所属项目"
+                style="margin-left: 20px; display: block;"
+              >
+                <el-option label="mysql5+" value="false" />
+                <el-option label="mysql8+" value="true" />
+              </el-select>
+            </div>
+          </el-row>
+          <el-row :gutter="16" class="form-item-submit">
+            <el-button @click="testConnection()" type="primary">测试</el-button>
+            <el-button @click="saveDataSource()" type="primary">保存连接</el-button>
+          </el-row>
+        </el-form>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -162,7 +241,7 @@
 /**
  *
  */
-import { getDatabaseByIDApi, sqlListAPI, executeApi } from "@/api/sql/index.ts";
+import { getDatabaseByIDApi, sqlListAPI, executeApi, testDatabaseConnectionApi, saveDatabaseConnectionApi } from "@/api/sql/index.ts";
 import { VAceEditor } from "vue3-ace-editor";
 import ace from "ace-builds";
 import "ace-builds/src-noconflict/mode-sql";
@@ -191,7 +270,18 @@ export default {
       database: {},
       headers: [],
       selectHeader: [],
+      addDataSource: {
+        database: "数据库名",
+        id: 0,
+        ip: "服务器IP地址",
+        mysql8: true,
+        name: "数据库连接名",
+        password: "密码",
+        port: "端口",
+        username: "用户名"
+      },
       content: "",
+      addDialogVisible: false,
       saveDataForm: {
         data: {
           headers: [{}],
@@ -238,6 +328,42 @@ export default {
     },
     toWorkplace() {
       this.$router.replace("/workplace");
+    },
+    testConnection() {
+      const loadingInstance = ElLoading.service({
+        fullscreen: true,
+        text: "正在创建数据集...",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      testDatabaseConnectionApi(this.addDataSource).then(res=>{
+        if(res.code == '00000') {
+          this.$message.success("连接成功");
+        } else {
+          this.$message.error("连接失败");
+        }
+        loadingInstance.close();
+      }).catch(err=>{
+        this.$message.error("连接失败");
+        loadingInstance.close();
+      })
+    },
+    saveDataSource(){
+      const loadingInstance = ElLoading.service({
+        fullscreen: true,
+        text: "正在创建数据集...",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      saveDatabaseConnectionApi(this.addDataSource).then(res=>{
+        if(res.code == '00000') {
+          this.$message.success("连接成功");
+        } else {
+          this.$message.error("连接失败");
+        }
+        loadingInstance.close();
+      }).catch(err=>{
+        this.$message.error("连接失败");
+        loadingInstance.close();
+      })
     },
     /**
      * 执行sql语句

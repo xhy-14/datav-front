@@ -3,7 +3,7 @@
     <div class="title">
       <h2 style="margin-left: 170px;">绘制你的仪表盘</h2>
       <div style="margin-right: 170px;">
-        <el-button type="primary">保存</el-button>
+        <el-button @click="exportImage()" type="primary">生成图片</el-button>
         <el-button @click="toHome()" style="margin-left: 25px;">取消</el-button>
       </div>
     </div>
@@ -56,9 +56,10 @@
           <el-upload
             class="upload-demo"
             drag
-            action="http://112.124.59.107:8080/renren-fast/app/table/data/file"
+            action="http://127.0.0.1:8080/renren-fast/common/file/upload-other"
             multiple
-            :on-error="handleError" :on-success="handleSuccess"
+            :on-error="handleError"
+            :on-success="handleSuccess"
           >
             <el-icon class="el-icon--upload">
               <upload-filled />
@@ -71,9 +72,6 @@
               <div class="el-upload__tip">请上传png/jpge格式图片</div>
             </template>
           </el-upload>
-          <div class="change-img">
-            <el-button style="margin-top: 10px;" @click="changeImg()" type="success">设置</el-button>
-          </div>
         </div>
         <div id="test"></div>
       </div>
@@ -84,6 +82,7 @@
 <script>
 import { ChartListApi } from "@/api/chart/chart";
 import * as echarts from "echarts";
+import html2canvas from "html2canvas";
 import {
   Delete,
   Edit,
@@ -111,10 +110,24 @@ export default {
     handleError() {
       this.$message.error("上传失败");
     },
-    handleSuccess(response) {
-      console.log(response);
+    handleSuccess(response, file) {
+      this.$refs.dashboard.style.backgroundImage = `url(${response.data.path})`;
     },
-    exportImage() {},
+    exportImage() {
+      html2canvas(this.$refs.dashboard).then(function(canvas) {
+        let imgURI = canvas.toDataURL("image/png");
+        // 下载图片
+        let link = document.createElement("a");
+        link.href = imgURI;
+        link.download = "myImage.png";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // 清理blob对象
+        DOMURL.revokeObjectURL(img.src);
+      });
+    },
     toHome() {
       this.$router.replace("/workplace");
     },
@@ -150,6 +163,11 @@ export default {
         };
       });
     },
+    /**
+     * 改变大小
+     * @param {*} node
+     * @param {*} echart
+     */
     changeSize(node, echart) {
       node.addEventListener("mousedown", e => {
         let px = e.clientX;
@@ -243,7 +261,6 @@ export default {
     },
     changeImg() {
       this.$refs.dashboard.style.backgroundImage = `url(${this.dashboardConfig.backgroundImage})`;
-      console.log(this.$refs.dashboard.style.backgroundImage);
     }
   },
   mounted() {
