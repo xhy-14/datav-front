@@ -4,6 +4,7 @@ enum API {
   DATABASE = "/app/sql/mysql/get_database/",
   EXECTUTE = "/app/sql/mysql/execute",
   TEST = "/app/sql/mysql/test",
+  SAVE = "/app/sql/mysql/save"
 }
 
 /**
@@ -24,4 +25,8 @@ export function executeApi(data: any) {
 
 export function testDatabaseConnectionApi(Json: any) {
   return request.post(API.TEST, Json)
+}
+
+export function saveDatabaseConnectionApi(Json: any) {
+  return request.post(API.SAVE, Json)
 }

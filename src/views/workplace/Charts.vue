@@ -46,7 +46,9 @@
 
     <el-dialog @close="closeShow" v-model="chartDialogVisible" align-center class="chart-dialog">
       <div id="chartcontainer" style="width: 500px;height: 500px;">
-
+      </div>
+      <div class="export-button-container">
+        <el-button @click="exportChart">导出为图片</el-button>
       </div>
     </el-dialog>
 
@@ -128,7 +130,7 @@ export default {
     }
     function dialogShow(item:any) {
       chartDialogVisible.value = true
-
+      
       setTimeout(() => {
         // 初始化echarts图表
         const chartContainer = document.getElementById('chartcontainer');
@@ -140,6 +142,7 @@ export default {
         // 设置echarts的配置选项
         const chartOption = selectedChart.option;
         chart.setOption(chartOption);
+        
       }, 100);
     }
     function submitUpdateForm() {
@@ -183,7 +186,24 @@ export default {
       })
       ElMessage.success('删除成功')
     }
+    function exportChart() {
+      // 初始化echarts图表
+      const chartContainer = document.getElementById('chartcontainer');
+      const chart = echarts.init(chartContainer);
+
+      // 设置图表背景颜色为白色
+      chart.setOption({
+        backgroundColor: '#ffffff' // 设置为白色，可以根据需要调整颜色值
+      });
+
+      const imageData = chart.getDataURL(chart.getOption());
+      var link = document.createElement('a');
+      link.href = imageData;
+      link.download = 'chart.jpg';
+      link.click();
+    }
     return {
+      exportChart,
       gotoWorkPlace,
       pageSize,
       currentPage,
@@ -317,5 +337,10 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.export-button-container{
+  width: 100%;
+  display: flex;
+  justify-content: end;
 }
 </style>

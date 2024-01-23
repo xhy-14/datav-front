@@ -2,7 +2,10 @@
   <div class="view">
     <div class="nav">
       <h2 style="margin-left: 50px;">数据源</h2>
-      <el-button @click="toWorkplace()">返回工作台</el-button>
+      <div>
+        <el-button @click="addDialogVisible = true">添加数据源</el-button>
+        <el-button @click="toWorkplace()">返回工作台</el-button>
+      </div>
     </div>
     <div class="data-source">
       <div class="data-source-view">
@@ -93,7 +96,10 @@
           <div class="data-show">
             <div class="data-show-title" style="height: 20%;">
               <div class="header">
-                <h2>代码执行结果:</h2>
+                <h2>执行结果:</h2>
+                <el-scrollbar height="100%" width="100%">
+                  <div>{{ message }}</div>
+                </el-scrollbar>
                 <el-button @click="dialogVisible = true" type="primary">添加数据集</el-button>
               </div>
             </div>
@@ -127,7 +133,83 @@
           </el-row>
 
           <el-row :gutter="16" class="form-item-submit">
-            <el-button @click="save()" type="primary">Primary</el-button>
+            <el-button @click="save()" type="primary">保存</el-button>
+          </el-row>
+        </el-form>
+      </el-dialog>
+
+      <el-dialog v-model="addDialogVisible" title="上传数据集" width="35%">
+        <el-form label-width="100px" :model="uploadData" style="max-width: 560px">
+          <el-row class="form-item" :gutter="20">
+            <h2>数据连接名</h2>
+            <el-input
+              v-model="addDataSource.name"
+              class="w-50 m-2"
+              placeholder="数据集名"
+            />
+          </el-row>
+
+          <el-row class="form-item" :gutter="20">
+            <h2>数据库名</h2>
+            <el-input
+              v-model="addDataSource.database"
+              class="w-50 m-2"
+              placeholder="数据集名"
+            />
+          </el-row>
+
+          <el-row class="form-item" :gutter="20">
+            <h2>数据库ip</h2>
+            <el-input
+              v-model="addDataSource.ip"
+              class="w-50 m-2"
+              placeholder="数据集名"
+            />
+          </el-row>
+
+          <el-row class="form-item" :gutter="20">
+            <h2>数据库端口</h2>
+            <el-input
+              v-model="addDataSource.port"
+              class="w-50 m-2"
+              placeholder="数据集名"
+            />
+          </el-row>
+
+          <el-row class="form-item" :gutter="20">
+            <h2>用户名</h2>
+            <el-input
+              v-model="addDataSource.username"
+              class="w-50 m-2"
+              placeholder="数据集名"
+            />
+          </el-row>
+
+          <el-row class="form-item" :gutter="20">
+            <h2>密码</h2>
+            <el-input
+              v-model="addDataSource.password"
+              class="w-50 m-2"
+              placeholder="数据集名"
+            />
+          </el-row>
+
+          <el-row :gutter="20" class="form-item">
+            <h2>mysql版本</h2>
+            <div>
+              <el-select
+                v-model="addDataSource.mysql8"
+                placeholder="选择所属项目"
+                style="margin-left: 20px; display: block;"
+              >
+                <el-option label="mysql5+" value="false" />
+                <el-option label="mysql8+" value="true" />
+              </el-select>
+            </div>
+          </el-row>
+          <el-row :gutter="16" class="form-item-submit">
+            <el-button @click="testConnection()" type="primary">测试</el-button>
+            <el-button @click="saveDataSource()" type="primary">保存连接</el-button>
           </el-row>
         </el-form>
       </el-dialog>
@@ -139,7 +221,7 @@
 /**
  *
  */
-import { getDatabaseByIDApi, sqlListAPI, executeApi } from "@/api/sql/index.ts";
+import { getDatabaseByIDApi, sqlListAPI, executeApi, testDatabaseConnectionApi, saveDatabaseConnectionApi } from "@/api/sql/index.ts";
 import { VAceEditor } from "vue3-ace-editor";
 import ace from "ace-builds";
 import "ace-builds/src-noconflict/mode-sql";
@@ -151,8 +233,8 @@ import "ace-builds/src-noconflict/theme-chrome";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/ext-error_marker";
 import { listProject } from "@/api/project/project.ts";
-import { saveFileByData } from '@/api/file/file.ts'
-import { ElMessage, ElLoading } from 'element-plus'
+import { saveFileByData } from "@/api/file/file.ts";
+import { ElMessage, ElLoading } from "element-plus";
 export default {
   components: {
     VAceEditor
@@ -168,7 +250,18 @@ export default {
       database: {},
       headers: [],
       selectHeader: [],
+      addDataSource: {
+        database: "数据库名",
+        id: 0,
+        ip: "服务器IP地址",
+        mysql8: true,
+        name: "数据库连接名",
+        password: "密码",
+        port: "端口",
+        username: "用户名"
+      },
       content: "",
+      addDialogVisible: false,
       saveDataForm: {
         data: {
           headers: [{}],
@@ -181,6 +274,7 @@ export default {
       dialogVisible: false,
       databaseList: [],
       myProjects: [],
+      message: "",
       editorOptions: {
         mode: "ace/mode/sql",
         theme: "light",
@@ -213,30 +307,82 @@ export default {
       });
     },
     toWorkplace() {
-      this.$router.replace('/workplace')
+      this.$router.replace("/workplace");
+    },
+    testConnection() {
+      const loadingInstance = ElLoading.service({
+        fullscreen: true,
+        text: "正在创建数据集...",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      testDatabaseConnectionApi(this.addDataSource).then(res=>{
+        if(res.code == '00000') {
+          this.$message.success("连接成功");
+        } else {
+          this.$message.error("连接失败");
+        }
+        loadingInstance.close();
+      }).catch(err=>{
+        this.$message.error("连接失败");
+        loadingInstance.close();
+      })
+    },
+    saveDataSource(){
+      const loadingInstance = ElLoading.service({
+        fullscreen: true,
+        text: "正在创建数据集...",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      saveDatabaseConnectionApi(this.addDataSource).then(res=>{
+        if(res.code == '00000') {
+          this.$message.success("连接成功");
+        } else {
+          this.$message.error("连接失败");
+        }
+        loadingInstance.close();
+      }).catch(err=>{
+        this.$message.error("连接失败");
+        loadingInstance.close();
+      })
     },
     /**
      * 执行sql语句
      */
     execute() {
-      executeApi(this.executeData).then(res => {
-        console.log(res.data);
-        this.tableData = res.data;
-        let tmp = [];
-        for (let i = 0; i < this.tableData.headers.length; i++) {
-          let map = {};
-          map["key"] = this.tableData.headers[i];
-          map["value"] = this.tableData.headers[i];
-          tmp.push(map);
-        }
-        this.headers = tmp;
-        console.log(this.headers);
+      const loadingInstance = ElLoading.service({
+        fullscreen: true,
+        text: "正在创建数据集...",
+        background: "rgba(0, 0, 0, 0.7)"
       });
+      executeApi(this.executeData).then(res => {
+        if (res.code === "00000") {
+          console.log(res.data);
+          this.tableData = res.data;
+          let tmp = [];
+          for (let i = 0; i < this.tableData.headers.length; i++) {
+            let map = {};
+            map["key"] = this.tableData.headers[i];
+            map["value"] = this.tableData.headers[i];
+            tmp.push(map);
+          }
+          this.headers = tmp;
+          this.message = res.msg;
+        } else {
+          this.$message.error(res.msg);
+          this.message = res.msg;
+        }
+      });
+      loadingInstance.close();
     },
     /**
      * 保存数据集
      */
     save() {
+      const loadingInstance = ElLoading.service({
+        fullscreen: true,
+        text: "正在创建数据集...",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
       let data = this.tableData;
       let selectData = [];
       for (let i = 0; i < data.rows.length; i++) {
@@ -247,15 +393,20 @@ export default {
         selectData.push(map);
       }
       this.saveDataForm.data.rows = selectData;
-      saveFileByData(this.saveDataForm).then(res => {
-        console.log(res);
-        if (res.code == "00000") {
-          ElMessage.success("数据集创建成功")
-          this.dialogVisible = false
-        }
-      }).catch(err => {
-        ElMessage.error("数据集创建失败")
-      })
+      saveFileByData(this.saveDataForm)
+        .then(res => {
+          console.log(res);
+          if (res.code == "00000") {
+            ElMessage.success("数据集创建成功");
+            this.dialogVisible = false;
+          } else {
+            ElMessage.error("数据集创建失败");
+          }
+        })
+        .catch(err => {
+          ElMessage.error("数据集创建失败");
+        });
+      loadingInstance.close();
     }
   },
   created() {
