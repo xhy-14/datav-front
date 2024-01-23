@@ -11,36 +11,21 @@
       <div class="charts">
         <h2>图表</h2>
 
-        <div
-          v-for="(item, index) in chartList"
-          @dragstart="dragStart($event, index)"
-          draggable="true"
-          class="charts-item"
-        >
+        <div v-for="(item, index) in chartList" @dragstart="dragStart($event, index)" draggable="true"
+          class="charts-item">
           <el-button class="charts-item-button" text>
             <div class="charts-item-button-icon">
               <svg class="charts-icon">
                 <use xlink:href="#icon-charts-line" />
               </svg>
               <h3 style="margin-left: 10px;">{{ item.name }}</h3>
-              <el-tooltip
-                class="box-item"
-                effect="light"
-                :content="item.depiction"
-                placement="right-start"
-              ></el-tooltip>
+              <el-tooltip class="box-item" effect="light" :content="item.depiction" placement="right-start"></el-tooltip>
             </div>
           </el-button>
         </div>
       </div>
       <div class="dashboard-box">
-        <div
-          id="canvas"
-          :style="canvacStyle"
-          class="dashboard"
-          @dragover="deal($event)"
-          @drop="handleDraw($event)"
-        ></div>
+        <div id="canvas" :style="canvacStyle" class="dashboard" @dragover="deal($event)" @drop="handleDraw($event)"></div>
       </div>
 
       <div class="change-canvas">
@@ -52,12 +37,8 @@
 
         <div class="change-item">
           <h3 class="ml-3 w-35 text-gray-600 inline-flex items-center">设置背景图</h3>
-          <el-input
-            @change="changeBackgroundImg($e)"
-            v-model="canvacStyle.backgroundImage"
-            class="w-50 m-2"
-            placeholder="输入图片地址"
-          />
+          <el-input @change="changeBackgroundImg($e)" v-model="canvacStyle.backgroundImage" class="w-50 m-2"
+            placeholder="输入图片地址" />
         </div>
 
         <div class="change-item">
@@ -75,7 +56,7 @@
   </div>
 </template>
   
-<script>
+<script lang="ts">
 import { ChartListApi } from "@/api/chart/chart";
 import * as echarts from "echarts";
 import {
@@ -98,7 +79,7 @@ export default {
   },
   methods: {
     exportImage() {
-      
+
     },
     toHome() {
       this.$router.replace("/workplace");
@@ -245,7 +226,7 @@ export default {
   height: 60px;
 }
 
-.charts-item > div {
+.charts-item>div {
   display: flex;
   justify-content: center;
   align-items: center;

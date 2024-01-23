@@ -17,10 +17,8 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item
-                    v-for="(item, index) in databaseList"
-                    @click="selecDataBase(item)"
-                  >{{ item.name }}</el-dropdown-item>
+                  <el-dropdown-item v-for="(item, index) in databaseList" @click="selecDataBase(item)">{{ item.name
+                  }}</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -90,11 +88,7 @@
                 </div>
               </div>
             </div>
-            <v-ace-editor
-              v-model:value="executeData.code"
-              :options="editorOptions"
-              style="height: 80%"
-            />
+            <v-ace-editor v-model:value="executeData.code" :options="editorOptions" style="height: 80%" />
           </div>
           <div class="data-show">
             <div class="data-show-title" style="height: 20%;">
@@ -105,12 +99,7 @@
             </div>
             <div class="table-box">
               <el-table :data="tableData.rows" style="width: 90%; height: 90%">
-                <el-table-column
-                  v-for="(item, index) in tableData.headers"
-                  :key="item"
-                  :prop="item"
-                  :label="item"
-                />
+                <el-table-column v-for="(item, index) in tableData.headers" :key="item" :prop="item" :label="item" />
               </el-table>
             </div>
           </div>
@@ -122,21 +111,12 @@
         <el-form label-width="100px" :model="uploadData" style="max-width: 560px">
           <el-row class="form-item" :gutter="20">
             <h2>数据集名</h2>
-            <el-input
-              v-model="saveDataForm.name"
-              class="w-50 m-2"
-              placeholder="数据集名"
-              :suffix-icon="Calendar"
-            />
+            <el-input v-model="saveDataForm.name" class="w-50 m-2" placeholder="数据集名" :suffix-icon="Calendar" />
           </el-row>
           <el-row :gutter="20" class="form-item">
             <h2>所属项目</h2>
             <div>
-              <el-select
-                v-model="saveDataForm.pid"
-                placeholder="选择所属项目"
-                style="margin-left: 20px; display: block;"
-              >
+              <el-select v-model="saveDataForm.pid" placeholder="选择所属项目" style="margin-left: 20px; display: block;">
                 <el-option v-for="(item, index) in myProjects" :label="item.name" :value="item.id" />
               </el-select>
             </div>
@@ -155,7 +135,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 /**
  *
  */
@@ -232,7 +212,7 @@ export default {
         this.executeData.id = this.database.id;
       });
     },
-    toWorkplace(){
+    toWorkplace() {
       this.$router.replace('/workplace')
     },
     /**
@@ -267,14 +247,14 @@ export default {
         selectData.push(map);
       }
       this.saveDataForm.data.rows = selectData;
-      saveFileByData(this.saveDataForm).then(res=>{
+      saveFileByData(this.saveDataForm).then(res => {
         console.log(res);
-        if(res.code == "00000") {
+        if (res.code == "00000") {
           ElMessage.success("数据集创建成功")
           this.dialogVisible = false
         }
-      }).catch(err=>{
-          ElMessage.error("数据集创建失败")
+      }).catch(err => {
+        ElMessage.error("数据集创建失败")
       })
     }
   },
@@ -304,6 +284,7 @@ export default {
   width: 20px;
   height: 20px;
 }
+
 .nav {
   height: 5%;
   border-bottom: 1px solid #eee;
@@ -311,10 +292,12 @@ export default {
   justify-content: space-between;
   align-items: center;
 }
+
 .view {
   width: 100%;
   height: 100%;
 }
+
 .data-source {
   width: 100%;
   height: 95%;
@@ -336,6 +319,7 @@ export default {
   height: 95%;
   border-right: 1px solid #ccc;
 }
+
 .sql-box {
   width: 80%;
   height: 100%;
@@ -344,12 +328,13 @@ export default {
   justify-content: center;
   flex-direction: column;
 }
+
 .mysql-icon {
   width: 40px;
   height: 40px;
 }
 
-.mysql-icon > svg {
+.mysql-icon>svg {
   width: 100%;
   height: 100%;
 }
@@ -364,6 +349,7 @@ export default {
   margin-left: 10px;
   font-size: 20px;
 }
+
 .database {
   height: 100%;
   border: none;
@@ -430,6 +416,7 @@ export default {
   width: 25px;
   height: 25px;
 }
+
 .execute-icon:hover {
   cursor: pointer;
 }
@@ -451,6 +438,7 @@ export default {
   border-left: 1px solid #ccc;
   border-right: 1px solid #ccc;
 }
+
 .others {
   width: 20%;
   display: flex;
@@ -469,8 +457,7 @@ export default {
   font-size: 20px;
 }
 
-.selectHeader {
-}
+.selectHeader {}
 
 .form-item {
   margin-top: 10px;
