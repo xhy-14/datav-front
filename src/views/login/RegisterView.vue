@@ -1,5 +1,5 @@
 <template>
-    <el-container style="height: 98vh;">
+    <el-container class="login-body">
         <el-main style="display: flex; justify-content: center;align-items: center;">
             <div class="input">
                 <div class="box">
@@ -45,7 +45,7 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { registerAPI } from '@/api/login/index'
 import { ElMessage } from 'element-plus'
-
+import { debounce } from '@/utils/DebounceThrottle'
 
 
 const router = useRouter()
@@ -106,17 +106,6 @@ const rules = reactive<FormRules<RuleForm>>({
             }
         }
     ],
-    // captcha: [
-    //     { required: true, message: '请输入验证码', trigger: 'blur' }
-    //     {
-    //         validator(rule, value, callback) {
-    //             //调用api发送请求获取验证码（待开发）
-    //             //验证验证码
-    //         }
-
-    //     }
-    // ],
-
 })
 
 const gotoLogin = () => {
@@ -125,39 +114,36 @@ const gotoLogin = () => {
 
 }
 
-const submitForm = async (formEl: FormInstance | undefined) => {
+const toRegister = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
 
     await formEl.validate((valid, fields) => {
         if (valid) {
             console.log('执行提交!')
-            toRegister(ruleForm)
+            registerAPI(ruleForm).then(async function (response) {
+                console.log(response.data);
+                if (response.code == "00000") {
+                    ElMessage({
+                        message: "注册成功，请登录",
+                        type: "success"
+                    })
+                    await new Promise(resolve => setTimeout(resolve, 2000)); //等待2秒
+                    router.replace("/login")
+                } else if (response.code == "A0111") {
+                    ElMessage.error('手机号已被注册')
+                } else {
+                    ElMessage.error('非法操作')
+                }
+
+            })
         } else {
             console.log('提交错误', fields)
         }
     })
 }
 
-const toRegister = (ruleForm) => {
-    registerAPI(ruleForm).then(async function (response) {
-        console.log(response.data);
-        if (response.code == "00000") {
-            ElMessage({
-                message: "注册成功，请登录",
-                type: "success"
-            })
-            await new Promise(resolve => setTimeout(resolve, 2000)); //等待2秒
-            router.push("/login")
-        } else if (response.code == "A0111") {
-            ElMessage.error('手机号已被注册')
-        } else {
-            ElMessage.error('非法操作')
-        }
+const submitForm = debounce(toRegister, 800)
 
-    })
-
-
-}
 </script>
 
 <style>
@@ -186,7 +172,7 @@ const toRegister = (ruleForm) => {
     margin-left: 50px;
 }
 
-body {
+.login-body {
     background-image: url(@/assets/images/loginBg.png) !important;
     background-size: cover;
     width: 100vw;
