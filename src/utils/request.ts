@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const request = axios.create({
   // baseURL: '/api',
-  baseURL: 'http://127.0.0.1:8080//renren-fast',
+  baseURL: 'http://127.0.0.1:8080/renren-fast',
   timeout: 20000,
 })
 
@@ -16,10 +16,6 @@ request.interceptors.request.use(
     return config
   },
   (error) => {
-    // 对请求错误做些什么
-    if(error.response.status === 401) {
-      this.$router.push('/login')
-    }
     return Promise.reject(error)
   }
 )
@@ -27,10 +23,17 @@ request.interceptors.request.use(
 request.interceptors.response.use(
   (response) => {
     // 对响应数据做点什么
+    if(response.data.code === 401) {
+      window.location = '/login'
+    }
     return response.data
   },
   (error) => {
     // 对响应错误做点什么
+    // 对请求错误做些什么
+    if(error.response.status === 404) {
+      window.location = '/404'
+    }
     return Promise.reject(error)
   }
 )

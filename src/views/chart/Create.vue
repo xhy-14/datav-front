@@ -13,12 +13,7 @@
       <div class="data-select">
         <div class="dataset-select">
           <el-select v-model="selectDataset" class="m-2" placeholder="请选择数据集" style="border:none">
-            <el-option
-              v-for="item in myDataset"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            />
+            <el-option v-for="item in myDataset" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </div>
 
@@ -31,12 +26,8 @@
           </div>
 
           <el-scrollbar style="height: 94%;">
-            <div
-              v-for="(item, index) in currentDataset.headers"
-              class="dataset-col"
-              draggable="true"
-              @dragstart="dragStart($event, item)"
-            >
+            <div v-for="(item, index) in currentDataset.headers" class="dataset-col" draggable="true"
+              @dragstart="dragStart($event, item)">
               <div class="dataset-col-item">
                 <el-icon style="margin-left: 25px">
                   <Discount />
@@ -72,14 +63,8 @@
 
           <div class="create-chart-view-right">
             <div class="chart-select">
-              <el-popover
-                @click="changeChart('line')"
-                placement="top-start"
-                title="折线图"
-                :width="200"
-                trigger="hover"
-                content="折线图"
-              >
+              <el-popover @click="changeChart('line')" placement="top-start" title="折线图" :width="200" trigger="hover"
+                content="折线图">
                 <template #reference>
                   <div @click="changeChart('line')" class="chart-select-item">
                     <svg class="charts-icon">
@@ -89,14 +74,8 @@
                 </template>
               </el-popover>
 
-              <el-popover
-                @click="changeChart('bar')"
-                placement="top-start"
-                title="柱状图"
-                :width="200"
-                trigger="hover"
-                content="柱状图"
-              >
+              <el-popover @click="changeChart('bar')" placement="top-start" title="柱状图" :width="200" trigger="hover"
+                content="柱状图">
                 <template #reference>
                   <div @click="changeChart('bar')" class="chart-select-item">
                     <svg class="charts-icon">
@@ -106,13 +85,7 @@
                 </template>
               </el-popover>
 
-              <el-popover
-                placement="top-start"
-                title="多重柱状图"
-                :width="200"
-                trigger="hover"
-                content="多重柱状图"
-              >
+              <el-popover placement="top-start" title="多重柱状图" :width="200" trigger="hover" content="多重柱状图">
                 <template #reference>
                   <div @click="changeChart('more-bar')" class="chart-select-item">
                     <svg class="charts-icon">
@@ -121,6 +94,7 @@
                   </div>
                 </template>
               </el-popover>
+
 
               <el-popover
                 placement="top-start"
@@ -138,13 +112,7 @@
                 </template>
               </el-popover>
 
-              <el-popover
-                placement="top-start"
-                title="饼状图"
-                :width="200"
-                trigger="hover"
-                content="饼状图"
-              >
+              <el-popover placement="top-start" title="饼状图" :width="200" trigger="hover" content="饼状图">
                 <template #reference>
                   <div @click="changeChart('pie')" class="chart-select-item">
                     <svg class="charts-icon">
@@ -154,13 +122,7 @@
                 </template>
               </el-popover>
 
-              <el-popover
-                placement="top-start"
-                title="散点图"
-                :width="200"
-                trigger="hover"
-                content="散点图"
-              >
+              <el-popover placement="top-start" title="散点图" :width="200" trigger="hover" content="散点图">
                 <template #reference>
                   <div @click="changeChart('scatter')" class="chart-select-item">
                     <svg class="charts-icon">
@@ -170,13 +132,7 @@
                 </template>
               </el-popover>
 
-              <el-popover
-                placement="top-start"
-                title="雷达图"
-                :width="200"
-                trigger="hover"
-                content="雷达图"
-              >
+              <el-popover placement="top-start" title="雷达图" :width="200" trigger="hover" content="雷达图">
                 <template #reference>
                   <div @click="changeChart('radar')" class="chart-select-item">
                     <svg class="charts-icon">
@@ -186,13 +142,7 @@
                 </template>
               </el-popover>
 
-              <el-popover
-                placement="top-start"
-                title="k线图"
-                :width="200"
-                trigger="hover"
-                content="k线图"
-              >
+              <el-popover placement="top-start" title="k线图" :width="200" trigger="hover" content="k线图">
                 <template #reference>
                   <div @click="changeChart('k-line')" class="chart-select-item">
                     <svg class="charts-icon">
@@ -202,13 +152,7 @@
                 </template>
               </el-popover>
 
-              <el-popover
-                placement="top-start"
-                title="漏斗图"
-                :width="200"
-                trigger="hover"
-                content="漏斗图"
-              >
+              <el-popover placement="top-start" title="漏斗图" :width="200" trigger="hover" content="漏斗图">
                 <template #reference>
                   <div @click="changeChart('funnel')" class="chart-select-item">
                     <svg class="charts-icon">
@@ -218,13 +162,7 @@
                 </template>
               </el-popover>
 
-              <el-popover
-                placement="top-start"
-                title="热力图"
-                :width="200"
-                trigger="hover"
-                content="热力图"
-              >
+              <el-popover placement="top-start" title="热力图" :width="200" trigger="hover" content="热力图">
                 <template #reference>
                   <div @click="changeChart('heat')" class="chart-select-item">
                     <svg class="charts-icon">
@@ -234,13 +172,7 @@
                 </template>
               </el-popover>
 
-              <el-popover
-                placement="top-start"
-                title="河流图"
-                :width="200"
-                trigger="hover"
-                content="河流图"
-              >
+              <el-popover placement="top-start" title="河流图" :width="200" trigger="hover" content="河流图">
                 <template #reference>
                   <div @click="changeChart('river')" class="chart-select-item">
                     <svg class="charts-icon">
@@ -378,7 +310,7 @@ export default {
       .then(result => {
         this.myDataset = result.data;
       })
-      .catch(err => {});
+      .catch(err => { });
   },
   methods: {
     dragStart(event, header) {
@@ -442,6 +374,7 @@ export default {
 .chart-header-left-icon {
   width: 250px;
 }
+
 .chart-content {
   width: 100%;
   height: 93%;
@@ -561,6 +494,7 @@ export default {
   justify-content: center;
   border-radius: 5px;
 }
+
 .chart-select-item:hover {
   background-color: rgb(101, 183, 251);
   cursor: pointer;

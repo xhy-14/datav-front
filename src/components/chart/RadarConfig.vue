@@ -86,7 +86,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { useChartStore } from "@/store/chart";
 import { radarApi } from "@/api/chart/chart";
 export default {
@@ -168,7 +168,7 @@ export default {
       for (let i = 0; i < data.rows.length; i++) {
         let map = {}
         map[this.xCol] = data.rows[i][this.xCol]
-        for(let item of this.dataName) {
+        for (let item of this.dataName) {
           map[item] = data.rows[i][item]
         }
         selectData.push(map)
@@ -176,7 +176,7 @@ export default {
       let parameter = {}
       let headerTmp = []
       headerTmp.push(this.xCol)
-      for(let item of this.dataName) {
+      for (let item of this.dataName) {
         headerTmp.push(item)
       }
       parameter["headers"] = headerTmp
@@ -187,7 +187,7 @@ export default {
           console.log(result.data);
           this.options = result.data;
         })
-        .catch(err => {});
+        .catch(err => { });
     },
     /**
      * 改变标题位置
@@ -219,7 +219,7 @@ export default {
     },
     dataName: {
       handler(newVal, oldVal) {
-        if (this.dataName.length >= 2 && this.xCol != "") { 
+        if (this.dataName.length >= 2 && this.xCol != "") {
           this.dealData()
         }
       },
@@ -289,6 +289,7 @@ export default {
 .close-icon:hover {
   cursor: pointer;
 }
+
 .header {
   line-height: 36px;
   width: 120px;
@@ -301,12 +302,14 @@ export default {
   height: 380px;
   background-color: rgb(239, 242, 245);
 }
+
 .select-clonums {
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: center;
 }
+
 .data-col {
   width: 90%;
   display: flex;
@@ -314,5 +317,4 @@ export default {
   background-color: rgb(105, 156, 223);
   margin-top: 5px;
   border-radius: 10px;
-}
-</style>
+}</style>

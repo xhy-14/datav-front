@@ -11,24 +11,15 @@
       <div class="charts">
         <h2>图表</h2>
 
-        <div
-          v-for="(item, index) in chartList"
-          @dragstart="dragStart($event, index)"
-          draggable="true"
-          class="charts-item"
-        >
+        <div v-for="(item, index) in chartList" @dragstart="dragStart($event, index)" draggable="true"
+          class="charts-item">
           <el-button class="charts-item-button" text>
             <div class="charts-item-button-icon">
               <svg class="charts-icon">
                 <use xlink:href="#icon-charts-line" />
               </svg>
               <h3 style="margin-left: 10px;">{{ item.name }}</h3>
-              <el-tooltip
-                class="box-item"
-                effect="light"
-                :content="item.depiction"
-                placement="right-start"
-              ></el-tooltip>
+              <el-tooltip class="box-item" effect="light" :content="item.depiction" placement="right-start"></el-tooltip>
             </div>
           </el-button>
         </div>
@@ -79,7 +70,7 @@
   </div>
 </template>
   
-<script>
+<script lang="ts">
 import { ChartListApi } from "@/api/chart/chart";
 import * as echarts from "echarts";
 import html2canvas from "html2canvas";
@@ -326,7 +317,7 @@ export default {
   height: 60px;
 }
 
-.charts-item > div {
+.charts-item>div {
   display: flex;
   justify-content: center;
   align-items: center;

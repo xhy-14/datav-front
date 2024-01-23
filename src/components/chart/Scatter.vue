@@ -2,7 +2,7 @@
   <div id="main"></div>
 </template>
 
-<script>
+<script lang="ts">
 import { scatterApi } from "@/api/chart/chart";
 import * as echarts from "echarts";
 import { useChartStore } from "@/store/chart";
@@ -38,7 +38,7 @@ export default {
           options = result.data;
           console.log(options);
         })
-        .catch(err => {});
+        .catch(err => { });
       // 基于准备好的dom，初始化echarts实例
       // 绘制图表
       this.chartStore.setOptions(options)

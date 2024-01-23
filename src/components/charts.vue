@@ -1,7 +1,7 @@
 <template>
   <div class="charts-view-box">
     <div class="charts-view" style="width: 500px; height: 500px;"></div>
-    
+
     <div class="charts-change">
       <div v-if="option.title != null">
         <div>
@@ -19,7 +19,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   props: {
     option: {}
@@ -27,5 +27,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

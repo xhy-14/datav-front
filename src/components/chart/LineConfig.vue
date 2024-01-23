@@ -99,7 +99,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { useChartStore } from "@/store/chart";
 import { lineApi } from "@/api/chart/chart";
 export default {
@@ -189,7 +189,7 @@ export default {
         .then(result => {
           this.options = result.data;
         })
-        .catch(err => {});
+        .catch(err => { });
     },
     /**
      * 改变标题位置
@@ -292,6 +292,7 @@ export default {
 .close-icon:hover {
   cursor: pointer;
 }
+
 .header {
   line-height: 36px;
   width: 120px;

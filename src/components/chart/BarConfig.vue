@@ -73,7 +73,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { useChartStore } from "@/store/chart";
 import { barApi } from "@/api/chart/chart"
 export default {
@@ -163,7 +163,7 @@ export default {
       barApi(parameter).then((result) => {
         this.options = result.data;
       }).catch((err) => {
-        
+
       });
     }
   },
@@ -182,7 +182,7 @@ export default {
     },
     xCol: {
       handler(newVal, oldVal) {
-        if( this.yCol != "" ) {
+        if (this.yCol != "") {
           this.dealData();
         }
       },
@@ -190,7 +190,7 @@ export default {
     },
     yCol: {
       handler(newVal, oldVal) {
-        if( this.xCol != "" ) {
+        if (this.xCol != "") {
           this.dealData();
         }
       },
@@ -258,6 +258,7 @@ export default {
 .close-icon:hover {
   cursor: pointer;
 }
+
 .header {
   line-height: 36px;
   width: 120px;
