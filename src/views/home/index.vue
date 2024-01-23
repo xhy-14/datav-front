@@ -12,7 +12,7 @@
                 <div class="main-text" style="height: 55px; width: 270px;  ">
                     <el-text class="mx-1" style="font-size: 43px; color: black;"><span>丰富你的<br>带图表的故事</span></el-text>
                 </div>
-                <RouterLink to="/my">
+                <RouterLink to="/visual">
                     <el-button type="primary" class="main-botton_start" style=""><span>开 始 创 建</span></el-button>
                 </RouterLink>
             </el-main>

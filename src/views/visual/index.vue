@@ -23,8 +23,8 @@
         <RouterView />
       </div>
     </el-main>
-    <el-button class="next" type="success" v-if="active != 3" @click="next">继续</el-button>
-    <el-button class="next" type="success" v-if="active == 3" @click="complite">完成</el-button>
+    <el-button class="next" type="success" v-if="active != 2" @click="next">继续</el-button>
+    <el-button class="next" type="success" v-if="active == 2" @click="complite">完成</el-button>
     <el-button style="margin-right: 70px;" class="next" type="success" v-if="active != 0" @click="back">返回</el-button>
   </el-container>
 </template>

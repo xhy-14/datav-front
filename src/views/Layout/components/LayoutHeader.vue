@@ -6,8 +6,8 @@
         <img style="width: 182px;height: 59px;position: relative;top: 55px;" src="@\assets\images\logo.jpg" alt="logo" />
       </a>
       <div class="flex-grow" />
-      <RouterLink to="/my" class="text">我的目录</RouterLink>
-      <RouterLink to="/" class="text">Dashboard</RouterLink>
+      <RouterLink to="/workplace" class="text">进入工作台</RouterLink>
+      <RouterLink to="/visual" class="text">新建文件</RouterLink>
     </el-menu>
 
     <el-menu v-else style="position: absolute;height: 160px;" :default-active="activeIndex" class="el-menu-demo"
@@ -17,7 +17,7 @@
       </a>
       <div class="flex-grow" />
       <a href="/login" class="text">登录</a>
-      <RouterLink to="/" class="text">Dashboard</RouterLink>
+      <RouterLink to="/workplace" class="text">进入工作台</RouterLink>
     </el-menu>
   </el-header>
 
@@ -30,7 +30,8 @@
       <div class="flex-grow" />
       <RouterLink to="/workplace" class="text">进入工作台</RouterLink>
       <RouterLink to="/visual" class="text">新建文件</RouterLink>
-      <a href="/my" class="text">我的目录</a>
+      <a href="/account" class="text">个人资料</a>
+
       <el-sub-menu style="right: 100px;position: relative;" class="menu__title" index="2">
         <template #title>Workspace</template>
         <el-menu-item index="2-1"><a href="/account" class=" menu_item">设置</a></el-menu-item>

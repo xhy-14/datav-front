@@ -27,7 +27,8 @@ watch(
     () => props.active,
     (newValue, oldval) => {
         if (newValue == 2) {
-            options = useChartStore().chartInfo.info
+            document.getElementById('main').removeAttribute("_echarts_instance_");
+            document.getElementById('main').innerHTML = "";
             init();
         }
 

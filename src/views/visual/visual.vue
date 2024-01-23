@@ -27,61 +27,67 @@ import note from './visualSteps/note.vue'
 import * as echarts from 'echarts';
 import { useChartStore } from '@/store/chart'
 import { pieApi, lineApi, barApi } from '@/api/chart/chart'
+import { ElMessage } from "element-plus";
 
-var chartInfo = useChartStore().chartInfo.info
+var title = ref('标题')
 const props = defineProps({
   active: Number
 })
 
 const type = ref('line')
 const tabPosition = ref('left')
-let option = chartInfo
-
 const initChart = () => {
-  
-    var myChart = echarts.init(document.getElementById('main'));
-    // 绘制图表
-    let parameter = useChartStore().parameter
 
-    console.log("option view", option)
-    if (type.value == 'pie') {
-      pieApi(parameter)
-        .then(res => {
-          if (res.code == "00000") {
-            option = res.data
-          }
-        })
-        .catch(err => {
-          ElMessage.error("连接失败！");
-        });
-    }
-    else if (type.value == 'line') {
-      lineApi(parameter)
-        .then(res => {
-          if (res.code == "00000") {
-            option = res.data
-          }
-        })
-        .catch(err => {
-          ElMessage.error("连接失败！");
-        });
-    }
-    else if (type.value == 'bar') {
-      barApi(parameter)
-        .then(res => {
-          if (res.code == "00000") {
-            option = res.data
-            console.log(res,'res')
-          }
-        })
-        .catch(err => {
-          ElMessage.error("连接失败！");
-        });
-    }
-    useChartStore().setChartInfo(option)
-    console.log("option", option)
-    console.log("opt store", useChartStore().chartInfo)
-    myChart.setOption(option);
+  var myChart = echarts.init(document.getElementById('main'));
+  // 绘制图表
+  let parameter = useChartStore().parameter
+  if (type.value == 'pie') {
+    pieApi(parameter)
+      .then(res => {
+        if (res.code == "00000") {
+          res.data.title.text = title.value
+          useChartStore().setChartInfo(res.data)
+          myChart.setOption(res.data);
+          console.log('pie option:',res.data)
+
+        }
+      })
+      .catch(err => {
+        ElMessage.error("连接失败！");
+      });
+  }
+  else if (type.value == 'line') {
+    lineApi(parameter)
+      .then(res => {
+        if (res.code == "00000") {
+          res.data.title.text = title.value
+          res.data.xAxis.name = parameter['headers'][0]
+          res.data.yAxis.name = parameter['headers'][1]
+          useChartStore().setChartInfo(res.data)
+          myChart.setOption(res.data);
+          console.log('line option:',res.data)
+
+        }
+      })
+      .catch(err => {
+        ElMessage.error("连接失败！");
+      });
+  }
+  else if (type.value == 'bar') {
+    barApi(parameter)
+      .then(res => {
+        if (res.code == "00000") {
+          res.data.title.text = title.value
+          useChartStore().setChartInfo(res.data)
+          myChart.setOption(res.data);
+
+          console.log('bar option:',res.data)
+        }
+      })
+      .catch(err => {
+        ElMessage.error("连接失败！");
+      });
+  }
 
 }
 
@@ -90,11 +96,13 @@ const getChilderVal = (currentType: string) => {
   // location.reload();
   document.getElementById('main').removeAttribute("_echarts_instance_");
   document.getElementById('main').innerHTML = "";
+
   initChart();
+
   console.log(type.value, '123')
 }
 const getNotes = (notes: any) => {
-  chartInfo.title.text = notes.title
+  title.value = notes.title
   document.getElementById('main').removeAttribute("_echarts_instance_");
   document.getElementById('main').innerHTML = "";
   initChart();
@@ -102,19 +110,17 @@ const getNotes = (notes: any) => {
 onMounted(() => {
   // 基于准备好的dom，初始化echarts实例
   initChart()
-  console.log(chartInfo)
   console.log(props.active)
 })
-// watch(
-//   () => props.active,
-//   (newValue, oldval) => {
-//     if (newValue == 1) {
-//       initChart();
-//     }
+watch(
+  () => props.active,
+  (newValue, oldval) => {
+    if (newValue == 1) {
+      initChart();
+    }
 
-//     console.log(chartInfo, "visual", props.active, 'propsactive')
-//   }
-// )
+  }
+)
 </script>
   
 <style>

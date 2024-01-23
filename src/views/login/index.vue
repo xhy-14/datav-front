@@ -129,7 +129,7 @@ const gotoRegister = () => {
 }
 </script>
   
-<style>
+<style scoped>
 .input {
 
   display: flex;

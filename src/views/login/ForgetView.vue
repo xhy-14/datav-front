@@ -1,5 +1,5 @@
 <template>
-    <el-container style="height: 98vh;">
+    <el-container class="back">
         <el-main style="display: flex; justify-content: center;align-items: center;">
             <div class="input">
                 <div class="box">
@@ -164,7 +164,7 @@ const getCaptcha = () => {
 
 </script>
 
-<style>
+<style scoped>
 .input {
 
     display: flex;
@@ -191,7 +191,7 @@ const getCaptcha = () => {
 
 }
 
-body {
+.back {
     background-image: url(@/assets/images/loginBg.png) !important;
     background-size: cover;
     width: 100vw;
