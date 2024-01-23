@@ -46,7 +46,7 @@ import { useRouter } from 'vue-router'
 import { registerAPI } from '@/api/login/index'
 import { ElMessage } from 'element-plus'
 import { debounce } from '@/utils/DebounceThrottle'
-
+import { ElLoading } from 'element-plus'
 
 const router = useRouter()
 
@@ -120,16 +120,22 @@ const toRegister = async (formEl: FormInstance | undefined) => {
     await formEl.validate((valid, fields) => {
         if (valid) {
             console.log('执行提交!')
-            registerAPI(ruleForm).then(async function (response) {
+            const loading = ElLoading.service({
+                lock: true,
+                text: 'Loading',
+                background: 'rgba(0, 0, 0, 0.7)',
+            })
+            registerAPI(ruleForm).then(function (response) {
                 console.log(response.data);
                 if (response.code == "00000") {
                     ElMessage({
                         message: "注册成功，请登录",
                         type: "success"
                     })
-                    await new Promise(resolve => setTimeout(resolve, 2000)); //等待2秒
+                    loading.close()
                     router.replace("/login")
                 } else {
+                    loading.close()
                     ElMessage.error(response.msg)
                 }
 

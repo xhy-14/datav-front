@@ -40,7 +40,10 @@ import { useRouter } from 'vue-router'
 import { loginAPI } from '@/api/login/index'
 import { ElMessage } from 'element-plus'
 import { debounce } from '@/utils/DebounceThrottle'
+import { ElLoading } from 'element-plus'
 const router = useRouter()
+
+
 
 interface RuleForm {
   username: string
@@ -82,6 +85,7 @@ const rules = reactive<FormRules<RuleForm>>({
 
 })
 
+
 const login = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate(async (valid, fields) => {
@@ -89,7 +93,12 @@ const login = async (formEl: FormInstance | undefined) => {
     console.log(ruleForm, "rule")
     if (valid) {
       console.log('执行提交!')
-      loginAPI(ruleForm).then(function (response) {
+      const loading = ElLoading.service({
+        lock: true,
+        text: 'Loading',
+        background: 'rgba(0, 0, 0, 0.7)',
+      })
+      await loginAPI(ruleForm).then(function (response) {
         if (response.code == "00000") {
           localStorage.setItem('token', response.data.token)
           useUserStore().setUserInfo(response.data.user.name, response.data.user.mobile, response.data.token)
@@ -97,12 +106,13 @@ const login = async (formEl: FormInstance | undefined) => {
             message: "登陆成功",
             type: "success"
           })
-          setTimeout(() => {
-            router.replace("/")
-          }, 1000)
+          loading.close()
+          router.replace("/")
         } else {
+          loading.close()
           ElMessage.error(response.msg)
         }
+
       }).catch(() => { ElMessage.error("发生异常请稍后重试") })
     } else {
       console.log('提交错误', fields)
