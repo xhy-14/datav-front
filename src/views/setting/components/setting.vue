@@ -6,6 +6,9 @@
     <el-tab-pane label="会员套餐">
       <vip />
     </el-tab-pane>
+    <el-tab-pane label="订单列表">
+      <order />
+    </el-tab-pane>
   </el-tabs>
 </template>
 
@@ -13,6 +16,7 @@
 import { ref } from 'vue'
 import profile from './profile.vue'
 import vip from './vip.vue'
+import order from './order.vue'
 
 const tabPosition = ref('left')
 </script>

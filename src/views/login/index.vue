@@ -46,7 +46,7 @@ const router = useRouter()
 interface RuleForm {
   username: string
   password: string
-  mobile: string
+  mobile: stringr
 }
 
 const formSize = ref('default')
@@ -83,6 +83,7 @@ const rules = reactive<FormRules<RuleForm>>({
 
 })
 
+
 const login = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate(async (valid, fields) => {
@@ -105,6 +106,7 @@ const login = async (formEl: FormInstance | undefined) => {
           }, 1000)
           
         } else {
+          loading.close()
           ElMessage.error(response.msg)
         }
         loadingInstance.close();
