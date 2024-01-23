@@ -9,9 +9,7 @@
       <el-form-item label="标题">
         <el-input placeholder="主题是什么？" v-model="formLabelAlign.title" />
       </el-form-item>
-      <el-form-item label="署名行">
-        <el-input placeholder="谁创建了图表？" v-model="formLabelAlign.auther" />
-      </el-form-item>
+     
     </el-form>
     <el-form
       :label-position="labelPosition"
@@ -19,12 +17,12 @@
       :model="formLabelAlign"
       style="max-width: 700px; margin-left: 20px;"
     >
-    <el-form-item label="说明">
+    <el-form-item label="副标题">
         <el-input
     v-model="formLabelAlign.explain"
     autosize
     type="textarea"
-    placeholder="Please input"
+    placeholder="副标题是什么？"
     style="width: 700px; "
   />
       </el-form-item>

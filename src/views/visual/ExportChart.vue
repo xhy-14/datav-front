@@ -26,8 +26,11 @@ const props = defineProps({
 watch(
     () => props.active,
     (newValue, oldval) => {
-        options = useChartStore().chartInfo.info
-        init();
+        if (newValue == 2) {
+            options = useChartStore().chartInfo.info
+            init();
+        }
+
 
     }
 )
@@ -35,9 +38,9 @@ watch(
 
 
 //声明周期函数，自动执行初始化
-onMounted(() => {
-    init();
-});
+// onMounted(() => {
+//     init();
+// });
 //初始化函数
 function init() {
     // 基于准备好的dom，初始化echarts实例

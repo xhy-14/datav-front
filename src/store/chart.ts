@@ -9,7 +9,8 @@ export const useChartStore = defineStore("chart", {
         info: {},
       },
       options: null,
-      data: null
+      data: null,
+      parameter: null
     }
   },
   // 数据操作
@@ -22,6 +23,9 @@ export const useChartStore = defineStore("chart", {
     },
     saveData(data: any) {
       this.data = data
+    },
+    setParameter(parameter: any){
+      this.parameter = parameter
     }
   },
   // 数据读取
@@ -32,6 +36,9 @@ export const useChartStore = defineStore("chart", {
     },
     getData: (state) => {
       return state.data
-    }
+    },
+    getParameter: (state) => {
+      return state.parameter
+  }
   }
 })

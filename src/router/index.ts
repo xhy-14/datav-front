@@ -45,7 +45,7 @@ const routes = [
       {
         path: '/workplace',
         component: () => import("@/views/workplace/index.vue"),
-        redirect: '/workplace/info',
+        redirect: '/workplace/project',
         children: [
           {
             path: '/workplace/info',
@@ -106,7 +106,21 @@ const routes = [
   },
   {
     path: '/datasource',
-    component: () => import("@/views/workplace/DataSource.vue")
+    component: () => import("@/views/workplace/DataSource.vue"),
+    children: [
+      {
+        path: '/datasource/add',
+        component: () => import("@/views/workplace/AddDataSource.vue")
+      }
+    ]
+  },
+  {
+    path: '/data-editor',
+    component: () => import("@/views/workplace/DataEditor.vue")
+  },
+  {
+    path: '/pay',
+    component: () => import("@/views/order/Submit.vue")
   }
 ]
 

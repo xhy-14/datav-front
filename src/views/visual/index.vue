@@ -11,7 +11,7 @@
     </el-aside>
     <el-main>
       <div v-show="active == 0">
-        <CreateFile />
+        <CreateFile @startVisual="getStartVisual" />
         <RouterView />
       </div>
       <div v-show="active == 1">
@@ -34,10 +34,20 @@ import { ref } from 'vue'
 import CreateFile from './CreateFile.vue';
 import visual from './visual.vue';
 import Export from './ExportChart.vue'
+import { ElMessage } from "element-plus";
+
 const active = ref(0)
 
 const next = () => {
-  if (active.value++ > 2) active.value = 0
+  if(active.value == 0 && nextVisual.value == false
+  ){
+  ElMessage.error("请先上传文件！");
+  }
+  else if(x.value == false || y.value == false){
+  ElMessage.error("请先选择x轴和y轴！");
+
+  }
+  else if (active.value++ > 2) active.value = 0
   console.log(active.value, "index")
 
 }
@@ -47,6 +57,15 @@ const back = () => {
 const complite = () => {
   //完成
   console.log("操作完成！")
+}
+let nextVisual = ref(false)
+let x = ref(false)
+let y = ref(false)
+const getStartVisual =( next:any, xAxis:any, yAxis:any)=>{
+  nextVisual=next
+  x.value=xAxis
+  y.value=yAxis
+  console.log(next, xAxis,yAxis)
 }
 
 </script>

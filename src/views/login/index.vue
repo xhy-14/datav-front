@@ -100,15 +100,17 @@ const login = async (formEl: FormInstance | undefined) => {
           setTimeout(() => {
             router.replace("/")
           }, 1000)
+        } else {
+          ElMessage.error(response.msg)
         }
-      }).catch(() => { ElMessage.error("发生错误，请稍后重试") })
+      }).catch(() => { ElMessage.error("发生异常请稍后重试") })
     } else {
       console.log('提交错误', fields)
     }
   })
 }
 
-const submitForm = debounce(login, 800)
+const submitForm = debounce(login, 400)
 
 
 const gotoRegister = () => {

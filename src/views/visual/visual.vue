@@ -11,96 +11,86 @@
               <note @notes="getNotes" />
             </el-tab-pane>
           </el-tabs>
-
-    
         </div>
       </el-header>
       <el-main>
-        <div id="main" class="echarts-vue" ></div>
-  
+        <div id="main" class="echarts-vue"></div>
       </el-main>
     </el-container>
   </div>
 </template>
   
 <script lang="ts" setup>
-import { onMounted, ref, nextTick,watch } from 'vue'
+import { onMounted, ref, nextTick, watch } from 'vue'
 import chooseChart from './visualSteps/chooseChart.vue'
 import note from './visualSteps/note.vue'
 import * as echarts from 'echarts';
 import { useChartStore } from '@/store/chart'
-
+import { pieApi, lineApi, barApi } from '@/api/chart/chart'
 
 var chartInfo = useChartStore().chartInfo.info
 const props = defineProps({
   active: Number
 })
 
-const label = {
-            show: true,
-            formatter: [
-              'Plain text',
-            ],
-            position: 'top',
-            distance: 10,
-            padding: 10,
-            color: '#000',
-            fontSize: 20,
-            lineHeight: 30,
-          }
-
-const type = ref('pie')
-
+const type = ref('line')
 const tabPosition = ref('left')
+let option = chartInfo
+
 const initChart = () => {
-  nextTick(() => {
+  
     var myChart = echarts.init(document.getElementById('main'));
     // 绘制图表
-    var option = chartInfo
+    let parameter = useChartStore().parameter
 
     console.log("option view", option)
-    const option_pie = {
-      series: [
-        {
-          type: 'pie',
-          
-          data: [
-            {
-              value: 335,
-              name: '1'
-            },
-            {
-              value: 234,
-              name: '2'
-            },
-            {
-              value: 1548,
-              name: '3'
-            }
-          ]
-        }
-      ]
-    };
-    if (type.value == 'pie') { myChart.setOption(option_pie); }
-    else {
-      console.log("option view", option)
-      option.series[0].type = type.value
-      option.series[0].label = label
-      myChart.setOption(option);
-    }  
+    if (type.value == 'pie') {
+      pieApi(parameter)
+        .then(res => {
+          if (res.code == "00000") {
+            option = res.data
+          }
+        })
+        .catch(err => {
+          ElMessage.error("连接失败！");
+        });
+    }
+    else if (type.value == 'line') {
+      lineApi(parameter)
+        .then(res => {
+          if (res.code == "00000") {
+            option = res.data
+          }
+        })
+        .catch(err => {
+          ElMessage.error("连接失败！");
+        });
+    }
+    else if (type.value == 'bar') {
+      barApi(parameter)
+        .then(res => {
+          if (res.code == "00000") {
+            option = res.data
+            console.log(res,'res')
+          }
+        })
+        .catch(err => {
+          ElMessage.error("连接失败！");
+        });
+    }
     useChartStore().setChartInfo(option)
-  })
+    console.log("option", option)
+    console.log("opt store", useChartStore().chartInfo)
+    myChart.setOption(option);
 
 }
 
 const getChilderVal = (currentType: string) => {
-
   type.value = currentType
   // location.reload();
   document.getElementById('main').removeAttribute("_echarts_instance_");
   document.getElementById('main').innerHTML = "";
   initChart();
-
   console.log(type.value, '123')
 }
 const getNotes = (notes: any) => {
@@ -111,29 +101,26 @@ const getNotes = (notes: any) => {
 }
 onMounted(() => {
   // 基于准备好的dom，初始化echarts实例
-
   initChart()
   console.log(chartInfo)
   console.log(props.active)
 })
-watch(
-  ()=>props.active,
-  ( newValue, oldval) =>{
-    chartInfo = useChartStore().chartInfo.info
-    initChart();
-    console.log(chartInfo,"visual")
-  },
-  {
-    immediate: true,
-    deep: true
-   
-  }
-)
+// watch(
+//   () => props.active,
+//   (newValue, oldval) => {
+//     if (newValue == 1) {
+//       initChart();
+//     }
+
+//     console.log(chartInfo, "visual", props.active, 'propsactive')
+//   }
+// )
 </script>
   
 <style>
 #main {
-  width: 1000px; height: 400px;
+  width: 1000px;
+  height: 400px;
 
 
 }

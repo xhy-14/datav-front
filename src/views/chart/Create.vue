@@ -5,7 +5,7 @@
         <h2>创建图表</h2>
       </div>
       <div class="chart-header-left-button">
-        <el-button @click="saveChart()" type="primary">保存</el-button>
+        <el-button @click="dialogVisible = true" type="primary">保存</el-button>
         <el-button @click="back()">取消</el-button>
       </div>
     </div>
@@ -96,7 +96,13 @@
               </el-popover>
 
 
-              <el-popover placement="top-start" title="极坐标柱状图" :width="200" trigger="hover" content="极坐标柱状图">
+              <el-popover
+                placement="top-start"
+                title="极坐标柱状图"
+                :width="200"
+                trigger="hover"
+                content="极坐标柱状图"
+              >
                 <template #reference>
                   <div @click="changeChart('polar')" class="chart-select-item">
                     <svg class="charts-icon">
@@ -175,7 +181,6 @@
                   </div>
                 </template>
               </el-popover>
-
             </div>
             <div class="chart-view">
               <Bar v-if="chartType == 'bar'"></Bar>
@@ -194,11 +199,36 @@
         </div>
       </div>
     </div>
+
+    <el-dialog v-model="dialogVisible" title="上传数据集" width="35%">
+      <el-form label-width="100px" style="max-width: 560px">
+        <el-row class="form-item" :gutter="20">
+          <h2>图表明名</h2>
+          <el-input
+            v-model="saveChartForm.name"
+            class="w-50 m-2"
+            placeholder="数据集名"
+          />
+        </el-row>
+
+        <el-row class="form-item" :gutter="20">
+          <h2>描述</h2>
+          <el-input
+            v-model="saveChartForm.depicition"
+            class="w-50 m-2"
+            placeholder="描述"
+          />
+        </el-row>
+
+        <el-row :gutter="16" class="form-item-submit">
+          <el-button @click="save()" type="primary">保存</el-button>
+        </el-row>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
-<script lang="ts">
-
+<script>
 /**
  * 图表组件
  */
@@ -224,10 +254,10 @@ import Heat from "@/components/chart/Heat.vue";
 import HeatConfig from "@/components/chart/HeatConfig.vue";
 import River from "@/components/chart/River.vue";
 import RiverConfig from "@/components/chart/RiverConfig.vue";
-
+import { ElMessage, ElLoading } from 'element-plus'
 import { myDatasetApi, getDatasetApi } from "@/api/table/index.ts";
 import { useChartStore } from "@/store/chart.ts";
-
+import { saveChartApi } from "@/api/chart/chart.ts";
 export default {
   components: {
     Bar,
@@ -260,7 +290,17 @@ export default {
       selectDataset: "请选择数据集",
       currentDatasetName: "请选择数据集",
       chartStore: null,
-      chartType: "bar"
+      currentDatasetID: 0,
+      chartType: "bar",
+      dialogVisible: false,
+      // 图表保存表单
+      saveChartForm: {
+        chartTypeId: 1,
+        depicition: "",
+        metadataId: 0,
+        name: "",
+        option: {}
+      }
     };
   },
   mounted() {
@@ -280,12 +320,27 @@ export default {
       this.chartType = type;
     },
     back() {
-      this.$router.replace("/workplace/chart")
+      this.$router.replace("/workplace/chart");
+    },
+    save() {
+      this.saveChartForm.metadataId = this.currentDatasetID;
+      this.saveChartForm.option = this.chartStore.options;
+      saveChartApi(this.saveChartForm).then(res=>{
+        if(res.code === '00000') {
+          ElMessage.success("保存成功");
+        } else {
+          ElMessage.error("保存失败");
+        }
+        this.dialogVisible = false;
+      }).catch(err=>{
+
+      })
     }
   },
   watch: {
     selectDataset(newVal, oldVal) {
       getDatasetApi(this.selectDataset).then(res => {
+        this.currentDatasetID = res.data.id;
         this.currentDataset = res.data.data;
         this.currentDatasetName = res.data.name;
         this.chartStore.saveData(res.data.data);
