@@ -29,13 +29,12 @@
       </a>
       <div class="flex-grow" />
       <RouterLink to="/workplace" class="text">进入工作台</RouterLink>
-      <RouterLink to="/visual" class="text">新建文件</RouterLink>
-      <a href="/account" class="text">个人资料</a>
+        <RouterLink to="/visual" class="text">新建文件</RouterLink>
+        <el-sub-menu style="right: 100px;position: relative;" class="menu__title" index="2">
+          <template #title><p style="color: #54BCBD;">个人中心</p></template>
+          <el-menu-item index="2-1"><a href="/account" class=" menu_item">设置</a></el-menu-item>
+          <el-menu-item index="2-2" @click="logout"><p  class="menu_item">退出登录</p></el-menu-item>
 
-      <el-sub-menu style="right: 100px;position: relative;" class="menu__title" index="2">
-        <template #title>Workspace</template>
-        <el-menu-item index="2-1"><a href="/account" class=" menu_item">设置</a></el-menu-item>
-        <el-menu-item index="2-2" @click="logout">LogOut</el-menu-item>
 
       </el-sub-menu>
     </el-menu>
@@ -82,6 +81,14 @@ const logout = () => {
 </script>
   
 <style scoped lang='scss'>
+.menu_item {
+  display: flex;
+  position: relative;
+  flex-wrap: wrap;
+  align-content: center;
+  padding-left: 20px;
+  color: #54BCBD;
+}
 .el-menu {
   width: 100% !important;
   z-index: 99 !important;
