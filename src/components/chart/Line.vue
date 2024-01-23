@@ -2,7 +2,7 @@
   <div id="main"></div>
 </template>
 
-<script>
+<script lang="ts">
 import { lineApi } from "@/api/chart/chart";
 import * as echarts from "echarts";
 import { useChartStore } from "@/store/chart";

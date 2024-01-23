@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const request = axios.create({
   // baseURL: '/api',
-  baseURL: 'http://127.0.0.1:8080//renren-fast',
+  baseURL: 'http://112.124.59.107:8080/renren-fast',
   timeout: 20000,
 })
 

@@ -103,7 +103,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { useChartStore } from "@/store/chart";
 import { scatterApi } from "@/api/chart/chart";
 export default {
@@ -199,7 +199,7 @@ export default {
           console.log(result.data);
           this.options = result.data;
         })
-        .catch(err => {});
+        .catch(err => { });
     },
     /**
      * 改变标题位置
@@ -307,6 +307,7 @@ export default {
 .close-icon:hover {
   cursor: pointer;
 }
+
 .header {
   line-height: 36px;
   width: 120px;

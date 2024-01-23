@@ -2,12 +2,10 @@
   <div>我的信息</div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
 
 }
 </script>
 
-<style>
-
-</style>
+<style></style>

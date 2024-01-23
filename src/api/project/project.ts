@@ -2,8 +2,8 @@ import request from "@/utils/request";
 
 
 enum API {
-  SAVE = "/common/file/save_project";
-  LIST = "/common/file/my_project_list";
+  SAVE = "/common/file/save_project",
+  LIST = "/common/file/my_project_list"
 }
 
 export function saveProject(params: any) {

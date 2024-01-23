@@ -73,7 +73,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { useChartStore } from "@/store/chart";
 import { kLineApi } from "@/api/chart/chart";
 export default {
@@ -179,7 +179,7 @@ export default {
         .then(result => {
           this.options = result.data;
         })
-        .catch(err => {});
+        .catch(err => { });
     },
     /**
      * 改变标题位置
@@ -281,6 +281,7 @@ export default {
 .close-icon:hover {
   cursor: pointer;
 }
+
 .header {
   line-height: 36px;
   width: 120px;
@@ -293,12 +294,14 @@ export default {
   height: 380px;
   background-color: rgb(239, 242, 245);
 }
+
 .select-clonums {
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: center;
 }
+
 .data-col {
   width: 90%;
   display: flex;
@@ -306,5 +309,4 @@ export default {
   background-color: rgb(105, 156, 223);
   margin-top: 5px;
   border-radius: 10px;
-}
-</style>
+}</style>
