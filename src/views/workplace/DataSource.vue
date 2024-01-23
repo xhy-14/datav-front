@@ -402,11 +402,12 @@ export default {
           } else {
             ElMessage.error("数据集创建失败");
           }
+          loadingInstance.close();
         })
         .catch(err => {
           ElMessage.error("数据集创建失败");
+          loadingInstance.close();
         });
-      loadingInstance.close();
     }
   },
   created() {

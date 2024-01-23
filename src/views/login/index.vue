@@ -40,6 +40,7 @@ import { useRouter } from 'vue-router'
 import { loginAPI } from '@/api/login/index'
 import { ElMessage } from 'element-plus'
 import { debounce } from '@/utils/DebounceThrottle'
+import { ElLoading } from "element-plus";
 const router = useRouter()
 
 interface RuleForm {
@@ -85,10 +86,12 @@ const rules = reactive<FormRules<RuleForm>>({
 const login = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate(async (valid, fields) => {
-    console.log(fields)
-    console.log(ruleForm, "rule")
     if (valid) {
-      console.log('执行提交!')
+      const loadingInstance = ElLoading.service({
+        fullscreen: true,
+        text: "正在登录...",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
       loginAPI(ruleForm).then(function (response) {
         if (response.code == "00000") {
           localStorage.setItem('token', response.data.token)
@@ -100,12 +103,18 @@ const login = async (formEl: FormInstance | undefined) => {
           setTimeout(() => {
             router.replace("/")
           }, 1000)
+          
         } else {
           ElMessage.error(response.msg)
         }
-      }).catch(() => { ElMessage.error("发生异常请稍后重试") })
+        loadingInstance.close();
+      }).catch(() => { 
+        ElMessage.error("登陆失败")
+        loadingInstance.close();
+      })
     } else {
       console.log('提交错误', fields)
+      loadingInstance.close();
     }
   })
 }
