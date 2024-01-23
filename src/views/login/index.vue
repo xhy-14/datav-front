@@ -12,18 +12,18 @@
           <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="20%" class="demo-ruleForm"
             :size="formSize" status-icon>
             <el-form-item label="帐号" prop="mobile">
-              <el-input style="width: 80%;" v-model="ruleForm.mobile" placeholder="Please input" clearable />
+              <el-input style="width: 80%;" v-model="ruleForm.mobile" placeholder="邮箱/手机" clearable />
             </el-form-item>
             <el-form-item label="密码" prop="password">
-              <el-input style="width: 80%;" v-model="ruleForm.password" type="password"
-                placeholder="Please input password" show-password />
+              <el-input style="width: 80%;" v-model="ruleForm.password" type="password" placeholder="请输入密码"
+                show-password />
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="submitForm(ruleFormRef)">
                 登录
               </el-button>
               <el-button @click="gotoRegister()" style="margin:0 auto;">没有账号？去注册</el-button>
-              <a href="/forget" style="margin:0 auto;">忘记密码？</a>
+              <RouterLink to="/forget" style="margin:0 auto;">忘记密码？</RouterLink>
             </el-form-item>
           </el-form>
         </div>
@@ -46,7 +46,8 @@ const router = useRouter()
 interface RuleForm {
   username: string
   password: string
-  mobile: stringr
+  mobile: string
+  email: string
 }
 
 const formSize = ref('default')
@@ -55,6 +56,7 @@ const ruleForm = reactive<RuleForm>({
   username: '',
   password: '',
   mobile: '',
+  email: ''
 })
 
 const rules = reactive<FormRules<RuleForm>>({
@@ -64,22 +66,45 @@ const rules = reactive<FormRules<RuleForm>>({
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, max: 18, message: '密码必须为6 ~ 18位字符', trigger: 'blur' },
+    { min: 8, max: 16, message: '密码必须为8 ~ 16位', trigger: 'blur' },
   ],
   mobile: [
     { required: true, message: '请输入电话号码', trigger: 'blur' },
+    // {
+    //   validator(rule, value, callback) {
+    //     const reg = /^1[3456789]\d{9}$/;
+    //     console.log(ruleForm.password)
+    //     if (reg.test(value)) {
+    //       callback()
+    //     } else {
+    //       return callback(new Error('请输入正确的手机号码'))
+    //     }
+    //   }
+    // }
     {
-      validator(rule, value, callback) {
-        const reg = /^1[3456789]\d{9}$/;
-        console.log(ruleForm.password)
-        if (reg.test(value)) {
-          callback()
-        } else {
-          return callback(new Error('请输入正确的手机号码'))
-        }
-      }
+      pattern: /^1[3456789]\d{9}$/,
+      message: '请输入正确的手机号码',
+      trigger: 'blur'
     }
   ],
+  email: [
+    { required: true, message: '请输入邮箱', trigger: 'blur' },
+    // {
+    //     validator(rule, value, callback) {
+    //         const reg = /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/;
+    //         if (reg.test(value)) {
+    //             callback()
+    //         } else {
+    //             return callback(new Error('邮箱格式不正确'))
+    //         }
+    //     }
+    // }
+    {
+      pattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+      message: '邮箱格式不正确',
+      trigger: 'blur'
+    }
+  ]
 
 })
 
@@ -101,22 +126,11 @@ const login = async (formEl: FormInstance | undefined) => {
             message: "登陆成功",
             type: "success"
           })
-          setTimeout(() => {
-            router.replace("/")
-          }, 1000)
-          
+          router.replace("/")
         } else {
-          loading.close()
           ElMessage.error(response.msg)
         }
-        loadingInstance.close();
-      }).catch(() => { 
-        ElMessage.error("登陆失败")
-        loadingInstance.close();
-      })
-    } else {
-      console.log('提交错误', fields)
-      loadingInstance.close();
+      }).catch(() => { ElMessage.error("发生异常请稍后重试") }).finally(() => { loadingInstance.close() })
     }
   })
 }

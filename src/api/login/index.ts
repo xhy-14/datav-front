@@ -7,7 +7,8 @@ enum API {
   LOGOUT = "/logout",
   getUserInfo = "/getUserInfo",
   getPermCode = "/getPermCode",
-  REGISTER = "/app/register"
+  REGISTER = "/app/register",
+  CAPTCHA_EMAIL = "/app/mail?email="
 }
 
 // 登录
@@ -16,4 +17,7 @@ export function loginAPI(params: LoginParamsType) {
 }
 export function registerAPI(params: LoginParamsType) {
   return request.post<LoginResultModel>(API.REGISTER, params);
+}
+export function captchaAPI(params: string) {
+  return request.get<any>(API.CAPTCHA_EMAIL + params);
 }

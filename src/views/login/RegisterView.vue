@@ -11,9 +11,12 @@
                     <div class="font">注册</div>
                     <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="20%" class="demo-ruleForm"
                         :size="formSize" status-icon>
-                        <el-form-item label="用户名" prop="username">
+                        <!-- <el-form-item label="用户名" prop="username">
                             <el-input style="width: 80%;" v-model="ruleForm.username" placeholder="Please input"
                                 clearable />
+                        </el-form-item> -->
+                        <el-form-item label="邮箱" prop="email">
+                            <el-input style="width: 80%;" v-model="ruleForm.email" placeholder="Please input" clearable />
                         </el-form-item>
                         <el-form-item label="手机" prop="mobile">
                             <el-input style="width: 80%;" v-model="ruleForm.mobile" placeholder="Please input" clearable />
@@ -25,6 +28,10 @@
                         <el-form-item label="确认密码" prop="confirm">
                             <el-input style="width: 80%;" v-model="ruleForm.confirm" type="confirm"
                                 placeholder="Please input password" show-password />
+                        </el-form-item>
+                        <el-form-item label="验证码" prop="code">
+                            <el-input style="width: 40%;" v-model="ruleForm.code" placeholder="Please input" clearable />
+                            <el-button @click="getCaptcha()" style="margin: 0 auto;">获取验证码</el-button>
                         </el-form-item>
                         <el-form-item>
                             <el-button type="primary" @click="submitForm(ruleFormRef)">
@@ -43,7 +50,7 @@
 import { reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { useRouter } from 'vue-router'
-import { registerAPI } from '@/api/login/index'
+import { registerAPI, captchaAPI } from '@/api/login/index'
 import { ElMessage } from 'element-plus'
 import { debounce } from '@/utils/DebounceThrottle'
 import { ElLoading } from 'element-plus'
@@ -55,7 +62,8 @@ interface RuleForm {
     password: string
     confirm: string
     mobile: string
-    type: string
+    email: string
+    code: string
 }
 
 const formSize = ref('default')
@@ -65,7 +73,8 @@ const ruleForm = reactive<RuleForm>({
     password: '',
     confirm: '',
     mobile: '',
-    type: '',
+    email: '',
+    code: '',
 })
 
 const rules = reactive<FormRules<RuleForm>>({
@@ -75,7 +84,7 @@ const rules = reactive<FormRules<RuleForm>>({
     ],
     password: [
         { required: true, message: '请输入密码', trigger: 'blur' },
-        { min: 6, max: 18, message: '密码必须为6 ~ 18位字符', trigger: 'blur' },
+        { min: 6, max: 18, message: '密码必须为8 ~ 16位字符', trigger: 'blur' },
     ],
     mobile: [
         { required: true, message: '请输入电话号码', trigger: 'blur' },
@@ -106,6 +115,27 @@ const rules = reactive<FormRules<RuleForm>>({
             }
         }
     ],
+    code: [
+        { required: true, message: '请输入验证码', trigger: 'blur' },
+    ],
+    email: [
+        { required: true, message: '请输入邮箱', trigger: 'blur' },
+        // {
+        //     validator(rule, value, callback) {
+        //         const reg = /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/;
+        //         if (reg.test(value)) {
+        //             callback()
+        //         } else {
+        //             return callback(new Error('邮箱格式不正确'))
+        //         }
+        //     }
+        // }
+        {
+            pattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+            message: '邮箱格式不正确',
+            trigger: 'blur'
+        }
+    ]
 })
 
 const gotoLogin = () => {
@@ -114,34 +144,47 @@ const gotoLogin = () => {
 
 }
 
+const getCaptcha = () => {
+    //获取验证码
+    if (ruleForm.email == null || ruleForm.email == undefined || ruleForm.email == '') { ElMessage.error("请输入邮箱！") }
+    else {
+        captchaAPI(ruleForm.email).then((response) => {
+            if (response.code == "00000") {
+                ElMessage({
+                    message: "验证码发送成功！",
+                    type: "success"
+                })
+            } else {
+                ElMessage.error(response.msg)
+            }
+        }).catch(() => { ElMessage.error("发生异常请稍后重试") })
+    }
+
+}
+
+
 const toRegister = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
 
     await formEl.validate((valid, fields) => {
         if (valid) {
-            console.log('执行提交!')
-            const loading = ElLoading.service({
+            const loadingInstance = ElLoading.service({
                 lock: true,
                 text: 'Loading',
                 background: 'rgba(0, 0, 0, 0.7)',
             })
-            registerAPI(ruleForm).then(function (response) {
+            registerAPI(ruleForm).then((response) => {
                 console.log(response.data);
                 if (response.code == "00000") {
                     ElMessage({
                         message: "注册成功，请登录",
                         type: "success"
                     })
-                    loading.close()
                     router.replace("/login")
                 } else {
-                    loading.close()
                     ElMessage.error(response.msg)
                 }
-
-            })
-        } else {
-            console.log('提交错误', fields)
+            }).catch(() => { ElMessage.error("发生异常请稍后重试") }).finally(() => { loadingInstance.close() })
         }
     })
 }
